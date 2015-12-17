@@ -14,10 +14,10 @@
 #' dat <- load_nhanes_data("UHG_G", "2011-2012", demographics = TRUE)
 #'
 #' # Compute 50th, 95th, and 99th quantiles
-#' nhanes_quantiles(dat, "URXUHG", "WTSA2YR", c(0.5, 0.95, 0.99))
+#' nhanes_quantile(dat, "URXUHG", "WTSA2YR", c(0.5, 0.95, 0.99))
 #'
 #' @export
-nhanes_quantiles <- function(nhanes_data, column, weights_column, quantiles) {
+nhanes_quantile <- function(nhanes_data, column, weights_column, quantiles) {
   # Make sure demographics data is included
   if("SDMVPSU" %in% names(nhanes_data) == FALSE || "SDMVSTRA" %in% names(nhanes_data) == FALSE) {
     stop("nhanes_data doesn't include demographics data, which is needed to compute quantiles. Use load_nhanes_data(... demographics = TRUE) to download data with demographics.")
