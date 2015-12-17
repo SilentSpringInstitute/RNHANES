@@ -1,0 +1,12 @@
+Package: RNHANES
+Type: Package
+Title: Facilitates access to and analysis of CDC NHANES data
+Version: 0.1
+Date: 2015-12-17
+Authors@R: person("Herb", "Susmann", email="susmann@silentspring.org", role=c("cre", "aut"))
+Description: Provides tools to download CDC NHANES data
+License: Apache 2.0
+LazyData: TRUE
+Imports: foreign,
+    survey
+Suggests: testthat
