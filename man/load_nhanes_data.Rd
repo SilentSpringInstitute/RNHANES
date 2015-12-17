@@ -22,8 +22,8 @@ load_nhanes_data(file_name, year, destination = tempdir(),
 Download NHANES data files.
 }
 \examples{
-load_nhanes_lab_data("UHG_G", "2011-2012")
+load_nhanes_data("UHG_G", "2011-2012")
 
-load_nhanes_lab_data("HDL_E", "2007-2008", destination = "/tmp", overwrite = TRUE) # Download to /tmp directory and overwrite the file if it already exists
+load_nhanes_data("HDL_E", "2007-2008", destination = "/tmp", overwrite = TRUE) # Download to /tmp directory and overwrite the file if it already exists
 }
 

@@ -81,9 +81,9 @@ merge.data.with.demographics <- function(nhanes.demo, nhanes.lab) {
 #' @param merge_demographics auto merge demographics data into the dataset
 #' @param overwrite whether to overwrite the file if it already exists
 #' @examples
-#' load_nhanes_lab_data("UHG_G", "2011-2012")
+#' load_nhanes_data("UHG_G", "2011-2012")
 #'
-#' load_nhanes_lab_data("HDL_E", "2007-2008", destination = "/tmp", overwrite = TRUE) # Download to /tmp directory and overwrite the file if it already exists
+#' load_nhanes_data("HDL_E", "2007-2008", destination = "/tmp", overwrite = TRUE) # Download to /tmp directory and overwrite the file if it already exists
 #' @export
 #' @importFrom foreign read.xport
 load_nhanes_data <- function(file_name, year, destination = tempdir(), demographics = FALSE, overwrite = FALSE) {
