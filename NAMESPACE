@@ -3,5 +3,7 @@
 export(load_nhanes_data)
 export(load_nhanes_demography_data)
 export(nhanes_quantile)
+export(nhanes_variables)
+import(rvest)
 import(survey)
 importFrom(foreign,read.xport)
