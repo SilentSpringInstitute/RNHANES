@@ -11,10 +11,11 @@ library(RNHANES)
 load_nhanes_data("EPH_G", "2011-2012")
 
 # Download the same data, but this time include demographics data
-load_nhaneS_data("EPH_G", "2011-2012", demographics = TRUE)
+dat <- load_nhanes_data("EPH_G", "2011-2012", demographics = TRUE)
 
-# Download the data, and save it to a known location
-load_nhanes_data("EPH_G", "2011-2012", demographics = TRUE, destination = "./NHANES_Data")
+# Compute 95th and 99th quantiles for urinary triclosan
+nhanes_quantile(dat, column = "URXTRS", weights_column = "WTSA2YR", quantiles = c(0.95, 0.99))
+
 ```
 
 ## Install
