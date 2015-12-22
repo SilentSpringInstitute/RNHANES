@@ -104,6 +104,8 @@ load_nhanes_data <- function(file_name, year, destination = tempdir(), demograph
     dat <- merge.data.with.demographics(demography_data, dat)
   }
 
+  dat$Cycle = year
+
   return(dat)
 }
 
@@ -122,6 +124,8 @@ load_nhanes_demography_data <- function(year, destination = tempdir(), overwrite
 
   full_path <- download_nhanes_file(demography_filename(year), year, destination, overwrite = overwrite)
   dat <- read.xport(full_path)
+
+  dat$Cycle = year
 
   return(dat)
 }
