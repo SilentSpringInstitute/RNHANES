@@ -1,3 +1,6 @@
+#' Translates cycle years into the correct demography filename suffix,
+#' e.g. '2001-2002' returns 'B'
+#'
 demography_filename <- function(year) {
   validate_year(year)
 
@@ -18,6 +21,11 @@ demography_filename <- function(year) {
   return(paste0("DEMO_", suffix, ".XPT"))
 }
 
+#' Check that the year is in the correct format
+#' e.g. '2001-2002' is correct and returns TRUE,
+#' '2001' is not correct and returns FALSE
+#'
+#'
 validate_year <- function(year, throw_error = TRUE) {
   valid <- switch(year,
                   '1999-2000' = TRUE,
@@ -38,6 +46,9 @@ validate_year <- function(year, throw_error = TRUE) {
   return(valid)
 }
 
+#' Download an NHANES data file from a given cycle
+#'
+#'
 download_nhanes_file <- function(file_name, year, destination = tempdir(), overwrite = FALSE) {
   validate_year(year)
 
@@ -45,7 +56,8 @@ download_nhanes_file <- function(file_name, year, destination = tempdir(), overw
     stop(paste0("Directory doesn't exist: ", destination))
   }
 
-  if(grepl(".XPT", file_name) == FALSE) {
+  # If no extension is specified, the default is to assume it is an XPT file
+  if(grepl(".XPT", file_name) == FALSE && grepl(".htm", file_name) == FALSE) {
     file_name <- paste0(file_name, ".XPT")
   }
 
@@ -73,6 +85,76 @@ merge.data.with.demographics <- function(nhanes.demo, nhanes.lab) {
   return(nhanes)
 }
 
+load_nhanes_description <- function(file_name, year, destination = tempdir(), cache = FALSE) {
+  validate_year(year)
+
+  if(grepl('.htm', file_name) == FALSE) {
+    file_name <- paste0(file_name, '.htm')
+  }
+
+  full_path <- download_nhanes_file(file_name, year, destination, overwrite = cache)
+
+  html <- read_html(full_path)
+
+  description <- list()
+
+  # Loop through each variable
+  sections <- html %>%
+    html_nodes('.pagebreak')
+
+  for(section in sections) {
+    var_name <- section %>%
+      html_node("h3") %>%
+      html_attr('id')
+
+    if(var_name != "SEQN") {
+      values <- section %>%
+        html_node("table") %>%
+        html_table()
+
+      description[[var_name]] <- list(name = var_name, values = values)
+
+    }
+    else {
+      description[[var_name]] <- list(name = var_name)
+    }
+
+  }
+
+  return(description)
+}
+
+recode_nhanes_data <- function(nhanes_data, nhanes_description) {
+  vars <- colnames(nhanes_data)
+
+  # Figure out which columns in the nhanes data have a match in the description
+  cols <- which(names(nhanes_data) %in% names(nhanes_description))
+
+  # Skip the "SEQN" variable
+  cols <- cols[names(nhanes_data)[cols] != "SEQN"]
+
+  for(col in cols) {
+    var <- vars[col]
+
+    for(row in seq_along(nhanes_data[, col])) {
+      val <- nhanes_data[row, col]
+
+      if(is.na(val)) {
+        next
+      }
+
+      values_table <- nhanes_description[[var]]$values
+
+      replacement_value <- values_table[values_table[,"Code or Value"] == val, "Value Description"]
+
+      if(length(replacement_value) > 0) {
+        nhanes_data[row, col] <- replacement_value
+      }
+    }
+  }
+  return(nhanes_data)
+}
+
 #' Download NHANES data files.
 #'
 #' @param file_name NHANES file name e.g. ("EPH_E")
@@ -86,11 +168,18 @@ merge.data.with.demographics <- function(nhanes.demo, nhanes.lab) {
 #' load_nhanes_data("HDL_E", "2007-2008", destination = "/tmp", overwrite = TRUE) # Download to /tmp directory and overwrite the file if it already exists
 #' @export
 #' @importFrom foreign read.xport
-load_nhanes_data <- function(file_name, year, destination = tempdir(), demographics = FALSE, overwrite = FALSE) {
+load_nhanes_data <- function(file_name, year, destination = tempdir(), demographics = FALSE, overwrite = FALSE, recode = FALSE, recode_data = FALSE, recode_demographics = FALSE) {
   validate_year(year)
 
   full_path <- download_nhanes_file(file_name, year, destination, overwrite = overwrite)
   dat <- read.xport(full_path)
+
+  dat$Cycle = year
+
+  if(recode == TRUE || recode_data == TRUE) {
+    nhanes_description <- load_nhanes_description(file_name, year)
+    dat <- recode_nhanes_data(nhanes_data, nhanes_description)
+  }
 
   if(demographics == TRUE) {
     # Make sure we can merge in the data (this isn't possible when you have pooled samples)
@@ -103,8 +192,6 @@ load_nhanes_data <- function(file_name, year, destination = tempdir(), demograph
 
     dat <- merge.data.with.demographics(demography_data, dat)
   }
-
-  dat$Cycle = year
 
   return(dat)
 }
