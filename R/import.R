@@ -107,6 +107,13 @@ load_nhanes_description <- function(file_name, year, destination = tempdir(), ca
       html_node("h3") %>%
       html_attr('id')
 
+    if(is.na(var_name)) {
+      var_name <- section %>%
+        html_node("h3") %>%
+        html_node("a") %>%
+        html_attr('name')
+    }
+
     if(var_name != "SEQN") {
       values <- section %>%
         html_node("table") %>%
@@ -162,6 +169,10 @@ recode_nhanes_data <- function(nhanes_data, nhanes_description) {
 #' @param destination directory to download the files to
 #' @param merge_demographics auto merge demographics data into the dataset
 #' @param overwrite whether to overwrite the file if it already exists
+#' @param recode whether to recode the data and demographics (overrides other parameters)
+#' @param recode_data whether to recode just the data
+#' @param recode_demographics whether to recode just the demographics
+#'
 #' @examples
 #' load_nhanes_data("UHG_G", "2011-2012")
 #'
@@ -178,7 +189,7 @@ load_nhanes_data <- function(file_name, year, destination = tempdir(), demograph
 
   if(recode == TRUE || recode_data == TRUE) {
     nhanes_description <- load_nhanes_description(file_name, year)
-    dat <- recode_nhanes_data(nhanes_data, nhanes_description)
+    dat <- recode_nhanes_data(dat, nhanes_description)
   }
 
   if(demographics == TRUE) {
@@ -189,6 +200,13 @@ load_nhanes_data <- function(file_name, year, destination = tempdir(), demograph
     }
 
     demography_data <- load_nhanes_demography_data(year, destination = destination, overwrite = overwrite)
+
+    if(recode == TRUE || recode_demographics == TRUE) {
+      demographics_description_file_name <- gsub(".XPT", ".htm", demography_filename(year))
+      demographics_description <- load_nhanes_description(demographics_description_file_name, year)
+
+      demography_data <- recode_nhanes_data(demography_data, demographics_description)
+    }
 
     dat <- merge.data.with.demographics(demography_data, dat)
   }
