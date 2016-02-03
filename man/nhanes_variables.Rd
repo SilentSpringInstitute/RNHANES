@@ -9,7 +9,7 @@ nhanes_variables(destination = tempfile(), cache = TRUE)
 \arguments{
 \item{destination}{where to save the variable list}
 
-\item{cache}{whether to cache the downloaded variable list so it doesn't have to be redownloaded every time}
+\item{cache}{whether to cache the downloaded variable list so it doesn't have to be re-downloaded every time}
 }
 \description{
 Load the NHANES comprehensive variable list

@@ -5,21 +5,48 @@
 \title{Download NHANES data files.}
 \usage{
 load_nhanes_data(file_name, year, destination = tempdir(),
-  demographics = FALSE, overwrite = FALSE)
+  demographics = FALSE, overwrite = FALSE, recode = FALSE,
+  recode_data = FALSE, recode_demographics = FALSE)
 }
 \arguments{
-\item{file_name}{NHANES file name e.g. ("EPH_E")}
+\item{file_name}{NHANES file name (e.g. "EPH") or a vector of filenames (e.g c("EPH", "GHB"))}
 
-\item{year}{NHANES cycle year (e.g. "2007-2008")}
+\item{year}{NHANES cycle year (e.g. "2007-2008") or a vector of cycle years}
 
 \item{destination}{directory to download the files to}
 
 \item{overwrite}{whether to overwrite the file if it already exists}
 
+\item{recode}{whether to recode the data and demographics (overrides other parameters)}
+
+\item{recode_data}{whether to recode just the data}
+
+\item{recode_demographics}{whether to recode just the demographics}
+
 \item{merge_demographics}{auto merge demographics data into the dataset}
+}
+\value{
+if file_name or year is a vector, returns a list containing a data frame for each file_name. If file_name and year are both singletons, then a data frame is returned.
 }
 \description{
 Download NHANES data files.
+}
+\details{
+If you supply vectors for both file_name and year, then the vectors are paired and each file_name/year pair is downloaded.
+For example, file_name = c("EPH, GHB"), year = c("2009-2010", "2011-2012") will download "EPH_F.XPT" and "EPH_G.XPT".
+In other words, the function does not download every possible combination of file_name and year.
+
+You can specify file names in several formats. In order of specificity:
+You can supply the complete filename: "EPH_F.XPT"
+You can supply the filename without an extension: "EPH_F"
+You can supply the filename without a suffix: "EPH", year = "2009-2010"
+
+If you are loading the same file across multiple years, you must supply the filename without a suffix so
+that the correct suffix for each year can be used.
+
+This function returns either a list or a data frame. If you load multiple files, the return value will always be a list. This is because
+the columns may not match in between files.
+If you load one file, the result will be a data frame.
 }
 \examples{
 load_nhanes_data("UHG_G", "2011-2012")
