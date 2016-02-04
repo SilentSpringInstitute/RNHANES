@@ -80,7 +80,7 @@ validate_year <- function(year, throw_error = TRUE) {
 #' Processes a file name to make sure it is valid and has the correct suffix and extension
 #' File names with an extension (e.g. ".XPT") are not altered
 #'
-process_file_name <- function(file_name, year) {
+process_file_name <- function(file_name, year, extension = ".XPT") {
   validate_year(year)
 
   if(length(file_name) > 1 || length(year) > 1) {
@@ -90,7 +90,7 @@ process_file_name <- function(file_name, year) {
       return()
   }
   else {
-    ext <- substr(file_name, nchar(file_name) - 3, nchar(file_name) - 3)
+    ext <- substr(file_name, nchar(file_name) - 3, nchar(file_name))
     if(ext == ".XPT" || ext == ".htm") {
       return(file_name)
     }
@@ -105,8 +105,8 @@ process_file_name <- function(file_name, year) {
     valid_suffix <- file_suffix(year)
 
     # If it already has the right suffix, just tack on the extension
-    if( ) {
-      file_name = paste0(file_name, ".XPT")
+    if( substr(file_name, nchar(file_name), nchar(file_name)) == valid_suffix) {
+      file_name = paste0(file_name, extension)
     }
 
     # If it has a suffix that is incorrect throw a warning
@@ -115,17 +115,17 @@ process_file_name <- function(file_name, year) {
       warning(paste0("The file name ", file_name, " is probably incorrect -- check your '_", suffix, "' suffix, the right one is '_", valid_suffix, "' for the ", year, " cycle"))
 
       # Add the extension anyway
-      file_name <- paste0(file_name, ".XPT")
+      file_name <- paste0(file_name, extension)
     }
 
     # Otherwise, add the correct suffix for the provided year
     # Edge case if they have an underscore on the end but no suffix
     else if(substr(file_name, nchar(file_name), nchar(file_name)) == "_") {
-      file_name = paste0(file_name, file_suffix(year), ".XPT")
+      file_name = paste0(file_name, file_suffix(year), extension)
     }
 
     else {
-      file_name = paste0(file_name, "_", file_suffix(year), ".XPT")
+      file_name = paste0(file_name, "_", file_suffix(year), extension)
     }
 
     return(file_name)
@@ -188,9 +188,7 @@ merge.data.with.demographics <- function(nhanes.demo, nhanes.lab) {
 load_nhanes_description <- function(file_name, year, destination = tempdir(), cache = FALSE) {
   validate_year(year)
 
-  if(grepl('.htm', file_name) == FALSE) {
-    file_name <- paste0(file_name, '.htm')
-  }
+  file_name <- process_file_name(file_name, year, ".htm")
 
   full_path <- download_nhanes_file(file_name, year, destination, overwrite = cache)
 
