@@ -15,7 +15,7 @@ detection_frequency <- function(col) {
 #' @param nhanes_data data frame containing NHANES data
 #' @param columns comment column names of the variables to compute detection frequencies for
 #'
-#' @return detection frequency
+#' @return named vector of detection frequencies
 #'
 #'
 #' @examples
@@ -27,17 +27,26 @@ detection_frequency <- function(col) {
 #'
 #' @export
 nhanes_detection_frequency <- function(nhanes_data, comment_columns) {
+  # if the comment column was recoded, it will have 'Below lower detection limit', 'At or above the detection limit', or NAs
+  # convert these back to 1s and 0s
+  cols <- apply(nhanes_data[, comment_columns], 2, function(column) {
+    ifelse(is.na(column), NA,
+           ifelse(column == "Below lower detection limit", 1,
+                  ifelse(column == "At or above the detection limit", 0, column)))
+  }) %>%
+    as.data.frame()
+
   # Make sure we have a comment column, and not a data column
   # comment columns should only have 1s, 0s, or and NAs
-  correct_vals <- sum(nhanes_data[, comment_columns] != 1 & nhanes_data[, comment_columns] != 0, na.rm = TRUE) == 0
+  correct_vals <- sum(cols != 1 & cols != 0, na.rm = TRUE) == 0
   if(correct_vals == FALSE) {
     stop("nhanes_detection_frequency was given a column that doesn't seem to be a comment column.")
   }
 
-  nhanes_data[, comment_columns] %>%
+  cols <- apply(cols, 2, as.numeric) %>%
+    as.data.frame()
+
+  cols %>%
     detection_frequency() %>%
-    t() %>%
-    unname() %>%
-    as.vector() %>%
     return()
 }
