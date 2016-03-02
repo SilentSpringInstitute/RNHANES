@@ -1,3 +1,6 @@
+#' Computes detection frequencies on a set of columns
+#' @importFrom dplyr summarise_each
+#' @importFrom dplyr funs
 detection_frequency <- function(col) {
   if(is.data.frame(col)) {
     return(col %>% summarise_each(funs(detection_frequency(.))))

@@ -2,9 +2,12 @@
 
 export(load_nhanes_data)
 export(load_nhanes_demography_data)
+export(nhanes_detection_frequency)
 export(nhanes_quantile)
 export(nhanes_variables)
 import(rvest)
 import(survey)
+importFrom(dplyr,funs)
+importFrom(dplyr,summarise_each)
 importFrom(foreign,read.xport)
 importFrom(xml2,read_html)
