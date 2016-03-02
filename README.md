@@ -8,13 +8,16 @@
 library(RNHANES)
 
 # Download environmental phenols & parabens data from the 2011-2012 survey cycle
-load_nhanes_data("EPH_G", "2011-2012")
+load_nhanes_data("EPH", "2011-2012")
 
 # Download the same data, but this time include demographics data
-dat <- load_nhanes_data("EPH_G", "2011-2012", demographics = TRUE)
+dat <- load_nhanes_data("EPH", "2011-2012", demographics = TRUE)
 
 # Compute 95th and 99th quantiles for urinary triclosan
 nhanes_quantile(dat, column = "URXTRS", weights_column = "WTSA2YR", quantiles = c(0.95, 0.99))
+
+# Compute the detection frequency of urinary triclosan
+nhanes_detection_frequency(dat, column = "URDTRSLC")
 
 ```
 
