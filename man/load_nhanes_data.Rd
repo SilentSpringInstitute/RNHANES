@@ -49,7 +49,7 @@ the columns may not match in between files.
 If you load one file, the result will be a data frame.
 }
 \examples{
-load_nhanes_data("UHG_G", "2011-2012")
+load_nhanes_data("UHG", "2011-2012")
 
 load_nhanes_data("HDL_E", "2007-2008", destination = "/tmp", overwrite = TRUE) # Download to /tmp directory and overwrite the file if it already exists
 }

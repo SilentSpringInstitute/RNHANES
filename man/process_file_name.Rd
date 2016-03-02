@@ -5,7 +5,7 @@
 \title{Processes a file name to make sure it is valid and has the correct suffix and extension
 File names with an extension (e.g. ".XPT") are not altered}
 \usage{
-process_file_name(file_name, year)
+process_file_name(file_name, year, extension = ".XPT")
 }
 \description{
 Processes a file name to make sure it is valid and has the correct suffix and extension
