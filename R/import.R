@@ -290,16 +290,16 @@ recode_nhanes_data <- function(nhanes_data, nhanes_description) {
 #' If you load one file, the result will be a data frame.
 #'
 #' @examples
-#' load_nhanes_data("UHG", "2011-2012")
+#' nhanes_load_data("UHG", "2011-2012")
 #'
-#' load_nhanes_data("HDL_E", "2007-2008", destination = "/tmp", overwrite = TRUE) # Download to /tmp directory and overwrite the file if it already exists
+#' nhanes_load_data("HDL_E", "2007-2008", destination = "/tmp", overwrite = TRUE) # Download to /tmp directory and overwrite the file if it already exists
 #' @export
 #' @importFrom foreign read.xport
-load_nhanes_data <- function(file_name, year, destination = tempdir(), demographics = FALSE, overwrite = FALSE, recode = FALSE, recode_data = FALSE, recode_demographics = FALSE) {
+nhanes_load_data <- function(file_name, year, destination = tempdir(), demographics = FALSE, overwrite = FALSE, recode = FALSE, recode_data = FALSE, recode_demographics = FALSE) {
   validate_year(year)
 
   if(length(file_name) > 1 || length(year) > 1) {
-    res_list <- Map(load_nhanes_data,
+    res_list <- Map(nhanes_load_data,
         file_name,
         year,
         destination = destination,
@@ -329,7 +329,7 @@ load_nhanes_data <- function(file_name, year, destination = tempdir(), demograph
       warning(paste0("Demographics data can't be merged with ", file_name, " because it doesn't have a SEQN column. Maybe it has pooled samples?"))
     }
 
-    demography_data <- load_nhanes_demography_data(year, destination = destination, overwrite = overwrite)
+    demography_data <- nhanes_load_demography_data(year, destination = destination, overwrite = overwrite)
 
     if(recode == TRUE || recode_demographics == TRUE) {
       demographics_description_file_name <- gsub(".XPT", ".htm", demography_filename(year))
@@ -350,11 +350,11 @@ load_nhanes_data <- function(file_name, year, destination = tempdir(), demograph
 #' @param destination directory to download the file to
 #' @param overwrite sets whether to overwrite the file if it already exists
 #' @examples
-#' load_nhanes_demography_data("2011-2012")
+#' nhanes_load_demography_data("2011-2012")
 #'
 #' @export
 #' @importFrom foreign read.xport
-load_nhanes_demography_data <- function(year, destination = tempdir(), overwrite = FALSE) {
+nhanes_load_demography_data <- function(year, destination = tempdir(), overwrite = FALSE) {
   validate_year(year)
 
   full_path <- download_nhanes_file(demography_filename(year), year, destination, overwrite = overwrite)

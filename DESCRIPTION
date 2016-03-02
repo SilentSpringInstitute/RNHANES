@@ -9,4 +9,6 @@ License: Apache 2.0
 LazyData: TRUE
 Imports: foreign,
     survey
-Suggests: testthat
+Suggests: testthat,
+    knitr
+VignetteBuilder: knitr

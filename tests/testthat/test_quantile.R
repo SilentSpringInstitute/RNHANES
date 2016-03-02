@@ -1,4 +1,4 @@
-nhanes_data <- load_nhanes_data("PFC", "2011-2012", demographics = TRUE)
+nhanes_data <- nhanes_load_data("PFC", "2011-2012", demographics = TRUE)
 
 test_that("Passes spot check", {
 
