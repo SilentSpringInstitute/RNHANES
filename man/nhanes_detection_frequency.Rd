@@ -4,15 +4,15 @@
 \alias{nhanes_detection_frequency}
 \title{Compute detection frequencies of NHANES data}
 \usage{
-nhanes_detection_frequency(nhanes_data, columns)
+nhanes_detection_frequency(nhanes_data, comment_columns)
 }
 \arguments{
 \item{nhanes_data}{data frame containing NHANES data}
 
-\item{columns}{column names of the variable to compute detection frequency for}
+\item{columns}{comment column names of the variables to compute detection frequencies for}
 }
 \value{
-detection frequency
+named vector of detection frequencies
 }
 \description{
 Compute detection frequencies of NHANES data
