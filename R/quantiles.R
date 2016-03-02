@@ -17,7 +17,7 @@
 #' nhanes_quantile(dat, "URXUHG", "WTSA2YR", c(0.5, 0.95, 0.99))
 #'
 #' @export
-nhanes_quantile <- function(nhanes_data, column, weights_column, quantiles) {
+nhanes_quantile <- function(nhanes_data, column, weights_column, quantiles = seq(0, 1, 0.25)) {
   # Make sure demographics data is included
   if("SDMVPSU" %in% names(nhanes_data) == FALSE || "SDMVSTRA" %in% names(nhanes_data) == FALSE) {
     stop("nhanes_data doesn't include demographics data, which is needed to compute quantiles. Use load_nhanes_data(... demographics = TRUE) to download data with demographics.")
@@ -60,6 +60,8 @@ nhanes_quantile <- function(nhanes_data, column, weights_column, quantiles) {
     f = 1,
     interval.type="betaWald"
   ))
+
+  names(res) <- paste0(quantiles, "%")
 
   return(res)
 }
