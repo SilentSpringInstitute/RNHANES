@@ -84,6 +84,7 @@ process_file_name <- function(file_name, year, extension = ".XPT") {
   validate_year(year)
 
   if(length(file_name) > 1 || length(year) > 1) {
+    # TODO: should map also pass extension?
     Map(process_file_name, file_name, year) %>%
       unlist() %>%
       unname() %>%
@@ -97,6 +98,11 @@ process_file_name <- function(file_name, year, extension = ".XPT") {
 
     if(year == "1999-2000") {
       message("Cycle 1999-2000 doesn't always follow the normal naming conventions, so skipping the file suffix check.")
+
+      if(ext != extension) {
+        file_name <- paste0(file_name, extension)
+      }
+
       return(file_name)
     }
 
@@ -135,7 +141,7 @@ process_file_name <- function(file_name, year, extension = ".XPT") {
 #' Download an NHANES data file from a given cycle
 #'
 #'
-download_nhanes_file <- function(file_name, year, destination = tempdir(), overwrite = FALSE) {
+download_nhanes_file <- function(file_name, year, destination = tempdir(), cache = TRUE) {
   validate_year(year)
 
   if(!dir.exists(destination)) {
@@ -153,7 +159,7 @@ download_nhanes_file <- function(file_name, year, destination = tempdir(), overw
   # in that year.
   #
   if(length(file_name) > 1 || length(year) > 1) {
-    Map(download_nhanes_file, file_name, year,  destination = destination, overwrite = overwrite) %>%
+    Map(download_nhanes_file, file_name, year,  destination = destination, cache = cache) %>%
       unlist() %>%
       unname() %>%
       return()
@@ -163,10 +169,8 @@ download_nhanes_file <- function(file_name, year, destination = tempdir(), overw
   dest_file_name <- paste0(year_suffix, "_", file_name)
   destination <- file.path(destination, file_name)
 
-  if(overwrite == FALSE) {
-    if(file.exists(dest_file_name) == TRUE) {
-      return(dest_file_name)
-    }
+  if(cache == TRUE && file.exists(destination) == TRUE) {
+    return(destination)
   }
 
   url <- paste0("http://wwwn.cdc.gov/Nchs/Nhanes/", year, '/', file_name)
@@ -180,7 +184,7 @@ download_nhanes_file <- function(file_name, year, destination = tempdir(), overw
 
 merge.data.with.demographics <- function(nhanes.demo, nhanes.lab) {
   # Merge demography and lab results
-  nhanes <- merge(nhanes.demo, nhanes.lab, by="SEQN", all=F)
+  nhanes <- merge(nhanes.demo, nhanes.lab, by=c("SEQN", "cycle"), all=F)
 
   return(nhanes)
 }
@@ -190,7 +194,7 @@ load_nhanes_description <- function(file_name, year, destination = tempdir(), ca
 
   file_name <- process_file_name(file_name, year, ".htm")
 
-  full_path <- download_nhanes_file(file_name, year, destination, overwrite = cache)
+  full_path <- download_nhanes_file(file_name, year, destination, cache = cache)
 
   html <- read_html(full_path)
 
@@ -266,10 +270,11 @@ recode_nhanes_data <- function(nhanes_data, nhanes_description) {
 #' @param year NHANES cycle year (e.g. "2007-2008") or a vector of cycle years
 #' @param destination directory to download the files to
 #' @param merge_demographics auto merge demographics data into the dataset
-#' @param overwrite whether to overwrite the file if it already exists
+#' @param cache whether to cache the file to disk
 #' @param recode whether to recode the data and demographics (overrides other parameters)
 #' @param recode_data whether to recode just the data
 #' @param recode_demographics whether to recode just the demographics
+#' @param allow_duplicate_files how to handle a request that has duplicate file names/cycle years. By default duplicates will be removed.
 #'
 #' @return if file_name or year is a vector, returns a list containing a data frame for each file_name. If file_name and year are both singletons, then a data frame is returned.
 #'
@@ -292,19 +297,39 @@ recode_nhanes_data <- function(nhanes_data, nhanes_description) {
 #' @examples
 #' nhanes_load_data("UHG", "2011-2012")
 #'
-#' nhanes_load_data("HDL_E", "2007-2008", destination = "/tmp", overwrite = TRUE) # Download to /tmp directory and overwrite the file if it already exists
+#' nhanes_load_data("HDL_E", "2007-2008", destination = "/tmp", cache = FALSE) # Download to /tmp directory and overwrite the file if it already exists
 #' @export
 #' @importFrom foreign read.xport
-nhanes_load_data <- function(file_name, year, destination = tempdir(), demographics = FALSE, overwrite = FALSE, recode = FALSE, recode_data = FALSE, recode_demographics = FALSE) {
+nhanes_load_data <- function(file_name, year, destination = tempdir(), demographics = FALSE, cache = TRUE, recode = FALSE, recode_data = FALSE, recode_demographics = FALSE, allow_duplicate_files = FALSE) {
   validate_year(year)
 
   if(length(file_name) > 1 || length(year) > 1) {
+    if(is.factor(file_name)) {
+      stop("file_name is a factor -- convert it to a character vector before using nhanes_load_data.")
+    }
+
+    if(is.factor(year)) {
+      stop("year is a factor -- convert it to a character vector before using nhanes_load_data.")
+    }
+
+    file_years <- as.data.frame(cbind(file_name, year), stringsAsFactors = FALSE)
+    if(nrow(file_years) > nrow(file_years[!duplicated(file_years),])) {
+      if(allow_duplicate_files == TRUE) {
+        warning("The file names and cycle years provided have duplicates -- this will download the same file multiple times.")
+      }
+      else {
+        file_years <- file_years[!duplicated(file_years),]
+        file_name = file_years[,'file_name']
+        year = file_years[,'year']
+      }
+    }
+
     res_list <- Map(nhanes_load_data,
         file_name,
         year,
         destination = destination,
         demographics = demographics,
-        overwrite = overwrite,
+        cache = cache,
         recode = recode,
         recode_data = recode_data,
         recode_demographics = recode_demographics)
@@ -312,10 +337,13 @@ nhanes_load_data <- function(file_name, year, destination = tempdir(), demograph
     return(res_list)
   }
 
-  full_path <- download_nhanes_file(file_name, year, destination, overwrite = overwrite)
+  full_path <- download_nhanes_file(file_name, year, destination, cache = cache)
   dat <- read.xport(full_path)
 
-  dat$Cycle = year
+  dat$file_name = file_name
+  dat$cycle = year
+  dat$begin_year = as.numeric(substr(year, 1, 4))
+  dat$end_year = as.numeric(substr(year, 6, 9))
 
   if(recode == TRUE || recode_data == TRUE) {
     nhanes_description <- load_nhanes_description(file_name, year)
@@ -329,13 +357,22 @@ nhanes_load_data <- function(file_name, year, destination = tempdir(), demograph
       warning(paste0("Demographics data can't be merged with ", file_name, " because it doesn't have a SEQN column. Maybe it has pooled samples?"))
     }
 
-    demography_data <- nhanes_load_demography_data(year, destination = destination, overwrite = overwrite)
+    demography_data <- nhanes_load_demography_data(year, destination = destination, cache = cache)
 
     if(recode == TRUE || recode_demographics == TRUE) {
-      demographics_description_file_name <- gsub(".XPT", ".htm", demography_filename(year))
-      demographics_description <- load_nhanes_description(demographics_description_file_name, year)
+      demographics_description_csv_name <- file.path(destination, gsub(".XPT", "_recoded.csv", demography_filename(year)))
 
-      demography_data <- recode_nhanes_data(demography_data, demographics_description)
+      if(cache == TRUE && file.exists(demographics_description_csv_name)) {
+        demography_data <- read.csv(demographics_description_csv_name, stringsAsFactors = FALSE)
+      } else {
+        demographics_description_file_name <- gsub(".XPT", ".htm", demography_filename(year))
+        demographics_description <- load_nhanes_description(demographics_description_file_name, year, destination, cache)
+        demography_data <- recode_nhanes_data(demography_data, demographics_description)
+
+        if(cache == TRUE) {
+          write.csv(demography_data, demographics_description_csv_name, row.names = FALSE)
+        }
+      }
     }
 
     dat <- merge.data.with.demographics(demography_data, dat)
@@ -348,19 +385,19 @@ nhanes_load_data <- function(file_name, year, destination = tempdir(), demograph
 #'
 #' @param year NHANES cycle year (e.g. "2011-2012")
 #' @param destination directory to download the file to
-#' @param overwrite sets whether to overwrite the file if it already exists
+#' @param cache whether load the file if it already exists on disk
 #' @examples
 #' nhanes_load_demography_data("2011-2012")
 #'
 #' @export
 #' @importFrom foreign read.xport
-nhanes_load_demography_data <- function(year, destination = tempdir(), overwrite = FALSE) {
+nhanes_load_demography_data <- function(year, destination = tempdir(), cache = FALSE) {
   validate_year(year)
 
-  full_path <- download_nhanes_file(demography_filename(year), year, destination, overwrite = overwrite)
+  full_path <- download_nhanes_file(demography_filename(year), year, destination, cache = cache)
   dat <- read.xport(full_path)
 
-  dat$Cycle = year
+  dat$cycle = year
 
   return(dat)
 }
