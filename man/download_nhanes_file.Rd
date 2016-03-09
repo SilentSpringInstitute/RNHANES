@@ -4,8 +4,7 @@
 \alias{download_nhanes_file}
 \title{Download an NHANES data file from a given cycle}
 \usage{
-download_nhanes_file(file_name, year, destination = tempdir(),
-  overwrite = FALSE)
+download_nhanes_file(file_name, year, destination = tempdir(), cache = TRUE)
 }
 \description{
 Download an NHANES data file from a given cycle

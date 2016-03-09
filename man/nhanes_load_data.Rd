@@ -5,8 +5,9 @@
 \title{Download NHANES data files.}
 \usage{
 nhanes_load_data(file_name, year, destination = tempdir(),
-  demographics = FALSE, overwrite = FALSE, recode = FALSE,
-  recode_data = FALSE, recode_demographics = FALSE)
+  demographics = FALSE, cache = TRUE, recode = FALSE,
+  recode_data = FALSE, recode_demographics = FALSE,
+  allow_duplicate_files = FALSE)
 }
 \arguments{
 \item{file_name}{NHANES file name (e.g. "EPH") or a vector of filenames (e.g c("EPH", "GHB"))}
@@ -15,13 +16,15 @@ nhanes_load_data(file_name, year, destination = tempdir(),
 
 \item{destination}{directory to download the files to}
 
-\item{overwrite}{whether to overwrite the file if it already exists}
+\item{cache}{whether to cache the file to disk}
 
 \item{recode}{whether to recode the data and demographics (overrides other parameters)}
 
 \item{recode_data}{whether to recode just the data}
 
 \item{recode_demographics}{whether to recode just the demographics}
+
+\item{allow_duplicate_files}{how to handle a request that has duplicate file names/cycle years. By default duplicates will be removed.}
 
 \item{merge_demographics}{auto merge demographics data into the dataset}
 }
@@ -51,6 +54,6 @@ If you load one file, the result will be a data frame.
 \examples{
 nhanes_load_data("UHG", "2011-2012")
 
-nhanes_load_data("HDL_E", "2007-2008", destination = "/tmp", overwrite = TRUE) # Download to /tmp directory and overwrite the file if it already exists
+nhanes_load_data("HDL_E", "2007-2008", destination = "/tmp", cache = FALSE) # Download to /tmp directory and overwrite the file if it already exists
 }
 
