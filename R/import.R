@@ -23,6 +23,9 @@ file_suffix <- function(year) {
 #' Translates cycle years into the correct demography filename suffix,
 #' e.g. '2001-2002' returns 'B'
 #'
+#' @param year NHANES cycle, e.g. "2001-2002"
+#'
+#' @return character e.g. "B"
 demography_filename <- function(year) {
   validate_year(year)
 
@@ -80,6 +83,9 @@ validate_year <- function(year, throw_error = TRUE) {
 #' Processes a file name to make sure it is valid and has the correct suffix and extension
 #' File names with an extension (e.g. ".XPT") are not altered
 #'
+#' @param file_name name of the file
+#' @param year NHANES cycle year
+#' @param extension file extension
 process_file_name <- function(file_name, year, extension = ".XPT") {
   validate_year(year)
 
@@ -111,7 +117,7 @@ process_file_name <- function(file_name, year, extension = ".XPT") {
     valid_suffix <- file_suffix(year)
 
     # If it already has the right suffix, just tack on the extension
-    if( substr(file_name, nchar(file_name), nchar(file_name)) == valid_suffix) {
+    if( substr(file_name, nchar(file_name) - 1, nchar(file_name)) == paste0("_", valid_suffix)) {
       file_name = paste0(file_name, extension)
     }
 
@@ -140,7 +146,12 @@ process_file_name <- function(file_name, year, extension = ".XPT") {
 
 #' Download an NHANES data file from a given cycle
 #'
+#' @param file_name file name
+#' @param year NHANES cycle
+#' @param destination directory to download the file into
+#' @param cache whether to cache the file
 #'
+#' @return path to the downloaded file
 download_nhanes_file <- function(file_name, year, destination = tempdir(), cache = TRUE) {
   validate_year(year)
 
@@ -269,7 +280,7 @@ recode_nhanes_data <- function(nhanes_data, nhanes_description) {
 #' @param file_name NHANES file name (e.g. "EPH") or a vector of filenames (e.g c("EPH", "GHB"))
 #' @param year NHANES cycle year (e.g. "2007-2008") or a vector of cycle years
 #' @param destination directory to download the files to
-#' @param merge_demographics auto merge demographics data into the dataset
+#' @param demographics include  demographics data into the dataset
 #' @param cache whether to cache the file to disk
 #' @param recode whether to recode the data and demographics (overrides other parameters)
 #' @param recode_data whether to recode just the data
@@ -297,9 +308,14 @@ recode_nhanes_data <- function(nhanes_data, nhanes_description) {
 #' @examples
 #' nhanes_load_data("UHG", "2011-2012")
 #'
-#' nhanes_load_data("HDL_E", "2007-2008", destination = "/tmp", cache = FALSE) # Download to /tmp directory and overwrite the file if it already exists
-#' @export
+#'# Download to /tmp directory and overwrite the file if it already exists
+#'
+#' \dontrun{
+#' nhanes_load_data("HDL_E", "2007-2008", destination = "/tmp", cache = FALSE) #'
+#' }
+#'
 #' @importFrom foreign read.xport
+#' @export
 nhanes_load_data <- function(file_name, year, destination = tempdir(), demographics = FALSE, cache = TRUE, recode = FALSE, recode_data = FALSE, recode_demographics = FALSE, allow_duplicate_files = FALSE) {
   validate_year(year)
 
@@ -387,7 +403,10 @@ nhanes_load_data <- function(file_name, year, destination = tempdir(), demograph
 #' @param destination directory to download the file to
 #' @param cache whether load the file if it already exists on disk
 #' @examples
+#'
+#' \dontrun{
 #' nhanes_load_demography_data("2011-2012")
+#' }
 #'
 #' @export
 #' @importFrom foreign read.xport
