@@ -1,21 +1,18 @@
-#' Compute quantiles from NHANES weighted survey data
+#' Apply a function from the survey package to NHANES data
 #'
+#' @param survey_fun the survey package function (e.g. svyquantile or svymean)
 #' @param nhanes_data data frame containing NHANES data
 #' @param column column name of the variable to compute quantiles for
 #' @param comment_column comment column name of the variable
 #' @param weights_column name of the weights column
-#' @param quantiles numeric or vector numeric of quantiles to compute
+#' @param analyze one of "values" or "comments", whether to apply the survey function to the value or comment column.
+#' @param callback optional function to execute on each row of the dataframe
+#' @param ... other arguments to pass to the survey function
 #'
 #' @return a data frame
 #'
-#' @import survey
 #' @importFrom dplyr first
 #'
-#' @examples
-#'
-#' dat <- load_nhanes_data("UHG_G", "2011-2012", demographics = TRUE)
-#'
-#' # Compute 50th, 95th, and 99th quantiles
 #'
 #' @export
 
