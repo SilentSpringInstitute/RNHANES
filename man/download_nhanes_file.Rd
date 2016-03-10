@@ -6,6 +6,18 @@
 \usage{
 download_nhanes_file(file_name, year, destination = tempdir(), cache = TRUE)
 }
+\arguments{
+\item{file_name}{file name}
+
+\item{year}{NHANES cycle}
+
+\item{destination}{directory to download the file into}
+
+\item{cache}{whether to cache the file}
+}
+\value{
+path to the downloaded file
+}
 \description{
 Download an NHANES data file from a given cycle
 }

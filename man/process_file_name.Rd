@@ -7,6 +7,13 @@ File names with an extension (e.g. ".XPT") are not altered}
 \usage{
 process_file_name(file_name, year, extension = ".XPT")
 }
+\arguments{
+\item{file_name}{name of the file}
+
+\item{year}{NHANES cycle year}
+
+\item{extension}{file extension}
+}
 \description{
 Processes a file name to make sure it is valid and has the correct suffix and extension
 File names with an extension (e.g. ".XPT") are not altered

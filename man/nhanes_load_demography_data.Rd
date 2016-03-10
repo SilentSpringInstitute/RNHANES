@@ -17,6 +17,8 @@ nhanes_load_demography_data(year, destination = tempdir(), cache = FALSE)
 Download NHANES demography files for a specific cycle.
 }
 \examples{
+\dontrun{
 nhanes_load_demography_data("2011-2012")
+}
 }
 

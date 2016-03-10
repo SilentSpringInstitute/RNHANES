@@ -16,6 +16,8 @@ nhanes_load_data(file_name, year, destination = tempdir(),
 
 \item{destination}{directory to download the files to}
 
+\item{demographics}{include  demographics data into the dataset}
+
 \item{cache}{whether to cache the file to disk}
 
 \item{recode}{whether to recode the data and demographics (overrides other parameters)}
@@ -25,8 +27,6 @@ nhanes_load_data(file_name, year, destination = tempdir(),
 \item{recode_demographics}{whether to recode just the demographics}
 
 \item{allow_duplicate_files}{how to handle a request that has duplicate file names/cycle years. By default duplicates will be removed.}
-
-\item{merge_demographics}{auto merge demographics data into the dataset}
 }
 \value{
 if file_name or year is a vector, returns a list containing a data frame for each file_name. If file_name and year are both singletons, then a data frame is returned.
@@ -54,6 +54,10 @@ If you load one file, the result will be a data frame.
 \examples{
 nhanes_load_data("UHG", "2011-2012")
 
-nhanes_load_data("HDL_E", "2007-2008", destination = "/tmp", cache = FALSE) # Download to /tmp directory and overwrite the file if it already exists
+# Download to /tmp directory and overwrite the file if it already exists
+
+\dontrun{
+nhanes_load_data("HDL_E", "2007-2008", destination = "/tmp", cache = FALSE) #'
+}
 }
 

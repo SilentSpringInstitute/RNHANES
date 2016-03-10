@@ -4,12 +4,17 @@
 \alias{nhanes_detection_frequency}
 \title{Compute detection frequencies of NHANES data}
 \usage{
-nhanes_detection_frequency(nhanes_data, comment_columns)
+nhanes_detection_frequency(nhanes_data, column, comment_column,
+  weights_column = "")
 }
 \arguments{
 \item{nhanes_data}{data frame containing NHANES data}
 
-\item{columns}{comment column names of the variables to compute detection frequencies for}
+\item{column}{column names of the variables to compute detection frequencies for}
+
+\item{comment_column}{comment column names of the variables to compute detection frequencies for}
+
+\item{weights_column}{sample weight column}
 }
 \value{
 named vector of detection frequencies
@@ -18,9 +23,11 @@ named vector of detection frequencies
 Compute detection frequencies of NHANES data
 }
 \examples{
-dat <- load_nhanes_data("UHG_G", "2011-2012", demographics = TRUE)
+\dontrun{
+dat <- nhanes_load_data("UHG_G", "2011-2012", demographics = TRUE)
 
 # Compute detection frequency
-nhanes_detection_frequency(dat, c("URXUHG"))
+nhanes_detection_frequency(dat, c("URXUHG"), c("URDUHGLC"))
+}
 }
 

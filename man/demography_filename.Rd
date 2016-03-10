@@ -7,6 +7,12 @@ e.g. '2001-2002' returns 'B'}
 \usage{
 demography_filename(year)
 }
+\arguments{
+\item{year}{NHANES cycle, e.g. "2001-2002"}
+}
+\value{
+character e.g. "B"
+}
 \description{
 Translates cycle years into the correct demography filename suffix,
 e.g. '2001-2002' returns 'B'

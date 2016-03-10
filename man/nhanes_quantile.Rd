@@ -4,28 +4,32 @@
 \alias{nhanes_quantile}
 \title{Compute quantiles from NHANES weighted survey data}
 \usage{
-nhanes_quantile(nhanes_data, column, weights_column = "", quantiles = seq(0,
-  1, 0.25))
+nhanes_quantile(nhanes_data, column, comment_column, weights_column = "",
+  quantiles = seq(0, 1, 0.25))
 }
 \arguments{
 \item{nhanes_data}{data frame containing NHANES data}
 
 \item{column}{column name of the variable to compute quantiles for}
 
+\item{comment_column}{comment column name of the variable for checking if computed quantiles are below the LOD}
+
 \item{weights_column}{name of the weights column}
 
 \item{quantiles}{numeric or vector numeric of quantiles to compute}
 }
 \value{
-vector of quantiles
+a data frame
 }
 \description{
 Compute quantiles from NHANES weighted survey data
 }
 \examples{
-dat <- load_nhanes_data("UHG_G", "2011-2012", demographics = TRUE)
+\dontrun{
+dat <- nhanes_load_data("UHG_G", "2011-2012", demographics = TRUE)
 
 # Compute 50th, 95th, and 99th quantiles
 nhanes_quantile(dat, "URXUHG", "WTSA2YR", c(0.5, 0.95, 0.99))
+}
 }
 
