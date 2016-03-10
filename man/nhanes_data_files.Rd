@@ -8,6 +8,8 @@ nhanes_data_files(components = "all", destination = tempfile(),
   cache = TRUE)
 }
 \arguments{
+\item{components}{one of "all", "demographics", "dietary", "examination", "laboratory", "questionnaire"}
+
 \item{destination}{destinatino to save the file lists}
 
 \item{cache}{whether to cache the downloaded file lists so they don't have to be re-downloaded every time}

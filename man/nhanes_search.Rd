@@ -15,7 +15,7 @@ nhanes_search(nhanes_data, query, ..., fuzzy = FALSE, ignore_case = TRUE)
 
 \item{fuzzy}{whether to use fuzzy string matching for search (based on edit distances)}
 
-\item{case_sensitive}{whether search query is case-sensitive}
+\item{ignore_case}{whether search query is case-sensitive}
 }
 \value{
 data frame filtered by search query
@@ -24,9 +24,11 @@ data frame filtered by search query
 Search the results from nhanes_variables or nhanes_data_files
 }
 \examples{
+\dontrun{
 nhanes_files <- nhanes_data_files()
 
 # Search for data files about pesticides
 nhanes_search(nhanes_files, "pesticides")
+}
 }
 

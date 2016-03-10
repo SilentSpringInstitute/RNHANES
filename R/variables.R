@@ -33,6 +33,7 @@ parse_data_files_page <- function(type, destination = tempfile()) {
 
 #' List the NHANES data files
 #'
+#' @param components one of "all", "demographics", "dietary", "examination", "laboratory", "questionnaire"
 #' @param destination destinatino to save the file lists
 #' @param cache whether to cache the downloaded file lists so they don't have to be re-downloaded every time
 #'
@@ -75,8 +76,8 @@ nhanes_data_files <- function(components = "all", destination = tempfile(), cach
     m <- regexec("(.+) Data \\[(.+), ([0-9\\.]+ [A-Z]+)\\]", dat$data_file)
     matches <- regmatches(dat$data_file, m) %>%
       lapply(function(item) if(length(item) == 0) c(NA, NA, NA) else item[2:4])
-    matches <- Reduce(rbind, matches) %>% as.data.frame()
-    names(matches) <- c("DataFileName", "FileType", "DataFileSize")
+    matches <- Reduce(rbind, matches) %>% as.data.frame(stringsAsFactors = FALSE)
+    names(matches) <- c("data_file_name", "file_type", "data_file_size")
     rownames(matches) <- c()
 
     dat <- cbind(dat, matches)
@@ -100,6 +101,9 @@ nhanes_variables <- function(destination = tempfile(), cache = TRUE) {
   if(!dir.exists(dirname(destination))) {
     stop(paste0("Directory doesn't exist: ", dirname(destination)))
   }
+
+  destination_csv <- destination
+  destination_variablelist <- tempfile()
 
   if(dir.exists(destination)) {
     destination_csv <- file.path(destination, "nhanes_variables.csv")
@@ -140,7 +144,7 @@ nhanes_variables <- function(destination = tempfile(), cache = TRUE) {
 
     dat$unit <- unlist(units)
 
-    dat$variable_description <- gsub("â€™", "'", dat$variable_description)
+    #dat$variable_description <- gsub("\u00E2\u€™", "'", dat$variable_description)
 
     if(cache == TRUE) {
       write.csv(dat, file = destination_csv, row.names = FALSE)
@@ -156,43 +160,50 @@ nhanes_variables <- function(destination = tempfile(), cache = TRUE) {
 #' @param query regular expression search query
 #' @param ... additional arguments to pass to dplyr::filter
 #' @param fuzzy whether to use fuzzy string matching for search (based on edit distances)
-#' @param case_sensitive whether search query is case-sensitive
+#' @param ignore_case whether search query is case-sensitive
 #'
 #' @return data frame filtered by search query
 #'
 #' @examples
+#'
+#' \dontrun{
 #' nhanes_files <- nhanes_data_files()
 #'
 #' # Search for data files about pesticides
 #' nhanes_search(nhanes_files, "pesticides")
+#' }
 #'
 #' @importFrom dplyr filter
 #' @export
 nhanes_search <- function(nhanes_data, query, ..., fuzzy = FALSE, ignore_case = TRUE) {
   nhanes_attribute <- attr(nhanes_data, 'rnhanes')
 
+  # Workaround
+  # Without this, R CMD CHECK will throw a note about how there is no visible binding for
+  # global variable because these column names are used in filter with non standard evaluation
+  # http://stackoverflow.com/questions/9439256/how-can-i-handle-r-cmd-check-no-visible-binding-for-global-variable-notes-when
+  variable_description <- file_name <- data_file_description <- variable_name <- data_file <- NULL
+
   if(is.null(nhanes_attribute)) {
     stop("nhanes_search only works with data loaded with the RNHANES package")
   } else if(nhanes_attribute == 'nhanes_files') {
     if(fuzzy) {
-      nhanes_data %>%
-        filter(grepl(query, data_file_description, ignore.case = ignore_case) | grepl(query, data_file, ignore.case = ignore_case), ...) %>%
-        return()
+      result <- nhanes_data %>%
+        filter(grepl(query, data_file_description, ignore.case = ignore_case) | grepl(query, data_file, ignore.case = ignore_case), ...)
     } else {
-      nhanes_data %>%
-        filter(agrepl(query, data_file_description, ignore.case = ignore_case, max.distance = list(all = 0.2)) | agrepl(query, data_file, ignore.case = ignore_case, max.distance = list(all = 0.2)), ...) %>%
-        return()
+      result <- nhanes_data %>%
+        filter(agrepl(query, data_file_description, ignore.case = ignore_case, max.distance = list(all = 0.2)) | agrepl(query, data_file, ignore.case = ignore_case, max.distance = list(all = 0.2)), ...)
     }
   } else if(nhanes_attribute == 'nhanes_variables') {
     if(fuzzy) {
       # Compute edit distances
-      nhanes_data %>%
-        filter(agrepl(query, variable_description, ignore.case = ignore_case, max.distance = list(all = 0.2)) | agrepl(query, variable_name, ignore.case = ignore_case, max.distance = list(all = 0.2)), ...) %>%
-        return()
+      result <- nhanes_data %>%
+        filter(agrepl(query, variable_description, ignore.case = ignore_case, max.distance = list(all = 0.2)) | agrepl(query, variable_name, ignore.case = ignore_case, max.distance = list(all = 0.2)), ...)
     } else {
-      nhanes_data %>%
-        filter(grepl(query, variable_description, ignore.case = ignore_case) | grepl(query, variable_name, ignore.case = ignore_case), ...) %>%
-        return()
+      result <- nhanes_data %>%
+        filter(grepl(query, variable_description, ignore.case = ignore_case) | grepl(query, variable_name, ignore.case = ignore_case), ...)
     }
   }
+
+  return(result)
 }
