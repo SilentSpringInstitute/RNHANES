@@ -1,14 +1,17 @@
 Package: RNHANES
 Type: Package
-Title: Facilitates access to and analysis of CDC NHANES data
+Title: Facilitates analyzing CDC NHANES data
 Version: 0.1
-Date: 2015-12-17
+Date: 2016-3-10
 Authors@R: person("Herb", "Susmann", email="susmann@silentspring.org", role=c("cre", "aut"))
-Description: Provides tools to download CDC NHANES data
-License: Apache 2.0
+Description: RNHANES provides tools to download and analyze CDC NHANES data, with a focus on analytical laboratory data.
+License: Apache License 2.0 | file LICENSE
 LazyData: TRUE
 Imports: foreign,
-    survey
+    survey,
+    dplyr,
+    rvest,
+    xml2
 Suggests: testthat,
     knitr
 VignetteBuilder: knitr
