@@ -1,25 +1,26 @@
 #' Compute quantiles from NHANES weighted survey data
 #'
+#' @param analysis_fun function to use to analyze each variable
 #' @param nhanes_data data frame containing NHANES data
 #' @param column column name of the variable to compute quantiles for
 #' @param comment_column comment column name of the variable
 #' @param weights_column name of the weights column
-#' @param quantiles numeric or vector numeric of quantiles to compute
 #'
 #' @return a data frame
 #'
 #' @import survey
 #' @importFrom dplyr first
 #'
-#' @examples
-#'
-#' dat <- load_nhanes_data("UHG_G", "2011-2012", demographics = TRUE)
-#'
-#' # Compute 50th, 95th, and 99th quantiles
 #'
 #' @export
 
 nhanes_analyze <- function(analysis_fun, nhanes_data, column, comment_column = "", weights_column = "") {
+  # Workaround
+  # without this, R CMD CHECK will complain about file_name being used in the subset call because it
+  # looks like a global variable
+  # http://stackoverflow.com/questions/9439256/how-can-i-handle-r-cmd-check-no-visible-binding-for-global-variable-notes-when
+  file_name <- NULL
+
   # If `nhanes_data` is a list, the user is providing data from multiple cycles or multiple files.
   # `column` should be a data frame specifying the columns to use in each cycle.
   if(is.list(nhanes_data) && is.data.frame(nhanes_data) == FALSE) {
@@ -94,7 +95,7 @@ nhanes_analyze <- function(analysis_fun, nhanes_data, column, comment_column = "
 
     # Build the survey object
     des <- svydesign(
-      id = ~SDMVPSU,
+      ids = ~SDMVPSU,
       strata = ~SDMVSTRA,
       nest = T,
       weights = nhanes_data[, weights_column],
@@ -103,7 +104,8 @@ nhanes_analyze <- function(analysis_fun, nhanes_data, column, comment_column = "
 
     # Decode comment column if necessary
     nhanes_data[, comment_column] = ifelse(nhanes_data[, comment_column] == "Below lower detection limit", 1, nhanes_data[,comment_column])
-    nhanes_data[, comment_column] = ifelse(nhanes_data[, comment_column] == "At or above lower detection limit", 0, nhanes_data[,comment_column])
+    nhanes_data[, comment_column] = ifelse(nhanes_data[, comment_column] == "At or above the detection limit", 0, nhanes_data[,comment_column])
+    nhanes_data[, comment_column] = as.numeric(nhanes_data[, comment_column])
 
     args <- list(nhanes_data, column, comment_column, weights_column, des)
 
