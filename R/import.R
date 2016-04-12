@@ -155,6 +155,14 @@ process_file_name <- function(file_name, year, extension = ".XPT") {
 download_nhanes_file <- function(file_name, year, destination = tempdir(), cache = TRUE) {
   validate_year(year)
 
+  if(missing(destination)) {
+    destination <- getOption("RNHANES_destination", destination)
+  }
+
+  if(missing(cache)) {
+    cache <- getOption("RNHANES_cache", cache)
+  }
+
   if(!dir.exists(destination)) {
     stop(paste0("Directory doesn't exist: ", destination))
   }
@@ -212,6 +220,14 @@ merge.data.with.demographics <- function(nhanes.demo, nhanes.lab) {
 #' @return data frame containing the file description
 load_nhanes_description <- function(file_name, year, destination = tempdir(), cache = FALSE) {
   validate_year(year)
+
+  if(missing(destination)) {
+    destination <- getOption("RNHANES_destination", destination)
+  }
+
+  if(missing(cache)) {
+    cache <- getOption("RNHANES_cache", cache)
+  }
 
   file_name <- process_file_name(file_name, year, ".htm")
 
@@ -333,6 +349,13 @@ recode_nhanes_data <- function(nhanes_data, nhanes_description) {
 nhanes_load_data <- function(file_name, year, destination = tempdir(), demographics = FALSE, cache = TRUE, recode = FALSE, recode_data = FALSE, recode_demographics = FALSE, allow_duplicate_files = FALSE) {
   validate_year(year)
 
+  if(missing(destination)) {
+    destination <- getOption("RNHANES_destination", destination)
+  }
+
+  if(missing(cache)) {
+    cache <- getOption("RNHANES_cache", cache)
+  }
   if(length(file_name) > 1 || length(year) > 1) {
     if(is.factor(file_name)) {
       stop("file_name is a factor -- convert it to a character vector before using nhanes_load_data.")
@@ -429,6 +452,13 @@ nhanes_load_demography_data <- function(year, destination = tempdir(), cache = F
 
   full_path <- download_nhanes_file(demography_filename(year), year, destination, cache = cache)
   dat <- read.xport(full_path)
+  if(missing(destination)) {
+    destination <- getOption("RNHANES_destination", destination)
+  }
+
+  if(missing(cache)) {
+    cache <- getOption("RNHANES_cache", cache)
+  }
 
   dat$cycle = year
 
