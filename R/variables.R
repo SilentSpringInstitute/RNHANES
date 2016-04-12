@@ -43,30 +43,33 @@ parse_data_files_page <- function(type, destination = tempfile()) {
 #' @importFrom xml2 read_html
 #' @export
 nhanes_data_files <- function(components = "all", destination = tempfile(), cache = TRUE) {
-  if(!dir.exists(dirname(destination))) {
+
+  all_components <- c("demographics", "dietary", "examination", "laboratory", "questionnaire")
+  components = tolower(components)
+
+  if(components == "all") {
+    components = all_components
+  } else {
+    if(sum(!components %in% all_components) > 0) {
+      stop("Invalid component given to nhanes_data_files. Acceptable values are 'demographics', 'dietary', 'examination', 'laboratory', and 'questionnaire'")
+    }
+  }
+
+  if(dir.exists(destination)) {
+    destination <- file.path(destination, "nhanes_data_files.csv")
+  } else if(!dir.exists(dirname(destination))) {
     stop(paste0("Directory doesn't exist: ", dirname(destination)))
   }
 
   if(cache == TRUE && file.exists(destination)) {
     dat <- read.csv(destination, stringsAsFactors = FALSE)
 
-    if(sum(!components %in% dat$Component) > 0) {
+    if(sum(!components %in% dat$component) > 0) {
       stop("The cached file doesn't have all the components you specified in this call to nhanes_data_files. Either delete the file in order to redownload the new components you want, or choose a new destination to download to.")
     }
   } else {
 
-    all_components <- c("demographics", "dietary", "examination", "laboratory", "questionnaire")
-    components = tolower(components)
-
-    if(components == "all") {
-      components = all_components
-    } else {
-      if(sum(!components %in% all_components) > 0) {
-        stop("Invalid component given to nhanes_data_files. Acceptable values are 'demographics', 'dietary', 'examination', 'laboratory', and 'questionnaire'")
-      }
-    }
-
-    dat <- lapply(components, parse_data_files_page, destination = destination)
+    dat <- lapply(components, parse_data_files_page)
     dat <- Reduce(rbind, dat)
 
     names(dat) <- c("cycle", "data_file_description", "doc_file", "data_file", "date_published", "component")
@@ -143,6 +146,8 @@ nhanes_variables <- function(destination = tempfile(), cache = TRUE) {
     units <- Map(function(x) substr(x, 2, nchar(x) - 1), units)
 
     dat$unit <- unlist(units)
+
+    dat$component = tolower(dat$component)
 
     #dat$variable_description <- gsub("\u00E2\u€™", "'", dat$variable_description)
 
