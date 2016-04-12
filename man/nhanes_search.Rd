@@ -4,7 +4,8 @@
 \alias{nhanes_search}
 \title{Search the results from nhanes_variables or nhanes_data_files}
 \usage{
-nhanes_search(nhanes_data, query, ..., fuzzy = FALSE, ignore_case = TRUE)
+nhanes_search(nhanes_data, query, ..., fuzzy = FALSE, ignore_case = TRUE,
+  max_distance = 0.2)
 }
 \arguments{
 \item{nhanes_data}{nhanes variable list, from nhanes_variables function, or data file list, from nhanes_data_files}
@@ -16,6 +17,8 @@ nhanes_search(nhanes_data, query, ..., fuzzy = FALSE, ignore_case = TRUE)
 \item{fuzzy}{whether to use fuzzy string matching for search (based on edit distances)}
 
 \item{ignore_case}{whether search query is case-sensitive}
+
+\item{max_distance}{parameter for tuning fuzzy string matching, 0-1}
 }
 \value{
 data frame filtered by search query
