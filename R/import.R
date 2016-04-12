@@ -216,7 +216,6 @@ merge.data.with.demographics <- function(nhanes.demo, nhanes.lab) {
 #' @param cache whether to cache the file
 #'
 #'
-#' @importFrom dplyr rbind_all
 #' @return data frame containing the file description
 load_nhanes_description <- function(file_name, year, destination = tempdir(), cache = FALSE) {
   validate_year(year)
