@@ -1,4 +1,12 @@
 test_that("Download helper functions work", {
+  test_that("file_suffix works", {
+    expect_equal(file_suffix("2001-2002"), "B")
+    expect_equal(file_suffix("2003-2004"), "C")
+    expect_equal(file_suffix("2013-2014"), "H")
+
+    expect_equal(file_suffix(c("2001-2002", "2003-2004")), c("B", "C"))
+  })
+
   test_that("demography_filename", {
     test_that("it works for one year at a time", {
       expect_equal(demography_filename("2007-2008"), "DEMO_E.XPT")
