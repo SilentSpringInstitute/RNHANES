@@ -161,6 +161,7 @@ nhanes_variables <- function(destination = tempfile(), cache = TRUE) {
 #' @param ... additional arguments to pass to dplyr::filter
 #' @param fuzzy whether to use fuzzy string matching for search (based on edit distances)
 #' @param ignore_case whether search query is case-sensitive
+#' @param max_distance parameter for tuning fuzzy string matching, 0-1
 #'
 #' @return data frame filtered by search query
 #'
@@ -175,7 +176,7 @@ nhanes_variables <- function(destination = tempfile(), cache = TRUE) {
 #'
 #' @importFrom dplyr filter
 #' @export
-nhanes_search <- function(nhanes_data, query, ..., fuzzy = FALSE, ignore_case = TRUE) {
+nhanes_search <- function(nhanes_data, query, ..., fuzzy = FALSE, ignore_case = TRUE, max_distance = 0.2) {
   nhanes_attribute <- attr(nhanes_data, 'rnhanes')
 
   # Workaround
@@ -186,19 +187,20 @@ nhanes_search <- function(nhanes_data, query, ..., fuzzy = FALSE, ignore_case = 
 
   if(is.null(nhanes_attribute)) {
     stop("nhanes_search only works with data loaded with the RNHANES package")
+  } else if(query == "") {
+    result <- nhanes_data %>% filter(...)
   } else if(nhanes_attribute == 'nhanes_files') {
     if(fuzzy) {
       result <- nhanes_data %>%
-        filter(grepl(query, data_file_description, ignore.case = ignore_case) | grepl(query, data_file, ignore.case = ignore_case), ...)
+        filter(agrepl(query, data_file_description, ignore.case = ignore_case, max.distance = list(all = max_distance)) | agrepl(query, data_file, ignore.case = ignore_case, max.distance = list(all = max_distance)), ...)
     } else {
       result <- nhanes_data %>%
-        filter(agrepl(query, data_file_description, ignore.case = ignore_case, max.distance = list(all = 0.2)) | agrepl(query, data_file, ignore.case = ignore_case, max.distance = list(all = 0.2)), ...)
+        filter(grepl(query, data_file_description, ignore.case = ignore_case) | grepl(query, data_file, ignore.case = ignore_case), ...)
     }
   } else if(nhanes_attribute == 'nhanes_variables') {
     if(fuzzy) {
-      # Compute edit distances
       result <- nhanes_data %>%
-        filter(agrepl(query, variable_description, ignore.case = ignore_case, max.distance = list(all = 0.2)) | agrepl(query, variable_name, ignore.case = ignore_case, max.distance = list(all = 0.2)), ...)
+        filter(agrepl(query, variable_description, ignore.case = ignore_case, max.distance = list(all = max_distance)) | agrepl(query, variable_name, ignore.case = ignore_case, max.distance = list(all = max_distance)), ...)
     } else {
       result <- nhanes_data %>%
         filter(grepl(query, variable_description, ignore.case = ignore_case) | grepl(query, variable_name, ignore.case = ignore_case), ...)
