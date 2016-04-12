@@ -54,9 +54,27 @@ test_that("Download helper functions work", {
       expect_equal(process_file_name("EPH", "2007-2008"), "EPH_E.XPT")
     })
 
+    test_that("it throws a warning if there is a wrong suffix, but still adds extension", {
+      expect_warning(process_file_name("EPH_A", "2007-2008"), "The file name EPH_A is probably incorrect")
+      expect_equal(process_file_name("EPH_A", "2007-2008"), "EPH_A.XPT")
+    })
+
+    test_that("it adds a suffix if the file name ends with an underscore", {
+      expect_equal(process_file_name("EPH_", "2007-2008"), "EPH_E.XPT")
+    })
 
     test_that("it can process multiple file names/years at once", {
       expect_equal(process_file_name(c("EPH", "PFC"), c("2007-2008", "2011-2012")), c("EPH_E.XPT", "PFC_G.XPT"))
+    })
+
+    test_that("it handles 1999-2000 cycle correctly", {
+      test_that("it prints a message for 1999-2000 cycle", {
+        expect_message(process_file_name("EPH", "1999-2000"), "Cycle 1999-2000 doesn't always follow the normal naming convention")
+      })
+
+      test_that("it will add an extension", {
+        expect_equal(process_file_name("EPH", "1999-2000"), "EPH.XPT")
+      })
     })
   })
 
@@ -117,6 +135,10 @@ test_that("Downloading files from NHANES works", {
   test_that("nhanes_load_data", {
     destination <- tempdir()
 
+    test_that("it will throw an error if the destination folder doesn't exist", {
+      expect_error(nhanes_load_data("EPH", "2007-2008", destination = file.path(destination, "not_there")))
+    })
+
     test_that("it can download a basic data file", {
       dat <- nhanes_load_data("EPH", "2007-2008", destination = destination, cache = TRUE)
 
@@ -127,6 +149,18 @@ test_that("Downloading files from NHANES works", {
                                       "file_name", "cycle", "begin_year", "end_year"))
 
       unlink(file.path(destination, "EPH_E.csv"))
+    })
+
+    test_that("it can download a basic data file without caching", {
+      dat <- nhanes_load_data("EPH", "2007-2008", destination = destination, cache = FALSE)
+
+      expect_true(file.exists(file.path(destination, "EPH_E.XPT")))
+      expect_equal(nrow(dat), 2718)
+      expect_equivalent(names(dat), c("SEQN", "WTSB2YR", "URXUCR", "URX4TO", "URD4TOLC", "URXBP3", "URDBP3LC", "URXBPH", "URDBPHLC", "URXTRS",
+                                      "URDTRSLC", "URXBUP", "URDBUPLC", "URXEPB", "URDEPBLC", "URXMPB", "URDMPBLC", "URXPPB", "URDPPBLC",
+                                      "file_name", "cycle", "begin_year", "end_year"))
+
+      unlink(file.path(destination, "EPH_E.XPT"))
     })
 
     test_that("it can download a file with demographics", {
@@ -143,7 +177,7 @@ test_that("Downloading files from NHANES works", {
     })
 
     test_that("it can recode just data", {
-      dat <- nhanes_load_data("EPH", "2007-2008", recode = TRUE, destination = destination, cache = TRUE)
+      dat <- nhanes_load_data("EPH", "2007-2008", recode_data = TRUE, destination = destination, cache = TRUE)
 
       expect_true(file.exists(file.path(destination, "EPH_E_recoded.csv")))
       expect_equal(nrow(dat), 2718)
@@ -230,6 +264,101 @@ test_that("Downloading files from NHANES works", {
       # Clean up
       unlink(file.path(destination, "PHTHTE_G.csv"))
       unlink(file.path(destination, "EPH_E.csv"))
+    })
+
+    test_that("it won't accept factors as inputs", {
+      expect_error(nhanes_load_data(as.factor(c("EPH", "PFC")), "2007-2008"))
+      expect_error(nhanes_load_data(c("EPH", "PFC"), as.factor(c("2007-2008", "2009-2010"))))
+    })
+
+    test_that("it will warn you if you're trying to download duplicate files", {
+      expect_warning(nhanes_load_data(c("EPH", "EPH"), "2007-2008", allow_duplicate_files = TRUE))
+    })
+
+    test_that("it will deduplicate files by default", {
+      dat <- nhanes_load_data(c("EPH", "EPH"), "2007-2008")
+
+      expect_equal(length(dat), 1)
+    })
+
+    test_that("it doesn't need to have a destination specified", {
+      dat <- nhanes_load_data("EPH", "2007-2008", cache = TRUE)
+
+      expect_true(file.exists(file.path(tempdir(), "EPH_E.csv")))
+      expect_more_than(nrow(dat), 0)
+
+      # Clean up
+      unlink(file.path(tempdir(), "EPH_E.csv"))
+    })
+
+    test_that("if destination not specified, checks option", {
+      original <- getOption("RNHANES_destination")
+
+      temp <- tempdir()
+      test_destination <- file.path(temp, "test")
+      dir.create(test_destination)
+
+      options(RNHANES_destination = test_destination)
+
+      dat <- nhanes_load_data("EPH", "2007-2008", cache = TRUE)
+
+      expect_true(file.exists(file.path(test_destination, "EPH_E.csv")))
+
+      # Clean up
+      options(RNHANES_destination = original)
+      unlink(file.path(test_destination, "EPH_E.csv"))
+      unlink(test_destination, recursive = TRUE)
+    })
+
+    test_that("if cache not specified, checks option", {
+      original <- getOption("RNHANES_cache")
+
+      options(RNHANES_cache = FALSE)
+
+      dat <- nhanes_load_data("EPH", "2007-2008", destination = destination)
+
+      expect_true(file.exists(file.path(destination, "EPH_E.XPT")))
+      expect_false(file.exists(file.path(destination, "EPH_E.csv")))
+
+      # Clean up
+      options(RNHANES_cache = original)
+      unlink(file.path(destination, "EPH_E.XPT"))
+    })
+  })
+
+  test_that("nhanes_load_demography_data", {
+    test_that("if destination not specified, checks option", {
+      original <- getOption("RNHANES_destination")
+
+      temp <- tempdir()
+      test_destination <- file.path(temp, "test")
+      dir.create(test_destination)
+
+      options(RNHANES_destination = test_destination)
+
+      dat <- nhanes_load_demography_data("2007-2008", cache = TRUE)
+
+      expect_true(file.exists(file.path(test_destination, "DEMO_E.csv")))
+
+      # Clean up
+      options(RNHANES_destination = original)
+      unlink(file.path(test_destination, "DEMO_E.csv"))
+      unlink(test_destination, recursive = TRUE)
+    })
+
+    test_that("if cache not specified, checks option", {
+      original <- getOption("RNHANES_cache")
+
+      options(RNHANES_cache = FALSE)
+
+      dat <- nhanes_load_demography_data("2007-2008", destination = destination)
+
+      expect_true(file.exists(file.path(destination, "DEMO_E.XPT")))
+      expect_false(file.exists(file.path(destination, "DEMO_E.csv")))
+
+      # Clean up
+      options(RNHANES_cache = original)
+      unlink(file.path(destination, "DEMO_E.XPT"))
     })
   })
 })
