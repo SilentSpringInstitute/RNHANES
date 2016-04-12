@@ -302,7 +302,32 @@ recode_nhanes_data <- function(nhanes_data, nhanes_description) {
       }
     }
   }
+
   return(nhanes_data)
+}
+
+get_cache_file_path <- function(file_name, year, destination, demographics = FALSE, recode = FALSE, recode_data = FALSE, recode_demographics = FALSE) {
+  # Build the file name that the data will be stored to
+  file_name_base <- process_file_name(file_name, year, extension = "")
+
+  if(demographics == TRUE) {
+    file_name_base <- paste0(file_name_base, "_demographics")
+  }
+
+  if(recode == TRUE || (recode_data == TRUE && recode_demographics == TRUE)) {
+    file_name_base <- paste0(file_name_base, "_recoded")
+  }
+  else if(recode_data == TRUE) {
+    file_name_base <- paste0(file_name_base, "_recoded_data")
+  }
+  else if(recode_demographics == TRUE) {
+    file_name_base <- paste0(file_name_base, "_recoded_demographics")
+  }
+
+  cache_file_name <- paste0(file_name_base, ".csv")
+  cache_file_path <- file.path(destination, cache_file_name)
+
+  return(cache_file_path)
 }
 
 #' Download NHANES data files.
@@ -356,6 +381,9 @@ nhanes_load_data <- function(file_name, year, destination = tempdir(), demograph
   if(missing(cache)) {
     cache <- getOption("RNHANES_cache", cache)
   }
+
+
+  # Handle multiple files
   if(length(file_name) > 1 || length(year) > 1) {
     if(is.factor(file_name)) {
       stop("file_name is a factor -- convert it to a character vector before using nhanes_load_data.")
@@ -390,45 +418,81 @@ nhanes_load_data <- function(file_name, year, destination = tempdir(), demograph
     return(res_list)
   }
 
-  full_path <- download_nhanes_file(file_name, year, destination, cache = cache)
-  dat <- read.xport(full_path)
 
-  dat$file_name = file_name
-  dat$cycle = year
-  dat$begin_year = as.numeric(substr(year, 1, 4))
-  dat$end_year = as.numeric(substr(year, 6, 9))
+  cache_file_path <- get_cache_file_path(file_name, year, destination, demographics, recode, recode_data, recode_demographics)
 
-  if(recode == TRUE || recode_data == TRUE) {
-    nhanes_description <- load_nhanes_description(file_name, year)
-    dat <- recode_nhanes_data(dat, nhanes_description)
+  # First, check to see if there is an exact cache match
+  if(cache == TRUE && file.exists(cache_file_path)) {
+    dat <- read.csv(cache_file_path, stringsAsFactors = FALSE)
   }
+  else {
+    # Even if there wasn't an exact cache match, there may be a match
+    # for the data file without demographics or recoding.
+    base_data_cache_path <- get_cache_file_path(file_name, year, destination)
+    if(cache == TRUE && file.exists(base_data_cache_path)) {
+      dat <- read.csv(base_data_cache_path, stringsAsFactors = FALSE)
+    } else {
 
-  if(demographics == TRUE) {
-    # Make sure we can merge in the data (this isn't possible when you have pooled samples)
+      # Download the base data file from NHANES
+      full_path <- download_nhanes_file(file_name, year, destination, cache = cache)
+      dat <- read.xport(full_path)
 
-    if("SEQN" %in% names(dat) == FALSE) {
-      warning(paste0("Demographics data can't be merged with ", file_name, " because it doesn't have a SEQN column. Maybe it has pooled samples?"))
-    }
+      dat$file_name = file_name
+      dat$cycle = year
+      dat$begin_year = as.numeric(substr(year, 1, 4))
+      dat$end_year = as.numeric(substr(year, 6, 9))
 
-    demography_data <- nhanes_load_demography_data(year, destination = destination, cache = cache)
-
-    if(recode == TRUE || recode_demographics == TRUE) {
-      demographics_description_csv_name <- file.path(destination, gsub(".XPT", "_recoded.csv", demography_filename(year)))
-
-      if(cache == TRUE && file.exists(demographics_description_csv_name)) {
-        demography_data <- read.csv(demographics_description_csv_name, stringsAsFactors = FALSE)
-      } else {
-        demographics_description_file_name <- gsub(".XPT", ".htm", demography_filename(year))
-        demographics_description <- load_nhanes_description(demographics_description_file_name, year, destination, cache)
-        demography_data <- recode_nhanes_data(demography_data, demographics_description)
-
-        if(cache == TRUE) {
-          write.csv(demography_data, demographics_description_csv_name, row.names = FALSE)
-        }
+      # If caching is enabled, save the data as a CSV (smaller file size)
+      if(cache == TRUE) {
+        write.csv(dat, base_data_cache_path, row.names = TRUE)
+        unlink(full_path)
       }
     }
 
-    dat <- merge.data.with.demographics(demography_data, dat)
+    # If we are recoding the data, we need to download the description file
+    if(recode == TRUE || recode_data == TRUE) {
+      nhanes_description <- load_nhanes_description(file_name, year, destination = destination, cache = cache)
+      dat <- recode_nhanes_data(dat, nhanes_description)
+    }
+
+    if(demographics == TRUE) {
+
+      # Make sure we can merge in the data (this isn't possible when you have pooled samples)
+      if("SEQN" %in% names(dat) == FALSE) {
+        warning(paste0("Demographics data can't be merged with ", file_name, " because it doesn't have a SEQN column. Maybe it has pooled samples?"))
+      }
+
+      # Caching is built in to the demography_data function, so we don't have to worry about it
+      demography_data <- nhanes_load_demography_data(year, destination = destination, cache = cache)
+
+      # Handle recoding data
+      if(recode == TRUE || recode_demographics == TRUE) {
+
+        # Check to see if there is a cached copy of the recoded demographics
+        demography_file <- demography_filename(year)
+        demographics_description_csv_name <- file.path(destination, paste0(substr(demography_file, 1, nchar(demography_file) - 4), "_recoded.csv"))
+
+        if(cache == TRUE && file.exists(demographics_description_csv_name)) {
+          demography_data <- read.csv(demographics_description_csv_name, stringsAsFactors = FALSE)
+        } else {
+          # If not, we have to download the description html and parse it
+          demographics_description_file_name <- gsub(".XPT", ".htm", demography_filename(year))
+          demographics_description <- load_nhanes_description(demographics_description_file_name, year, destination, cache)
+          demography_data <- recode_nhanes_data(demography_data, demographics_description)
+
+          if(cache == TRUE) {
+            write.csv(demography_data, demographics_description_csv_name, row.names = FALSE)
+          }
+        }
+      }
+
+      dat <- merge.data.with.demographics(demography_data, dat)
+    }
+
+    # If caching enabled, cache the final dataset
+    if(cache == TRUE) {
+      write.csv(dat, cache_file_path, row.names = FALSE)
+    }
   }
 
   return(dat)
@@ -450,14 +514,30 @@ nhanes_load_data <- function(file_name, year, destination = tempdir(), demograph
 nhanes_load_demography_data <- function(year, destination = tempdir(), cache = FALSE) {
   validate_year(year)
 
-  full_path <- download_nhanes_file(demography_filename(year), year, destination, cache = cache)
-  dat <- read.xport(full_path)
   if(missing(destination)) {
     destination <- getOption("RNHANES_destination", destination)
   }
 
   if(missing(cache)) {
     cache <- getOption("RNHANES_cache", cache)
+  }
+
+  file_name <- process_file_name(demography_filename(year), year)
+  full_path <- file.path(destination, file_name)
+  csv_path <- paste0(substr(full_path, 1, nchar(full_path) - 3), "csv")
+
+  if(cache == TRUE && file.exists(csv_path)) {
+    dat <- read.csv(csv_path, stringsAsFactors = FALSE)
+  }
+  else {
+    full_path <- download_nhanes_file(demography_filename(year), year, destination, cache = cache)
+    dat <- read.xport(full_path)
+
+    if(cache == TRUE) {
+      message(paste0("Caching CSV to ", csv_path))
+      write.csv(dat, csv_path, row.names = FALSE)
+      unlink(full_path)
+    }
   }
 
   dat$cycle = year
