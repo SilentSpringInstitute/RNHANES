@@ -23,11 +23,7 @@ nhanes_analyze <- function(analysis_fun, nhanes_data, column, comment_column = "
 
   # If `nhanes_data` is a list, the user is providing data from multiple cycles or multiple files.
   # `column` should be a data frame specifying the columns to use in each cycle.
-  if(is.list(nhanes_data) && is.data.frame(nhanes_data) == FALSE) {
-    if(is.data.frame(column) == FALSE) {
-      stop("Second argument to nhanes_quantile should be a data frame")
-    }
-
+  if(is.list(nhanes_data) && is.data.frame(nhanes_data) == FALSE && is.data.frame(column)) {
     dat <- lapply(nhanes_data, function(df) {
       rows <- subset(column, cycle == first(df$cycle))
 
