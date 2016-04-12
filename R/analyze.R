@@ -83,7 +83,7 @@ nhanes_analyze <- function(analysis_fun, nhanes_data, column, comment_column = "
     na_count <- sum(is.na(nhanes_data[, weights_column]))
 
     if(na_count > 0) {
-      warning("Warning: NAs in weights column. These samples will be removed.")
+      message("Note: There are NAs in the weights column. These rows will be removed.")
 
       nhanes_data <- nhanes_data[!is.na(nhanes_data[, weights_column]), ]
     }
