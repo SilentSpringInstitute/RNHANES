@@ -1,0 +1,222 @@
+---
+title: "Introduction to RNHANES"
+author: "Herb Susmann"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to RNHANES}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include=FALSE}
+
+options(NHANES_destination = "./data/")
+options(NHANES_cache = TRUE)
+
+```
+
+RNHANES provides an easy way to download and analyze data from [NHANES](http://www.cdc.gov/nchs/nhanes.htm), the National Health and Nutrition Examination Survey conducted by the Centers for Disease Control.
+
+The included analysis tools focus on the laboratory data, but the package can still be used to search for and download other types of data in NHANES.
+
+```{r}
+library(RNHANES)
+```
+
+## NHANES
+NHANES is a national survey that covers demographics, health, nutrition, and environmental chemical exposures. NHANES as a modern program started in 1999, with the survey being administered in two-year cycles.
+
+The released data is split into demographic, dietary, examination, and laboratory data for each survey cycle. RNHANES is designed primarily to work with demographic and laboratory data.
+
+There is one demographic data file for each survey cycle. There is a collection of laboratory data for each cycle, split into files related to different analyte groups.
+
+## Searching
+
+First, we need to figure out what data we want to analyze and where we can find it in NHANES.
+
+To find the data you're interested in, you can search either by *file* or by *variable*. First, use RNHANES to download a list of NHANES files and the comprehensive variable list. This data isn't bundled with the package because it is updated to fix errors or add new data. Downloading the data lets you get the most recent version.
+
+```{r, results='hide', message=FALSE, cache=TRUE}
+
+files <- nhanes_data_files()
+variables <- nhanes_variables()
+
+```
+
+Use `nhanes_search` to search within file and variable lists. You can restrict the searches by specifying conditions on any of the columns in the list.
+
+```{r, eval=FALSE}
+nhanes_search(files, "environmental phenols")
+nhanes_search(files, "pesticides", component == "laboratory", cycle == "2003-2004")
+nhanes_search(files, "", cycle == "2003-2004")
+
+nhanes_search(variables, "triclosan")
+nhanes_search(variables, "DDT", data_file_name == "LAB28POC")
+nhanes_search(variables, "", data_file_name == "EPH_E")
+```
+
+
+## Downloading
+
+Once you've identified the data you need for your analysis, the next step is to download the appropriate data files from NHANES through the `nhanes_load_data` function. This function has a lot of options, so let's start simple and go through them.
+
+
+### Downloading one file
+
+The most basic way to download data is to specify the name and cycle year of one data file.
+
+
+```{r, results='hide', eval=FALSE, cache=TRUE}
+nhanes_load_data("EPH_E", "2007-2008")
+```
+
+You can leave off the trailing suffix (e.g. the "_E" in "EPH_E") on the file name and it will be filled in for you.
+
+```{r, results='hide', eval=FALSE}
+nhanes_load_data("EPH", "2007-2008")
+```
+
+Each time you call `nhanes_load_data`, the data will be downloaded, even if you've already downloaded it before. To save time, you can download the files to a folder so that RNHANES doesn't have to redownload them each time.
+
+```{r, eval=FALSE}
+nhanes_load_data("EPH", "2007-2008", cache = "./nhanes_data")
+```
+
+So far, we've been downloading the data without its accompanying demographic information. This information is available in a separate file for each cycle. RNHANES can automatically download the correct demography file and merge it with your data.
+
+```{r, results='hide', eval=FALSE}
+nhanes_load_data("EPH", "2007-2008", cache = "./nhanes_data", demographics = TRUE)
+```
+
+Some ordinal fields in NHANES are coded as numeric factors. RNHANES can decode these fields, replacing the factors with their textual description.
+
+```{r, eval=FALSE}
+nhanes_load_data("EPH", "2007-2008", cache = "./nhanes_data", demographics = TRUE, recode = TRUE)
+```
+
+### Downloading multiple files
+
+You can also download multiple files from NHANES at once to simplify your code. You can do this in several ways; first, by specifying a vector of file names and cycle years. The result will be a list containing a data frame for each requested file.
+
+```{r, eval=FALSE}
+nhanes_load_data(c("PHTHTE", "PFC"), c("2007-2008", "2007-2008"))
+```
+
+You can easily download all the files that were found in a search.
+
+```{r, eval=FALSE}
+
+# Search for NHANES files related to environmental phenols and download all of them
+results <- nhanes_search(files, "environmental phenols")
+nhanes_load_data(results$data_file_name, results$cycle)
+
+# Search for triclosan NHANES variables and download all related files
+results <- nhanes_search(variables, "triclosan")
+nhanes_load_data(results$data_file_name, results$cycle)
+```
+
+## Analyzing
+
+RNHANES includes functions to perform common analyses on NHANES data.
+
+All of the following analyses will be done on the following data.
+
+```{r, results='hide', message=FALSE, cache=TRUE}
+# Example of data loaded from one file/cycle year
+phenols <- nhanes_load_data("EPH", "2007-2008", demographics = TRUE)
+
+# Example of data loaded from multiple files/cycle years
+results <- nhanes_search(variables, "triclosan")
+triclosan <- nhanes_load_data(results$data_file_name, results$cycle, demographics = TRUE)
+
+```
+
+### Quantiles
+
+RNHANES uses the `survey` package to compute quantiles, taking into account survey weights. The `nhanes_quantile` abstracts this added complexity away from the user. 
+
+You need to specify the column name, comment column name, and weights column name for `nhanes_quantile` to work. The function returns a data frame that contains the computed quantiles.
+
+```{r, cache=TRUE}
+nhanes_quantile(phenols, "URXBPH", "URDBPHLC", "WTSB2YR", c(0.5, 0.95, 0.99))
+```
+
+You can compute quantiles for multiple columns at once. The simplest way is to pass vectors for the column, comment, and weight name inputs.
+
+```{r, cache=TRUE}
+nhanes_quantile(phenols,
+                c("URXBPH", "URXTRS"),
+                c("URDBPHLC", "URDTRSLC"),
+                c("WTSB2YR", "WTSB2YR"),
+                c(0.5, 0.95, 0.99))
+```
+
+You can also pass in a data frame that specifies the columns to compute quantiles for.
+
+```{r, cache=TRUE}
+
+inputs <- as.data.frame(matrix(c(
+  # COLUMN    COMMENT     WEIGHTS
+   "URXBPH", "URDBPHLC", "WTSB2YR",
+   "URXTRS", "URDTRSLC", "WTSB2YR"
+), ncol = 3, byrow = TRUE), stringsAsFactors = FALSE)
+names(inputs) <- c("column", "comment_column", "weights_column")
+
+nhanes_quantile(phenols, inputs, quantiles = c(0.5, 0.95, 0.99))
+
+```
+
+This looks a little awkward with only two analytes, but becomes more useful if you have a lot of analytes you want to analyze.
+
+`nhanes_quantile` transparently handles data that was loaded from multiple files and cycle years. The variable `triclosan` is a list of data frames; let's compute quantiles for triclosan in each one.
+
+In this case, you have to supply a data frame that specifies the columns to look at for each file name and cycle year.
+
+This is a good example because for the 2003-2004 cycle, the triclosan column appears to be misnamed: it is "URDTRS", when the naming convention in the rest of the file is to have column names start with "URX".
+
+```{r, eval=FALSE, cache=TRUE}
+inputs <- as.data.frame(matrix(c(
+  # CYCLE        COLUMN    COMMENT     WEIGHTS
+   "2003-2004", "URDTRS", "URDTRSLC", "WTSC2YR",
+   "2005-2006", "URXTRS", "URDTRSLC", "WTSB2YR",
+   "2007-2008", "URXTRS", "URDTRSLC", "WTSB2YR",
+   "2009-2010", "URXTRS", "URDTRSLC", "WTSB2YR",
+   "2011-2012", "URXTRS", "URDTRSLC", "WTSA2YR"
+), ncol = 4, byrow = TRUE), stringsAsFactors = FALSE)
+names(inputs) <- c("cycle", "column", "comment_column", "weights_column")
+
+nhanes_quantile(triclosan, inputs, quantiles = c(0.5, 0.95, 0.99))
+```
+
+### Detection Frequencies
+
+Computing weighted detection frequencies works similarly to computing quantiles.
+
+```{r, cache=TRUE}
+nhanes_detection_frequency(phenols, "URXBPH", "URDBPHLC", "WTSB2YR")
+```
+
+You can also pass in vectors of column names to analyze multiple analytes.
+
+```{r}
+nhanes_detection_frequency(phenols, c("URXBPH", "URXTRS"),
+                c("URDBPHLC", "URDTRSLC"),
+                c("WTSB2YR", "WTSB2YR"))
+```
+
+If you want to compute detection frequencies for columns from different files or cycles, you have to pass in a data frame.
+
+```{r}
+inputs <- as.data.frame(matrix(c(
+  # CYCLE        COLUMN    COMMENT     WEIGHTS
+   "2003-2004", "URDTRS", "URDTRSLC", "WTSC2YR",
+   "2005-2006", "URXTRS", "URDTRSLC", "WTSB2YR",
+   "2007-2008", "URXTRS", "URDTRSLC", "WTSB2YR",
+   "2009-2010", "URXTRS", "URDTRSLC", "WTSB2YR",
+   "2011-2012", "URXTRS", "URDTRSLC", "WTSA2YR"
+), ncol = 4, byrow = TRUE), stringsAsFactors = FALSE)
+names(inputs) <- c("cycle", "column", "comment_column", "weights_column")
+
+nhanes_detection_frequency(triclosan, inputs)
+```
