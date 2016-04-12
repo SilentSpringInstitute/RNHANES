@@ -200,6 +200,16 @@ merge.data.with.demographics <- function(nhanes.demo, nhanes.lab) {
   return(nhanes)
 }
 
+#' Download an NHANES description file
+#'
+#' @param file_name file name
+#' @param year NHANES cycle
+#' @param destination directory to download the file into
+#' @param cache whether to cache the file
+#'
+#'
+#' @importFrom dplyr rbind_all
+#' @return data frame containing the file description
 load_nhanes_description <- function(file_name, year, destination = tempdir(), cache = FALSE) {
   validate_year(year)
 
@@ -209,13 +219,15 @@ load_nhanes_description <- function(file_name, year, destination = tempdir(), ca
 
   html <- read_html(full_path)
 
-  description <- list()
-
   # Loop through each variable
   sections <- html %>%
     html_nodes('.pagebreak')
 
-  for(section in sections) {
+  description <- data.frame(var_name = numeric(0),
+                            code = numeric(0),
+                            value_description = numeric(0))
+
+  description <- lapply(sections, function(section) {
     var_name <- section %>%
       html_node("h3") %>%
       html_attr('id')
@@ -232,13 +244,17 @@ load_nhanes_description <- function(file_name, year, destination = tempdir(), ca
         html_node("table") %>%
         html_table()
 
-      description[[var_name]] <- list(name = var_name, values = values)
 
+      values$var_name = var_name
+      return(values)
     }
-    else {
-      description[[var_name]] <- list(name = var_name)
-    }
+  })
 
+  description <- do.call(rbind, description)
+
+  if(cache == TRUE) {
+    write.csv(description, paste0(substr(full_path, 1, nchar(full_path) - 4), "_description.csv"), row.names = FALSE)
+    unlink(full_path)
   }
 
   return(description)
@@ -248,7 +264,7 @@ recode_nhanes_data <- function(nhanes_data, nhanes_description) {
   vars <- colnames(nhanes_data)
 
   # Figure out which columns in the nhanes data have a match in the description
-  cols <- which(names(nhanes_data) %in% names(nhanes_description))
+  cols <- which(names(nhanes_data) %in% nhanes_description$var_name)
 
   # Skip the "SEQN" variable
   cols <- cols[names(nhanes_data)[cols] != "SEQN"]
@@ -263,11 +279,9 @@ recode_nhanes_data <- function(nhanes_data, nhanes_description) {
         next
       }
 
-      values_table <- nhanes_description[[var]]$values
+      replacement_value <- nhanes_description[nhanes_description$var_name == var & nhanes_description[,"Code or Value"] == val, "Value Description"]
 
-      replacement_value <- values_table[values_table[,"Code or Value"] == val, "Value Description"]
-
-      if(length(replacement_value) > 0) {
+      if(length(replacement_value) == 1) {
         nhanes_data[row, col] <- replacement_value
       }
     }
