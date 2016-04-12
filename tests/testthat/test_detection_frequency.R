@@ -3,6 +3,7 @@ test_that("Passes spot check on raw data", {
   freqs <- nhanes_detection_frequency(dat, c("LBXPFUA", "LBXPFDO"), c("LBDPFUAL", "LBDPFDOL"))
 
   expect_equal(freqs$value, c(0.5926, 0.0908), tolerance = 1e-3)
+
 })
 
 test_that("Passes spot check on recoded data", {

@@ -1,7 +1,6 @@
-nhanes_data <- nhanes_load_data("PFC", "2011-2012", demographics = TRUE)
+nhanes_data <- nhanes_load_data("PFC", "2011-2012", demographics = TRUE, cache = TRUE)
 
 test_that("Passes spot check", {
-
   quantiles <- nhanes_quantile(nhanes_data, column = "LBXPFUA", comment_column = "LBDPFUAL", weights_column = "WTSA2YR", quantiles = c(0, 0.5, 0.75, 0.99, 1))
 
   expect_equal(quantiles$below_lod, c(TRUE, FALSE, FALSE, FALSE, FALSE))
