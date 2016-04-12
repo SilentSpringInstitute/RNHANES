@@ -21,7 +21,7 @@
 #' }
 #'
 #' @export
-nhanes_quantile <- function(nhanes_data, column, comment_column, weights_column = "", quantiles = seq(0, 1, 0.25)) {
+nhanes_quantile <- function(nhanes_data, column, comment_column = "", weights_column = "", quantiles = seq(0, 1, 0.25)) {
   # Check to see if any of the computed quantiles are <LOD
   callback <- function(dat, df) {
     # Figure out the LOD (if it exists) by selecting values for which the comment column indicates a nondetect
