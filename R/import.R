@@ -61,7 +61,7 @@ validate_year <- function(year, throw_error = TRUE) {
       return()
   }
   else {
-    valid <- switch(year,
+    valid <- switch(as.character(year),
                     '1999-2000' = TRUE,
                     '2001-2002' = TRUE,
                     '2003-2004' = TRUE,
