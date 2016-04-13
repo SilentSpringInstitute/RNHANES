@@ -315,7 +315,7 @@ test_that("Downloading files from NHANES works", {
 
       options(RNHANES_cache = FALSE)
 
-      dat <- nhanes_load_data("EPH", "2007-2008", destination = destination)
+      dat <- nhanes_load_data("EPH", "2007-2008", destination = tempdir())
 
       expect_true(file.exists(file.path(destination, "EPH_E.XPT")))
       expect_false(file.exists(file.path(destination, "EPH_E.csv")))
@@ -349,9 +349,11 @@ test_that("Downloading files from NHANES works", {
     test_that("if cache not specified, checks option", {
       original <- getOption("RNHANES_cache")
 
+      destination <- tempdir()
+
       options(RNHANES_cache = FALSE)
 
-      dat <- nhanes_load_demography_data("2007-2008", destination = tempdir())
+      dat <- nhanes_load_demography_data("2007-2008", destination = destination)
 
       expect_true(file.exists(file.path(destination, "DEMO_E.XPT")))
       expect_false(file.exists(file.path(destination, "DEMO_E.csv")))
