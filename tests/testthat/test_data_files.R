@@ -55,8 +55,8 @@ test_that("Download helper functions work", {
     })
 
     test_that("it throws a warning if there is a wrong suffix, but still adds extension", {
-      expect_warning(process_file_name("EPH_A", "2007-2008"), "The file name EPH_A is probably incorrect")
-      expect_equal(process_file_name("EPH_A", "2007-2008"), "EPH_A.XPT")
+      expect_warning(val <- process_file_name("EPH_A", "2007-2008"), "The file name EPH_A is probably incorrect")
+      expect_equal(val, "EPH_A.XPT")
     })
 
     test_that("it adds a suffix if the file name ends with an underscore", {
@@ -179,7 +179,7 @@ test_that("Downloading files from NHANES works", {
     test_that("it can recode just data", {
       dat <- nhanes_load_data("EPH", "2007-2008", recode_data = TRUE, destination = destination, cache = TRUE)
 
-      expect_true(file.exists(file.path(destination, "EPH_E_recoded.csv")))
+      expect_true(file.exists(file.path(destination, "EPH_E_recoded_data.csv")))
       expect_equal(nrow(dat), 2718)
       expect_equivalent(names(dat), c("SEQN", "WTSB2YR", "URXUCR", "URX4TO", "URD4TOLC", "URXBP3", "URDBP3LC", "URXBPH", "URDBPHLC", "URXTRS",
                                       "URDTRSLC", "URXBUP", "URDBUPLC", "URXEPB", "URDEPBLC", "URXMPB", "URDMPBLC", "URXPPB", "URDPPBLC",
@@ -188,7 +188,7 @@ test_that("Downloading files from NHANES works", {
       expect_equivalent(unique(dat$URDPPBLC)[c(1, 3)], c("At or above the detection limit", "Below lower detection limit"))
 
       # Clean up
-      unlink(file.path(destination, "EPH_E_recoded.csv"))
+      unlink(file.path(destination, "EPH_E_recoded_data.csv"))
       unlink(file.path(destination, "EPH_E.csv"))
     })
 

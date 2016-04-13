@@ -20,6 +20,9 @@ test_that("Downloading variable list and data file list works", {
       expect_true(file.exists(file.path(destination, "nhanes_data_files.csv")))
       expect_more_than(nrow(files), 0)
       expect_equivalent(unique(files$component), c("laboratory"))
+
+      # Clean up
+      unlink(file.path(destination, "nhanes_data_files.csv"))
     })
   })
 
