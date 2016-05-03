@@ -86,7 +86,6 @@ test_that("Downloading files from NHANES works", {
 
   test_that("nhanes_variables", {
     test_that("it downloads the file", {
-      skip_on_cran()
 
       destination = tempfile()
 
@@ -101,8 +100,6 @@ test_that("Downloading files from NHANES works", {
   # Test of nhanes_data_files
   test_that("nhanes_data_files", {
     test_that("it downloads the files", {
-      skip_on_cran()
-
       destination = tempfile()
 
       dat <- nhanes_data_files(destination = destination)
@@ -112,16 +109,12 @@ test_that("Downloading files from NHANES works", {
     })
 
     test_that("it can download only one component", {
-      skip_on_cran()
-
       dat <- nhanes_data_files(components = "laboratory")
 
       expect_that(unique(dat$component), equals(c("laboratory")))
     })
 
     test_that("it checks the cached file has the correct components", {
-      skip_on_cran()
-
       temp <- tempfile()
 
       nhanes_data_files(components = "laboratory", destination = temp)
