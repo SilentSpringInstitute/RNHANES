@@ -5,16 +5,14 @@
 #' @param column column name of the variable to compute quantiles for
 #' @param comment_column comment column name of the variable
 #' @param weights_column name of the weights column
+#' @param filter logical expression used to subset the data
 #'
 #' @return a data frame
 #'
 #' @import survey
 #' @importFrom dplyr first
 #'
-#'
-#' @export
-
-nhanes_analyze <- function(analysis_fun, nhanes_data, column, comment_column = "", weights_column = "") {
+nhanes_analyze <- function(analysis_fun, nhanes_data, column, comment_column = "", weights_column = "", filter = NULL) {
   # Workaround
   # without this, R CMD CHECK will complain about file_name being used in the subset call because it
   # looks like a global variable
@@ -36,6 +34,7 @@ nhanes_analyze <- function(analysis_fun, nhanes_data, column, comment_column = "
 
         args$weights_column = if("weights_column" %in% names(column)) rows$weights_column else ""
         args$comment_column = if("comment_column" %in% names(column)) rows$comment_column else ""
+        args$subset = subset
 
         return(do.call(nhanes_analyze, args))
       }
@@ -53,7 +52,8 @@ nhanes_analyze <- function(analysis_fun, nhanes_data, column, comment_column = "
                            nhanes_data,
                            column = row['column'],
                            weights_column = row['weights_column'],
-                           comment_column = row['comment_column']))
+                           comment_column = row['comment_column'],
+                           subset = subset))
     })
 
     dat <- Reduce(rbind, dat)
@@ -63,7 +63,7 @@ nhanes_analyze <- function(analysis_fun, nhanes_data, column, comment_column = "
   } else {
     # Make sure demographics data is included
     if("SDMVPSU" %in% names(nhanes_data) == FALSE || "SDMVSTRA" %in% names(nhanes_data) == FALSE) {
-      stop("nhanes_data doesn't include demographics data, which is needed to compute quantiles. Use load_nhanes_data(... demographics = TRUE) to download data with demographics.")
+      stop("nhanes_data doesn't include demographics data, which is needed for computing summary statistics using the survey weights. Use load_nhanes_data(... demographics = TRUE) to download data with demographics.")
     }
 
     if(weights_column == "") {
@@ -98,12 +98,17 @@ nhanes_analyze <- function(analysis_fun, nhanes_data, column, comment_column = "
       data = nhanes_data
     )
 
+    # if subset is defined, subset the survey object
+    if(!is.null(filter)) {
+      filter <- deparse(filter)
+      output = eval(parse(text=filter), envir = des$variables)
+      des <- des[output,]
+    }
+
     # Decode comment column if necessary
     nhanes_data[, comment_column] = ifelse(nhanes_data[, comment_column] == "Below lower detection limit", 1, nhanes_data[,comment_column])
     nhanes_data[, comment_column] = ifelse(nhanes_data[, comment_column] == "At or above the detection limit", 0, nhanes_data[,comment_column])
     nhanes_data[, comment_column] = as.numeric(nhanes_data[, comment_column])
-
-    args <- list(nhanes_data, column, comment_column, weights_column, des)
 
     ret <- analysis_fun(nhanes_data, column, comment_column, weights_column, des)
 

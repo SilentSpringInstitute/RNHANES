@@ -4,6 +4,8 @@
 #' @param column column names of the variables to compute detection frequencies for
 #' @param comment_column comment column names of the variables to compute detection frequencies for
 #' @param weights_column sample weight column
+#' @param filter logical expression used to subset the data
+#'
 #' @return named vector of detection frequencies
 #'
 #'
@@ -17,7 +19,10 @@
 #' }
 #'
 #' @export
-nhanes_detection_frequency <- function(nhanes_data, column, comment_column, weights_column = "") {
+nhanes_detection_frequency <- function(nhanes_data, column, comment_column, weights_column = "", filter = NULL) {
+  if(hasArg(filter) && substitute(filter) != "filter") {
+    filter <- substitute(filter)
+  }
 
   # Check to see if we need to decode the comment column
   df <- nhanes_survey(svymean,
@@ -26,6 +31,7 @@ nhanes_detection_frequency <- function(nhanes_data, column, comment_column, weig
                       comment_column = comment_column,
                       weights_column = weights_column,
                       analyze = "comments",
+                      filter = filter,
                       na.rm = TRUE)
 
   df$value = 1 - df$value

@@ -5,6 +5,7 @@
 #' @param comment_column comment column name of the variable for checking if computed quantiles are below the LOD
 #' @param weights_column name of the weights column
 #' @param quantiles numeric or vector numeric of quantiles to compute
+#' @param filter logical expression used to subset the data
 #'
 #' @return a data frame
 #'
@@ -21,7 +22,11 @@
 #' }
 #'
 #' @export
-nhanes_quantile <- function(nhanes_data, column, comment_column = "", weights_column = "", quantiles = seq(0, 1, 0.25)) {
+nhanes_quantile <- function(nhanes_data, column, comment_column = "", weights_column = "", quantiles = seq(0, 1, 0.25), filter = NULL) {
+  if(hasArg(filter) && substitute(filter) != "filter") {
+    filter <- substitute(filter)
+  }
+
   # Check to see if any of the computed quantiles are <LOD
   callback <- function(dat, df) {
     # Figure out the LOD (if it exists) by selecting values for which the comment column indicates a nondetect
@@ -37,6 +42,7 @@ nhanes_quantile <- function(nhanes_data, column, comment_column = "", weights_co
                 comment_column,
                 weights_column,
                 callback = callback,
+                filter = filter,
                 quantiles = quantiles,
                 ci = F,
                 na.rm = T,

@@ -5,6 +5,7 @@
 #' @param column column name of the variable to compute quantiles for
 #' @param comment_column comment column name of the variable
 #' @param weights_column name of the weights column
+#' @param filter logical expression used to subset the data
 #' @param analyze one of "values" or "comments", whether to apply the survey function to the value or comment column.
 #' @param callback optional function to execute on each row of the dataframe
 #' @param ... other arguments to pass to the survey function
@@ -12,16 +13,39 @@
 #' @return a data frame
 #'
 #' @importFrom dplyr first
+#' @importFrom survey make.formula
 #'
+#' @details
+#' This function provides a generic way to apply any function from the survey package to NHANES data.
+#' RNHANES provides specific wrappers for computing quantiles (nhanes_quantile) and detection frequencies (nhanes_detection_frequency),
+#' and this function provides a general way to use any survey function.
+#'
+#' @examples
+#' \dontrun{
+#' library(survey)
+#'
+#' nhanes_data <- nhanes_load_data("EPH", "2011-2012", demographics = TRUE)
+#'
+#' # Compute the mean of triclosan using the svymean function
+#' nhanes_survey(svymean, nhanes_data, "URXTRS", "URDTRSLC", na.rm = TRUE)
+#'
+#' # Compute the variance using svyvar
+#' nhanes_survey(svyvar, nhanes_data, "URXTRS", "URDTRSLC", na.rm = TRUE)
+#'
+#' }
 #'
 #' @export
 
-nhanes_survey <- function(survey_fun, nhanes_data, column, comment_column = "", weights_column = "", analyze = "values", callback = NULL, ...) {
+nhanes_survey <- function(survey_fun, nhanes_data, column, comment_column = "", weights_column = "", filter = NULL, analyze = "values", callback = NULL, ...) {
+  if(hasArg(filter) && substitute(filter) != "filter") {
+    filter <- substitute(filter)
+  }
+
   fun <- function(nhanes_data, column, comment_column, weights_column, des) {
     if(analyze == "values") {
-      formula = ~nhanes_data[, column]
+      formula = make.formula(column)
     } else if(analyze == "comments") {
-      formula = ~nhanes_data[, comment_column]
+      formula = make.formula(comment_column)
     }
 
     res <- as.vector(survey_fun(
@@ -49,5 +73,6 @@ nhanes_survey <- function(survey_fun, nhanes_data, column, comment_column = "", 
     return(ret)
   }
 
-  nhanes_analyze(fun, nhanes_data, column, comment_column, weights_column)
+
+  nhanes_analyze(fun, nhanes_data, column, comment_column, weights_column, filter = filter)
 }
