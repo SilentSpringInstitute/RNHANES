@@ -2,7 +2,7 @@
 #'
 #' @return vector of NHANES cycle years
 #'
-#' @export
+#'
 nhanes_cycle_years <- function() {
   return(c("1999-2000",
            "2001-2002",
