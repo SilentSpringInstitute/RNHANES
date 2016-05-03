@@ -1,3 +1,8 @@
+#' Returns the NHANES file suffix for the given year
+#'
+#' @param year NHANES cycle year (e.g. "2001-2002")
+#'
+#' @return suffix character (e.g. "B" or "C")
 file_suffix <- function(year) {
   if(length(year) > 1) {
     Map(file_suffix, year) %>%
@@ -25,7 +30,7 @@ file_suffix <- function(year) {
 #'
 #' @param year NHANES cycle, e.g. "2001-2002"
 #'
-#' @return character e.g. "B"
+#' @return suffix character e.g. "B"
 demography_filename <- function(year) {
   validate_year(year)
 
@@ -360,12 +365,16 @@ get_cache_file_path <- function(file_name, year, destination, demographics = FAL
 #' If you load one file, the result will be a data frame.
 #'
 #' @examples
-#' nhanes_load_data("UHG", "2011-2012")
-#'
-#'# Download to /tmp directory and overwrite the file if it already exists
 #'
 #' \dontrun{
-#' nhanes_load_data("HDL_E", "2007-2008", destination = "/tmp", cache = FALSE) #'
+#'
+#' nhanes_load_data("UHG", "2011-2012")
+#'
+#' # Load data with demographics
+#' nhanes_load_data("UHG", "2011-2012", demographics = TRUE)
+#'
+#' # Download to /tmp directory and overwrite the file if it already exists
+#' nhanes_load_data("HDL_E", "2007-2008", destination = "/tmp", cache = FALSE)
 #' }
 #'
 #' @importFrom foreign read.xport
