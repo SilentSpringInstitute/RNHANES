@@ -173,8 +173,6 @@ nhanes_variables <- function(destination = tempfile(), cache = TRUE) {
 
     dat$component = tolower(dat$component)
 
-    #dat$variable_description <- gsub("\u00E2\u€™", "'", dat$variable_description)
-
     if(cache == TRUE) {
       write.csv(dat, file = destination_csv, row.names = FALSE)
     }
