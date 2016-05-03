@@ -111,6 +111,18 @@ nhanes_data_files <- function(components = "all", destination = tempfile(), cach
 #'
 #' @import rvest
 #' @importFrom xml2 read_html
+#'
+#' @examples
+#' \dontrun{
+#'
+#' # Download the comprehensive NHANES variable list
+#' variables <- nhanes_variables()
+#'
+#' # Download the variable list and cache it in a specific file
+#' variables <- nhanes_variables(destination = "./nhanes_data")
+#'
+#' }
+#'
 #' @export
 nhanes_variables <- function(destination = tempfile(), cache = TRUE) {
   if(!dir.exists(dirname(destination))) {
