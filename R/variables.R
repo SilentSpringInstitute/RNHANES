@@ -41,6 +41,18 @@ parse_data_files_page <- function(type, destination = tempfile()) {
 #'
 #' @import rvest
 #' @importFrom xml2 read_html
+#'
+#' @examples
+#' \dontrun{
+#'
+#' # Download a data frame of all the NHANES data files
+#' files <- nhanes_data_files()
+#'
+#' # Download a data frame of just the laboratory files
+#' lab_files <- nhanes_data_files(component = "laboratory")
+#'
+#' }
+#'
 #' @export
 nhanes_data_files <- function(components = "all", destination = tempfile(), cache = TRUE) {
 
