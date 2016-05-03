@@ -13,5 +13,6 @@ Imports: foreign,
     rvest,
     xml2
 Suggests: testthat,
-    knitr
+    knitr,
+    markdown
 VignetteBuilder: knitr
