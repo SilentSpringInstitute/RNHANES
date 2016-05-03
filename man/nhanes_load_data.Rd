@@ -52,12 +52,15 @@ the columns may not match in between files.
 If you load one file, the result will be a data frame.
 }
 \examples{
+\dontrun{
+
 nhanes_load_data("UHG", "2011-2012")
 
-# Download to /tmp directory and overwrite the file if it already exists
+# Load data with demographics
+nhanes_load_data("UHG", "2011-2012", demographics = TRUE)
 
-\dontrun{
-nhanes_load_data("HDL_E", "2007-2008", destination = "/tmp", cache = FALSE) #'
+# Download to /tmp directory and overwrite the file if it already exists
+nhanes_load_data("HDL_E", "2007-2008", destination = "/tmp", cache = FALSE)
 }
 }
 

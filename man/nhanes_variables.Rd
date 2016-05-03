@@ -14,4 +14,15 @@ nhanes_variables(destination = tempfile(), cache = TRUE)
 \description{
 Load the NHANES comprehensive variable list
 }
+\examples{
+\dontrun{
+
+# Download the comprehensive NHANES variable list
+variables <- nhanes_variables()
+
+# Download the variable list and cache it in a specific file
+variables <- nhanes_variables(destination = "./nhanes_data")
+
+}
+}
 

@@ -20,4 +20,15 @@ data frame of NHANES data files available to download
 \description{
 List the NHANES data files
 }
+\examples{
+\dontrun{
+
+# Download a data frame of all the NHANES data files
+files <- nhanes_data_files()
+
+# Download a data frame of just the laboratory files
+lab_files <- nhanes_data_files(component = "laboratory")
+
+}
+}
 

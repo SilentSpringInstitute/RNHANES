@@ -11,7 +11,7 @@ demography_filename(year)
 \item{year}{NHANES cycle, e.g. "2001-2002"}
 }
 \value{
-character e.g. "B"
+suffix character e.g. "B"
 }
 \description{
 Translates cycle years into the correct demography filename suffix,
