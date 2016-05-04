@@ -13,7 +13,6 @@
 #' @return a data frame
 #'
 #' @importFrom dplyr first
-#' @importFrom survey make.formula
 #'
 #' @details
 #' This function provides a generic way to apply any function from the survey package to NHANES data.
