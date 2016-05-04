@@ -69,6 +69,14 @@ nhanes_data_files <- function(components = "all", destination = tempfile(), cach
     }
   }
 
+  if(missing(destination)) {
+    destination <- getOption("RNHANES_destination", destination)
+  }
+
+  if(missing(cache)) {
+    cache <- getOption("RNHANES_cache", cache)
+  }
+
   if(dir.exists(destination)) {
     destination <- file.path(destination, "nhanes_data_files.csv")
   } else if(!dir.exists(dirname(destination))) {
@@ -216,14 +224,6 @@ nhanes_variables <- function(destination = tempfile(), cache = TRUE) {
 #' @export
 nhanes_search <- function(nhanes_data, query, ..., fuzzy = FALSE, ignore_case = TRUE, max_distance = 0.2) {
   nhanes_attribute <- attr(nhanes_data, 'rnhanes')
-
-  if(missing(destination)) {
-    destination <- getOption("RNHANES_destination", destination)
-  }
-
-  if(missing(cache)) {
-    cache <- getOption("RNHANES_cache", cache)
-  }
 
   # Workaround
   # Without this, R CMD CHECK will throw a note about how there is no visible binding for
