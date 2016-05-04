@@ -28,6 +28,8 @@ parse_data_files_page <- function(type, destination = tempfile()) {
 
   names(dat) <- gsub(" ", "", names(dat))
 
+  unlink(destination)
+
   return(dat)
 }
 
