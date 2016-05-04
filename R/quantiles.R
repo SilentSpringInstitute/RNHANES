@@ -29,10 +29,9 @@ nhanes_quantile <- function(nhanes_data, column, comment_column = "", weights_co
 
   # Check to see if any of the computed quantiles are <LOD
   callback <- function(dat, df) {
-    # Figure out the LOD (if it exists) by selecting values for which the comment column indicates a nondetect
-    lod <- first(dat[, first(df$column)][is.na(dat[, first(df$comment_column)]) == FALSE & dat[, first(df$comment_column)] == 1])
-    df$below_lod <- ifelse(df$value == lod, TRUE, FALSE)
-    df$below_lod <- if(is.na(lod)) FALSE else df$below_lod
+    # Figure out the percentage of nondetects
+    nd_ratio <- sum(dat[,first(df$comment_column)] == 1, na.rm = TRUE) / sum(!is.na(dat[,first(df$comment_column)]))
+    df$below_lod <- nd_ratio > quantiles
     return(df)
   }
 
