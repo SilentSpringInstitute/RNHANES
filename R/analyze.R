@@ -53,7 +53,7 @@ nhanes_analyze <- function(analysis_fun, nhanes_data, column, comment_column = "
                            column = row['column'],
                            weights_column = row['weights_column'],
                            comment_column = row['comment_column'],
-                           subset = subset))
+                           filter = filter))
     })
 
     dat <- Reduce(rbind, dat)
