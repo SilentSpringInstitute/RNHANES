@@ -4,7 +4,7 @@ test_that("nhanes_search works", {
   vars <- nhanes_variables()
   files <- nhanes_data_files()
 
-  destination <- getOption("RNHANES_destination", tempdir())
+  destination <- tempdir()
 
 
   test_that("nhanes_search on variables passes spot check", {
