@@ -15,7 +15,9 @@ nhanes_cycle_years <- function() {
            "2015-2016"))
 }
 
-# Helper function for nhanes_data_files function
+#' Helper function for nhanes_data_files function
+#'
+#' @importFrom utils download.file
 parse_data_files_page <- function(type, destination = tempfile()) {
   url <- paste0("http://wwwn.cdc.gov/Nchs/Nhanes/Search/DataPage.aspx?Component=", type)
   message(paste0("Downloading NHANES data file list to ", destination));
@@ -123,10 +125,19 @@ nhanes_data_files <- function(components = "all", destination = tempfile(), cach
 #'
 #' }
 #'
+#' @importFrom utils download.file
 #' @export
 nhanes_variables <- function(destination = tempfile(), cache = TRUE) {
   if(!dir.exists(dirname(destination))) {
     stop(paste0("Directory doesn't exist: ", dirname(destination)))
+  }
+
+  if(missing(destination)) {
+    destination <- getOption("RNHANES_destination", destination)
+  }
+
+  if(missing(cache)) {
+    cache <- getOption("RNHANES_cache", cache)
   }
 
   destination_csv <- destination
@@ -205,6 +216,14 @@ nhanes_variables <- function(destination = tempfile(), cache = TRUE) {
 #' @export
 nhanes_search <- function(nhanes_data, query, ..., fuzzy = FALSE, ignore_case = TRUE, max_distance = 0.2) {
   nhanes_attribute <- attr(nhanes_data, 'rnhanes')
+
+  if(missing(destination)) {
+    destination <- getOption("RNHANES_destination", destination)
+  }
+
+  if(missing(cache)) {
+    cache <- getOption("RNHANES_cache", cache)
+  }
 
   # Workaround
   # Without this, R CMD CHECK will throw a note about how there is no visible binding for

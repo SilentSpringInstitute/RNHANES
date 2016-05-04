@@ -23,10 +23,10 @@ nhanes_analyze <- function(analysis_fun, nhanes_data, column, comment_column = "
   # `column` should be a data frame specifying the columns to use in each cycle.
   if(is.list(nhanes_data) && is.data.frame(nhanes_data) == FALSE && is.data.frame(column)) {
     dat <- lapply(nhanes_data, function(df) {
-      rows <- subset(column, cycle == first(df$cycle))
+      rows <- column[column$cycle == first(df$cycle),]
 
       if("file_name" %in% names(column)) {
-        rows <- subset(rows, file_name == first(df$file_name))
+        rows <- rows[rows$file_name == first(df$file_name),]
       }
 
       if(nrow(rows) > 0) {
