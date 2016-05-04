@@ -5,7 +5,7 @@
 \title{Compute quantiles from NHANES weighted survey data}
 \usage{
 nhanes_quantile(nhanes_data, column, comment_column = "",
-  weights_column = "", quantiles = seq(0, 1, 0.25))
+  weights_column = "", quantiles = seq(0, 1, 0.25), filter = NULL)
 }
 \arguments{
 \item{nhanes_data}{data frame containing NHANES data}
@@ -17,6 +17,8 @@ nhanes_quantile(nhanes_data, column, comment_column = "",
 \item{weights_column}{name of the weights column}
 
 \item{quantiles}{numeric or vector numeric of quantiles to compute}
+
+\item{filter}{logical expression used to subset the data}
 }
 \value{
 a data frame

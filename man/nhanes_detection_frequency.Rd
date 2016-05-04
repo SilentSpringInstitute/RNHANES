@@ -5,7 +5,7 @@
 \title{Compute detection frequencies of NHANES data}
 \usage{
 nhanes_detection_frequency(nhanes_data, column, comment_column,
-  weights_column = "")
+  weights_column = "", filter = NULL)
 }
 \arguments{
 \item{nhanes_data}{data frame containing NHANES data}
@@ -15,6 +15,8 @@ nhanes_detection_frequency(nhanes_data, column, comment_column,
 \item{comment_column}{comment column names of the variables to compute detection frequencies for}
 
 \item{weights_column}{sample weight column}
+
+\item{filter}{logical expression used to subset the data}
 }
 \value{
 named vector of detection frequencies

@@ -5,7 +5,7 @@
 \title{Compute quantiles from NHANES weighted survey data}
 \usage{
 nhanes_analyze(analysis_fun, nhanes_data, column, comment_column = "",
-  weights_column = "", subset = NULL)
+  weights_column = "", filter = NULL)
 }
 \arguments{
 \item{analysis_fun}{function to use to analyze each variable}
@@ -17,6 +17,8 @@ nhanes_analyze(analysis_fun, nhanes_data, column, comment_column = "",
 \item{comment_column}{comment column name of the variable}
 
 \item{weights_column}{name of the weights column}
+
+\item{filter}{logical expression used to subset the data}
 }
 \value{
 a data frame

@@ -5,7 +5,8 @@
 \title{Apply a function from the survey package to NHANES data}
 \usage{
 nhanes_survey(survey_fun, nhanes_data, column, comment_column = "",
-  weights_column = "", analyze = "values", callback = NULL, ...)
+  weights_column = "", filter = NULL, analyze = "values",
+  callback = NULL, ...)
 }
 \arguments{
 \item{survey_fun}{the survey package function (e.g. svyquantile or svymean)}
@@ -17,6 +18,8 @@ nhanes_survey(survey_fun, nhanes_data, column, comment_column = "",
 \item{comment_column}{comment column name of the variable}
 
 \item{weights_column}{name of the weights column}
+
+\item{filter}{logical expression used to subset the data}
 
 \item{analyze}{one of "values" or "comments", whether to apply the survey function to the value or comment column.}
 
