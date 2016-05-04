@@ -11,7 +11,8 @@ Imports: foreign,
     survey,
     dplyr,
     rvest,
-    xml2
+    xml2,
+    methods
 Suggests: testthat,
     knitr,
     rmarkdown
