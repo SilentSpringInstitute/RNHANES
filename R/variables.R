@@ -15,9 +15,7 @@ nhanes_cycle_years <- function() {
            "2015-2016"))
 }
 
-#' Helper function for nhanes_data_files function
-#'
-#' @importFrom utils download.file
+# Helper function for nhanes_data_files function
 parse_data_files_page <- function(type, destination = tempfile()) {
   url <- paste0("http://wwwn.cdc.gov/Nchs/Nhanes/Search/DataPage.aspx?Component=", type)
   message(paste0("Downloading NHANES data file list to ", destination));

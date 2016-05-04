@@ -1,7 +1,8 @@
 test_that("Computing quantiles works", {
   skip_on_cran()
+  destination <- getOption("RNHANES_destination", tempdir())
 
-  nhanes_data <- nhanes_load_data("PFC", "2011-2012", demographics = TRUE, cache = TRUE)
+  nhanes_data <- nhanes_load_data("PFC", "2011-2012", demographics = TRUE, cache = TRUE, destination = destination)
 
   test_that("Passes spot check", {
     quantiles <- nhanes_quantile(nhanes_data, column = "LBXPFUA", comment_column = "LBDPFUAL", weights_column = "WTSA2YR", quantiles = c(0, 0.5, 0.75, 0.90, 0.95))
@@ -42,6 +43,7 @@ test_that("Computing quantiles works", {
   #nhanes_data <- nhanes_load_data(c())
 
   test_that("Quantiles can be computed for chemicals in multiple files", {
+    nhanes_data <- nhanes_load_data(c("PFC", "PFC"), c("2009-2010", "2011-2012"), demographics = TRUE, cache = TRUE, destination = destination)
 
   })
 

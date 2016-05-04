@@ -3,7 +3,7 @@ test_that("Downloading variable list and data file list works", {
   destination <- tempdir()
 
   test_that("nhanes_cycle_years returns correct cycles", {
-    expect_equal(nhanes_cycle_years, c("1999-2000",
+    expect_equivalent(nhanes_cycle_years(), c("1999-2000",
                                        "2001-2002",
                                        "2003-2004",
                                        "2005-2006",
@@ -38,7 +38,7 @@ test_that("Downloading variable list and data file list works", {
     })
 
     test_that("throws error if given nonexistent component", {
-      expect_error(nhanes_data_files(component = "nonexisting"), "Invalid component")
+      expect_error(nhanes_data_files(component = "nonexisting", destination = destination), "Invalid component")
     })
 
     test_that("throws error if given nonexistent destination", {

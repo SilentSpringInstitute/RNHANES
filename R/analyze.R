@@ -88,6 +88,11 @@ nhanes_analyze <- function(analysis_fun, nhanes_data, column, comment_column = "
       nhanes_data <- nhanes_data[!is.na(nhanes_data[, weights_column]), ]
     }
 
+    # Decode comment column if necessary
+    nhanes_data[, comment_column] = ifelse(nhanes_data[, comment_column] == "Below lower detection limit", 1, nhanes_data[,comment_column])
+    nhanes_data[, comment_column] = ifelse(nhanes_data[, comment_column] == "At or above the detection limit", 0, nhanes_data[,comment_column])
+    nhanes_data[, comment_column] = as.numeric(nhanes_data[, comment_column])
+
 
     # Build the survey object
     des <- svydesign(
@@ -105,10 +110,6 @@ nhanes_analyze <- function(analysis_fun, nhanes_data, column, comment_column = "
       des <- des[output,]
     }
 
-    # Decode comment column if necessary
-    nhanes_data[, comment_column] = ifelse(nhanes_data[, comment_column] == "Below lower detection limit", 1, nhanes_data[,comment_column])
-    nhanes_data[, comment_column] = ifelse(nhanes_data[, comment_column] == "At or above the detection limit", 0, nhanes_data[,comment_column])
-    nhanes_data[, comment_column] = as.numeric(nhanes_data[, comment_column])
 
     ret <- analysis_fun(nhanes_data, column, comment_column, weights_column, des)
 

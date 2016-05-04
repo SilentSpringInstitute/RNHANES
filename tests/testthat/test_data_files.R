@@ -84,14 +84,14 @@ test_that("Download helper functions work", {
 test_that("Downloading files from NHANES works", {
   skip_on_cran()
 
+  destination <- tempdir()
+
   test_that("nhanes_variables", {
     test_that("it downloads the file", {
 
-      destination = tempfile()
-
       dat <- nhanes_variables(destination = destination)
 
-      expect_true(file.exists(destination))
+      expect_true(file.exists(file.path(destination, "nhanes_variables.csv")))
       expect_more_than(nrow(dat), 100)
     })
   })
@@ -100,7 +100,6 @@ test_that("Downloading files from NHANES works", {
   # Test of nhanes_data_files
   test_that("nhanes_data_files", {
     test_that("it downloads the files", {
-      destination = tempfile()
 
       dat <- nhanes_data_files(destination = destination)
 
@@ -109,25 +108,22 @@ test_that("Downloading files from NHANES works", {
     })
 
     test_that("it can download only one component", {
-      dat <- nhanes_data_files(components = "laboratory")
+      dat <- nhanes_data_files(components = "laboratory", destination = destination)
 
       expect_that(unique(dat$component), equals(c("laboratory")))
     })
 
     test_that("it checks the cached file has the correct components", {
-      temp <- tempfile()
 
-      nhanes_data_files(components = "laboratory", destination = temp)
+      nhanes_data_files(components = "laboratory", destination = destination)
 
-      expect_that(nhanes_data_files(components = "all", destination = temp), throws_error("The cached file doesn't have all the components you specified in this call"))
+      expect_that(nhanes_data_files(components = "all", destination = destination), throws_error("The cached file doesn't have all the components you specified in this call"))
     })
   })
 
 
   # Test of nhanes_load_data
   test_that("nhanes_load_data", {
-    destination <- tempdir()
-
     test_that("it will throw an error if the destination folder doesn't exist", {
       expect_error(nhanes_load_data("EPH", "2007-2008", destination = file.path(destination, "not_there")))
     })
@@ -287,7 +283,7 @@ test_that("Downloading files from NHANES works", {
     test_that("if destination not specified, checks option", {
       original <- getOption("RNHANES_destination")
 
-      temp <- tempdir()
+      temp <- destination
       test_destination <- file.path(temp, "test")
       dir.create(test_destination)
 
@@ -308,7 +304,7 @@ test_that("Downloading files from NHANES works", {
 
       options(RNHANES_cache = FALSE)
 
-      dat <- nhanes_load_data("EPH", "2007-2008", destination = tempdir())
+      dat <- nhanes_load_data("EPH", "2007-2008", destination = destination)
 
       expect_true(file.exists(file.path(destination, "EPH_E.XPT")))
       expect_false(file.exists(file.path(destination, "EPH_E.csv")))
@@ -323,7 +319,7 @@ test_that("Downloading files from NHANES works", {
     test_that("if destination not specified, checks option", {
       original <- getOption("RNHANES_destination")
 
-      temp <- tempdir()
+      temp <- destination
       test_destination <- file.path(temp, "test")
       dir.create(test_destination)
 
@@ -341,8 +337,6 @@ test_that("Downloading files from NHANES works", {
 
     test_that("if cache not specified, checks option", {
       original <- getOption("RNHANES_cache")
-
-      destination <- tempdir()
 
       options(RNHANES_cache = FALSE)
 
