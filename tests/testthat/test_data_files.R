@@ -97,30 +97,6 @@ test_that("Downloading files from NHANES works", {
   })
 
 
-  # Test of nhanes_data_files
-  test_that("nhanes_data_files", {
-    test_that("it downloads the files", {
-
-      dat <- nhanes_data_files(destination = destination)
-
-      expect_true(file.exists(destination))
-      expect_more_than(nrow(dat), 100)
-    })
-
-    test_that("it can download only one component", {
-      dat <- nhanes_data_files(components = "laboratory", destination = destination)
-
-      expect_that(unique(dat$component), equals(c("laboratory")))
-    })
-
-    test_that("it checks the cached file has the correct components", {
-
-      nhanes_data_files(components = "laboratory", destination = destination)
-
-      expect_that(nhanes_data_files(components = "all", destination = destination), throws_error("The cached file doesn't have all the components you specified in this call"))
-    })
-  })
-
 
   # Test of nhanes_load_data
   test_that("nhanes_load_data", {

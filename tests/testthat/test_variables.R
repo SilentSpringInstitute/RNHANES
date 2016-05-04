@@ -44,6 +44,14 @@ test_that("Downloading variable list and data file list works", {
     test_that("throws error if given nonexistent destination", {
       expect_error(nhanes_data_files(destination = "nodir/test.file"), "Directory doesn't exist")
     })
+
+    test_that("it checks the cached file has the correct components", {
+      nhanes_data_files(components = "laboratory", destination = destination)
+      expect_that(nhanes_data_files(components = "all", destination = destination), throws_error("The cached file doesn't have all the components you specified in this call"))
+
+      # Clean up
+      unlink(file.path(destination, "nhanes_data_files.csv"))
+    })
   })
 
   test_that("nhanes_variables works", {
