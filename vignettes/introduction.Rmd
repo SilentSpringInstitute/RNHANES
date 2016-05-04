@@ -25,7 +25,7 @@ RNHANES provides an easy way to download and analyze data from [NHANES](http://w
 
 The included analysis tools focus on the laboratory data, but the package can still be used to search for and download other types of data in NHANES.
 
-```{r}
+```{r, results='hide', message=FALSE, error=FALSE}
 library(RNHANES)
 ```
 
