@@ -14,5 +14,5 @@ Imports: foreign,
     xml2
 Suggests: testthat,
     knitr,
-    markdown
+    rmarkdown
 VignetteBuilder: knitr
