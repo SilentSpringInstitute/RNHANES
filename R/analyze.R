@@ -46,6 +46,9 @@ nhanes_analyze <- function(analysis_fun, nhanes_data, column, comment_column = "
 
     # If `nhanes_data` is a data frame and column is a vector, then
     # we compute the quantiles for multiple columns in a data frame
+  } else if(is.list(nhanes_data) && is.data.frame(nhanes_data) == FALSE && is.vector(column)) {
+    stop(paste("To analyze data from multiple files, please provide a data frame that indicates which columns to analyze in each file.",
+               "The data frame should have the following columns: 'file_name', 'cycle', 'column', 'comment_column', 'weights_column' (optional)"))
   } else if(is.data.frame(nhanes_data) == TRUE && length(column) > 1) {
     dat <- apply(cbind(column, comment_column, weights_column), 1, function(row) {
       return(nhanes_analyze(analysis_fun,
