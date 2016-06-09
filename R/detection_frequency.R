@@ -20,7 +20,7 @@
 #'
 #' @export
 nhanes_detection_frequency <- function(nhanes_data, column, comment_column, weights_column = "", filter = NULL) {
-  if(hasArg(filter) && substitute(filter) != "filter") {
+  if(hasArg(filter) && substitute(filter) != "filter" && !exists(deparse(substitute(filter)), parent.frame())) {
     filter <- substitute(filter)
   }
 

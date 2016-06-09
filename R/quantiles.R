@@ -23,7 +23,7 @@
 #'
 #' @export
 nhanes_quantile <- function(nhanes_data, column, comment_column = "", weights_column = "", quantiles = seq(0, 1, 0.25), filter = NULL) {
-  if(hasArg(filter) && substitute(filter) != "filter") {
+  if(hasArg(filter) && substitute(filter) != "filter" && !exists(deparse(substitute(filter)), parent.frame())) {
     filter <- substitute(filter)
   }
 

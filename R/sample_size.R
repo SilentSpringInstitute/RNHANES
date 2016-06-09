@@ -21,11 +21,17 @@
 #'
 #' @export
 nhanes_sample_size <- function(nhanes_data, column, comment_column = "", weights_column = "", filter = NULL) {
-  if(hasArg(filter) && substitute(filter) != "filter") {
+  if(hasArg(filter) && substitute(filter) != "filter" && !exists(deparse(substitute(filter)), parent.frame())) {
     filter <- substitute(filter)
   }
 
   fun <- function(nhanes_data, column, comment_column, weights_column, des) {
+    if(!is.null(filter)) {
+      filter <- deparse(filter)
+      output = eval(parse(text=filter), envir = nhanes_data)
+      nhanes_data <- nhanes_data[output,]
+    }
+
     sample_size <- sum(!is.na(nhanes_data[, column]))
 
     ret <- data.frame(
