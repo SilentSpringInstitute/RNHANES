@@ -4,12 +4,17 @@
 \alias{nhanes_sample_size}
 \title{Compute the sample size of NHANES data}
 \usage{
-nhanes_sample_size(nhanes_data, column, filter = NULL)
+nhanes_sample_size(nhanes_data, column, comment_column = "",
+  weights_column = "", filter = NULL)
 }
 \arguments{
 \item{nhanes_data}{data frame containing NHANES data}
 
 \item{column}{column name of the variable to compute quantiles for}
+
+\item{comment_column}{comment column name of the variable for checking if computed quantiles are below the LOD}
+
+\item{weights_column}{name of the weights column}
 
 \item{filter}{logical expression used to subset the data}
 }
