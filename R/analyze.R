@@ -70,7 +70,27 @@ nhanes_analyze <- function(analysis_fun, nhanes_data, column, comment_column = "
     }
 
     if(weights_column == "") {
-      weights_column <- names(nhanes_data)[grepl("WTS[A-Z]2YR", names(nhanes_data))]
+      # If no weights column is specified, try to guess the correct one.
+      # If a subsample weight is present, use that.
+      guess <- names(nhanes_data)[grepl("WTS[A-Z]+2YR?", names(nhanes_data))]
+
+      if(length(guess) > 0) {
+        if(length(guess) > 1) {
+          warning(paste("Multiple choices for a weights column -", paste(guess, collapse = ", ")))
+        }
+        weights_column = guess[1]
+      }
+      else {
+        if(!weights_column %in% names(nhanes_data)) {
+          # Otherwise, use the full sample weights.
+          weights_column <- "WTMEC2YR"
+        }
+      }
+
+      if(!weights_column %in% names(nhanes_data)) {
+        stop("Could not find a weights column")
+      }
+
       message(paste0("Weights column wasn't specified -- using ", weights_column, " for weights"))
     }
 
@@ -78,7 +98,7 @@ nhanes_analyze <- function(analysis_fun, nhanes_data, column, comment_column = "
       stop("Weights column doesn't exist")
     }
 
-    if(comment_column %in% names(nhanes_data) == FALSE) {
+    if(comment_column != FALSE && comment_column %in% names(nhanes_data) == FALSE) {
       stop(paste0("Comment column ", comment_column, " doesn't exist"))
     }
 
@@ -92,10 +112,11 @@ nhanes_analyze <- function(analysis_fun, nhanes_data, column, comment_column = "
     }
 
     # Decode comment column if necessary
-    nhanes_data[, comment_column] = ifelse(nhanes_data[, comment_column] == "Below lower detection limit", 1, nhanes_data[,comment_column])
-    nhanes_data[, comment_column] = ifelse(nhanes_data[, comment_column] == "At or above the detection limit", 0, nhanes_data[,comment_column])
-    nhanes_data[, comment_column] = as.numeric(nhanes_data[, comment_column])
-
+    if(comment_column != FALSE) {
+      nhanes_data[, comment_column] = ifelse(nhanes_data[, comment_column] == "Below lower detection limit", 1, nhanes_data[,comment_column])
+      nhanes_data[, comment_column] = ifelse(nhanes_data[, comment_column] == "At or above the detection limit", 0, nhanes_data[,comment_column])
+      nhanes_data[, comment_column] = as.numeric(nhanes_data[, comment_column])
+    }
 
     # Build the survey object
     des <- svydesign(
