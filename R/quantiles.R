@@ -29,25 +29,60 @@ nhanes_quantile <- function(nhanes_data, column, comment_column = "", weights_co
 
   # Check to see if any of the computed quantiles are <LOD
   callback <- function(dat, df) {
-    # Figure out the percentage of nondetects
-    nd_ratio <- sum(dat[,first(df$comment_column)] == 1, na.rm = TRUE) / sum(!is.na(dat[,first(df$comment_column)]))
-    df$below_lod <- nd_ratio > quantiles
+    dl <- unique(lookup_dl(first(df$column), first(df$cycle)))
+
+    if(length(dl) == 1) {
+      df$below_lod <- df$value < dl
+    } else if(length(dl) > 1) {
+      warning("Multiple detection limits found")
+    } else if(length(dl) == 0) {
+      warning("No detection limit found from the summary tables. Falling back to inferring detection limit from the fill value.")
+
+      inferred_dl <- dat[, first(df$column)][is.na(dat[, first(df$comment_column)]) == FALSE & dat[, first(df$comment_column)] == 1]
+
+      if(length(unique(inferred_dl)) == 1) {
+        inferred_dl <- first(inferred_dl)
+        df$below_lod <- ifelse(df$value == lod, TRUE, FALSE)
+        df$below_lod <- if(is.na(lod)) FALSE else df$below_lod
+      }
+      else {
+        warning("Multiple detection limits were found. Falling back to computing detection frequency to infer if a quantile is below the limit of detection.")
+
+        nd_quantiles <- nhanes_survey(svyquantile,
+                                      dat,
+                                      column = first(df$column),
+                                      comment_column = first(df$comment_column),
+                                      weights_column = first(df$weights_column),
+                                      analyze = "comments",
+                                      filter = filter,
+                                      quantiles = 1 - quantiles,
+                                      ci = F,
+                                      na.rm = TRUE,
+                                      method = "constant",
+                                      f = 1,
+                                      interval.type = "betaWald")
+
+        df$below_lod <- nd_quantiles$value == 1
+      }
+    }
+
     return(df)
   }
 
   q <- nhanes_survey(svyquantile,
-                nhanes_data,
-                column,
-                comment_column,
-                weights_column,
-                callback = callback,
-                filter = filter,
-                quantiles = quantiles,
-                ci = F,
-                na.rm = T,
-                method = "constant",
-                f = 1,
-                interval.type="betaWald")
+                     nhanes_data,
+                     column,
+                     comment_column,
+                     weights_column,
+                     filter = filter,
+                     callback = callback,
+                     quantiles = quantiles,
+                     ci = F,
+                     na.rm = T,
+                     method = "constant",
+                     f = 1,
+                     interval.type="betaWald")
+
   q$quantile <- paste0(quantiles * 100, "%")
   q$name <- "quantile"
 
