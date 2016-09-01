@@ -23,7 +23,7 @@ parse_data_files_page <- function(type, destination = tempfile()) {
   download.file(url, destination, method='auto', mode='wb')
 
   dat <- read_html(destination) %>% html_table()
-  dat <- dat[[1]]
+  dat <- dat[[2]]
   dat$Component = type
 
   names(dat) <- gsub(" ", "", names(dat))
