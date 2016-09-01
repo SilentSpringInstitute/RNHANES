@@ -167,7 +167,7 @@ nhanes_variables <- function(destination = tempfile(), cache = TRUE) {
 
     # Parse the table and unpack the data frame
     dat <- read_html(destination_variablelist, encoding = "UTF-8") %>% html_table()
-    dat <- dat[[1]]
+    dat <- dat[[2]]
 
     # Rename the columns
     names(dat) <- gsub(" ", "_", names(dat))
