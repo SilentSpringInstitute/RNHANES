@@ -72,20 +72,7 @@ nhanes_analyze <- function(analysis_fun, nhanes_data, column, comment_column = "
     if(weights_column == "") {
       # If no weights column is specified, try to guess the correct one.
       # If a subsample weight is present, use that.
-      guess <- names(nhanes_data)[grepl("WTS[A-Z]+2YR?", names(nhanes_data))]
-
-      if(length(guess) > 0) {
-        if(length(guess) > 1) {
-          warning(paste("Multiple choices for a weights column -", paste(guess, collapse = ", ")))
-        }
-        weights_column = guess[1]
-      }
-      else {
-        if(!weights_column %in% names(nhanes_data)) {
-          # Otherwise, use the full sample weights.
-          weights_column <- "WTMEC2YR"
-        }
-      }
+      weights_column <- guess_weights_column(names(nhanes_data))
 
       if(!weights_column %in% names(nhanes_data)) {
         stop("Could not find a weights column")
@@ -102,14 +89,7 @@ nhanes_analyze <- function(analysis_fun, nhanes_data, column, comment_column = "
       stop(paste0("Comment column ", comment_column, " doesn't exist"))
     }
 
-    # Check to see if there are NAs in the weights
-    na_count <- sum(is.na(nhanes_data[, weights_column]))
-
-    if(na_count > 0) {
-      message("Note: There are NAs in the weights column. These rows will be removed.")
-
-      nhanes_data <- nhanes_data[!is.na(nhanes_data[, weights_column]), ]
-    }
+    nhanes_data <- remove_na_weights(nhanes_data, weights_column)
 
     # Decode comment column if necessary
     if(comment_column != FALSE) {
