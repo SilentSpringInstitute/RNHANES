@@ -20,6 +20,10 @@
 #'
 #' @export
 nhanes_vcov <- function(nhanes_data, column, weights_column = "", filter = "") {
+  if(is.list(nhanes_data) && !is.data.frame(nhanes_data)) {
+    stop("nhanes_vcov does not support multiple cycle years/files as input. Please supply a data frame.")
+  }
+
   if(weights_column == "") {
     # If no weights column is specified, try to guess the correct one.
     # If a subsample weight is present, use that.
