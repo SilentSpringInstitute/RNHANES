@@ -29,40 +29,42 @@ nhanes_quantile <- function(nhanes_data, column, comment_column = "", weights_co
 
   # Check to see if any of the computed quantiles are <LOD
   callback <- function(dat, df) {
-    dl <- unique(lookup_dl(first(df$column), first(df$cycle)))
+    if(comment_column != FALSE) {
+      dl <- unique(lookup_dl(first(df$column), first(df$cycle)))
 
-    if(length(dl) == 1) {
-      df$below_lod <- df$value < dl
-    } else if(length(dl) > 1) {
-      warning("Multiple detection limits found")
-    } else if(length(dl) == 0) {
-      warning("No detection limit found from the summary tables. Falling back to inferring detection limit from the fill value.")
+      if(length(dl) == 1) {
+        df$below_lod <- df$value < dl
+      } else if(length(dl) > 1) {
+        warning("Multiple detection limits found")
+      } else if(length(dl) == 0) {
+        warning("No detection limit found from the summary tables. Falling back to inferring detection limit from the fill value.")
 
-      inferred_dl <- dat[, first(df$column)][is.na(dat[, first(df$comment_column)]) == FALSE & dat[, first(df$comment_column)] == 1]
+        inferred_dl <- dat[, first(df$column)][is.na(dat[, first(df$comment_column)]) == FALSE & dat[, first(df$comment_column)] == 1]
 
-      if(length(unique(inferred_dl)) == 1) {
-        inferred_dl <- first(inferred_dl)
-        df$below_lod <- ifelse(df$value == inferred_dl, TRUE, FALSE)
-        df$below_lod <- if(is.na(inferred_dl)) FALSE else df$below_lod
-      }
-      else {
-        warning("Multiple detection limits were found. Falling back to computing detection frequency to infer if a quantile is below the limit of detection.")
+        if(length(unique(inferred_dl)) == 1) {
+          inferred_dl <- first(inferred_dl)
+          df$below_lod <- ifelse(df$value == inferred_dl, TRUE, FALSE)
+          df$below_lod <- if(is.na(inferred_dl)) FALSE else df$below_lod
+        }
+        else {
+          warning("Multiple detection limits were found. Falling back to computing detection frequency to infer if a quantile is below the limit of detection.")
 
-        nd_quantiles <- nhanes_survey(svyquantile,
-                                      dat,
-                                      column = first(df$column),
-                                      comment_column = first(df$comment_column),
-                                      weights_column = first(df$weights_column),
-                                      analyze = "comments",
-                                      filter = filter,
-                                      quantiles = 1 - quantiles,
-                                      ci = F,
-                                      na.rm = TRUE,
-                                      method = "constant",
-                                      f = 1,
-                                      interval.type = "betaWald")
+          nd_quantiles <- nhanes_survey(svyquantile,
+                                        dat,
+                                        column = first(df$column),
+                                        comment_column = first(df$comment_column),
+                                        weights_column = first(df$weights_column),
+                                        analyze = "comments",
+                                        filter = filter,
+                                        quantiles = 1 - quantiles,
+                                        ci = F,
+                                        na.rm = TRUE,
+                                        method = "constant",
+                                        f = 1,
+                                        interval.type = "betaWald")
 
-        df$below_lod <- nd_quantiles$value == 1
+          df$below_lod <- nd_quantiles$value == 1
+        }
       }
     }
 
