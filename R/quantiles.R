@@ -42,8 +42,8 @@ nhanes_quantile <- function(nhanes_data, column, comment_column = "", weights_co
 
       if(length(unique(inferred_dl)) == 1) {
         inferred_dl <- first(inferred_dl)
-        df$below_lod <- ifelse(df$value == lod, TRUE, FALSE)
-        df$below_lod <- if(is.na(lod)) FALSE else df$below_lod
+        df$below_lod <- ifelse(df$value == inferred_dl, TRUE, FALSE)
+        df$below_lod <- if(is.na(inferred_dl)) FALSE else df$below_lod
       }
       else {
         warning("Multiple detection limits were found. Falling back to computing detection frequency to infer if a quantile is below the limit of detection.")
