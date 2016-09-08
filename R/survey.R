@@ -47,11 +47,16 @@ nhanes_survey <- function(survey_fun, nhanes_data, column, comment_column = "", 
       formula = make.formula(comment_column)
     }
 
+    if(analyze == "comments" && comment_column == FALSE) {
+      res <- c(NA)
+    }
+    else {
     res <- as.vector(survey_fun(
       formula,
       ...,
       design = des
     ))
+    }
 
     ret <- data.frame(
       value            = unname(res),
