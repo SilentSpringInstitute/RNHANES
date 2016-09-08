@@ -2,6 +2,7 @@
 # If a subsample weight is present, use that.
 guess_weights_column <- function(cols) {
   guess <- cols[grepl("WTS[A-Z]+2YR?", cols)]
+  weights_column = FALSE
 
   if(length(guess) > 0) {
     if(length(guess) > 1) {
@@ -10,11 +11,19 @@ guess_weights_column <- function(cols) {
     weights_column = guess[1]
   }
   else {
-    if(!weights_column %in% cols) {
+    if("WTINT2YR" %in% cols) {
+      weights_column <- "WTINT2YR"
+    }
+    else if("WTMEC2YR" %in% cols) {
       # Otherwise, use the full sample weights.
       weights_column <- "WTMEC2YR"
     }
+    else {
+      stop("Could not find a weights column. You can specify a weights column manually using the `weights` argument.")
+    }
   }
+
+  return(weights_column)
 }
 
 remove_na_weights <- function(nhanes_data, weights_column) {
