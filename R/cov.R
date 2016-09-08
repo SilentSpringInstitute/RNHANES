@@ -8,14 +8,14 @@
 #' @return a data frame
 #'
 #' @import survey
-#' @importFrom dplyr first
+#' @import stats
 #'
 #' @examples
 #'
 #' \dontrun{
-#' dat <- nhanes_load_data("UHG_G", "2011-2012", demographics = TRUE)
+#' dat <- nhanes_load_data("PFC_G", "2011-2012", demographics = TRUE)
 #'
-#' nhanes_sample_size(dat, "URXUHG")
+#' nhanes_vcov(dat, c("LBXPFOA", "LBXPFOS"))
 #' }
 #'
 #' @export
