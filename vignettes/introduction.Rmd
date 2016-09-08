@@ -14,6 +14,8 @@ vignette: >
 NOT_CRAN <- identical(tolower(Sys.getenv("NOT_CRAN")), "true")
 knitr::opts_chunk$set(purl = NOT_CRAN)
 
+NOT_CRAN = FALSE
+
 if(NOT_CRAN) {
   options(NHANES_destination = "./data/")
   options(NHANES_cache = TRUE)
