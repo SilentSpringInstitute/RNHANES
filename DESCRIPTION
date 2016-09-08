@@ -6,17 +6,22 @@ Date: 2016-09-08
 Authors@R: person("Herb", "Susmann", email="susmann@silentspring.org", role=c("cre", "aut"))
 URL: http://github.com/silentspringinstitute/RNHANES
 BugReports: https://github.com/silentspringinstitute/RNHANES/issues
-Description: Tools for downloading and analyzing CDC NHANES data, with a focus on analytical laboratory data.
+Description: Tools for downloading and analyzing CDC NHANES data, with a focus
+    on analytical laboratory data.
 License: Apache License 2.0 | file LICENSE
 LazyData: TRUE
-Depends: R (>= 2.10)
-Imports: foreign,
+Depends:
+    R (>= 2.10)
+Imports:
+    foreign,
     survey,
     dplyr,
     rvest,
     xml2,
     methods
-Suggests: testthat,
+Suggests:
+    testthat,
     knitr,
     rmarkdown
 VignetteBuilder: knitr
+RoxygenNote: 5.0.1
