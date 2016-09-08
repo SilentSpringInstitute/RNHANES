@@ -3,6 +3,7 @@
 export(nhanes_cycle_years)
 export(nhanes_data_files)
 export(nhanes_detection_frequency)
+export(nhanes_hist)
 export(nhanes_load_data)
 export(nhanes_load_demography_data)
 export(nhanes_quantile)
