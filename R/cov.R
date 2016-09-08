@@ -8,7 +8,8 @@
 #' @return a data frame
 #'
 #' @import survey
-#' @import stats
+#' @importFrom stats vcov
+#' @importFrom stats as.formula
 #'
 #' @examples
 #'
