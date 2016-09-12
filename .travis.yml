@@ -2,10 +2,7 @@
 
 language: R
 sudo: false
-cache:
-  packages: true
-  directories:
-    - cache
+cache: packages
 r_github_packages:
   - jimhester/covr
 after_success:
