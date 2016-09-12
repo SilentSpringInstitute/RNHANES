@@ -19,6 +19,8 @@ nhanes_hist(nhanes_data, column, comment_column, weights_column = "",
 \item{filter}{logical expression used to subset the data}
 
 \item{transform}{transformation to apply to the column. Accepts any function name, for example: "log"}
+
+\item{...}{parameters passed through to svyhist function}
 }
 \value{
 a data frame

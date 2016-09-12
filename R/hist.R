@@ -6,6 +6,7 @@
 #' @param weights_column name of the weights column
 #' @param filter logical expression used to subset the data
 #' @param transform transformation to apply to the column. Accepts any function name, for example: "log"
+#' @param ... parameters passed through to svyhist function
 #'
 #' @return a data frame
 #'
