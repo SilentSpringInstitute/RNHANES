@@ -5,7 +5,7 @@
 \title{Plot a weighted histogram of an NHANES variable}
 \usage{
 nhanes_hist(nhanes_data, column, comment_column, weights_column = "",
-  filter = "", ...)
+  filter = "", transform = "", ...)
 }
 \arguments{
 \item{nhanes_data}{data frame containing NHANES data}
@@ -17,6 +17,8 @@ nhanes_hist(nhanes_data, column, comment_column, weights_column = "",
 \item{weights_column}{name of the weights column}
 
 \item{filter}{logical expression used to subset the data}
+
+\item{transform}{transformation to apply to the column. Accepts any function name, for example: "log"}
 }
 \value{
 a data frame
