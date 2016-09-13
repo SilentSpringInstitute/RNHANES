@@ -16,15 +16,15 @@ nhanes_cycle_years <- function() {
            "2015-2016"))
 }
 
-#' Helper function for nhanes_data_files function
-#'
-#' @param component one of demographics", "dietary", "examination", "laboratory", "questionnaire"
-#' @param destination download destination
-#'
-#' @import rvest
-#' @importFrom xml2 read_html
-#'
-#' @return dat
+# Helper function for nhanes_data_files function
+#
+# @param component one of demographics", "dietary", "examination", "laboratory", "questionnaire"
+# @param destination download destination
+#
+# @import rvest
+# @importFrom xml2 read_html
+#
+# @return dat
 parse_data_files_page <- function(component, destination = tempfile()) {
   url <- paste0("http://wwwn.cdc.gov/Nchs/Nhanes/Search/DataPage.aspx?Component=", component)
   message(paste0("Downloading NHANES data file list to ", destination));
@@ -123,15 +123,15 @@ nhanes_data_files <- function(components = "all", destination = tempfile(), cach
   return(dat)
 }
 
-#' Helper function for nhanes_variable function
-#'
-#' @param component one of "Demographics", "Dietary", "Examination", "Laboratory", "Questionnaire"
-#' @param destination download destination
-#'
-#' @import rvest
-#' @importFrom xml2 read_html
-#'
-#' @return dat
+# Helper function for nhanes_variable function
+#
+# @param component one of "Demographics", "Dietary", "Examination", "Laboratory", "Questionnaire"
+# @param destination download destination
+#
+# @import rvest
+# @importFrom xml2 read_html
+#
+# @return dat
 parse_variable_list <- function(component, destination = tempfile()) {
   url <- paste0("http://wwwn.cdc.gov/nchs/nhanes/search/variablelist.aspx?Component=", component)
 
