@@ -10,3 +10,7 @@ after_success:
 env:
   global:
     - NOT_CRAN: false
+addons:
+  apt:
+    packages:
+      libxml2
