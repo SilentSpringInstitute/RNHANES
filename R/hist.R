@@ -22,6 +22,10 @@
 #'
 #' @export
 nhanes_hist <- function(nhanes_data, column, comment_column, weights_column = "", filter = "", transform = "", ...) {
+  if(hasArg(filter) && substitute(filter) != "filter" && !exists(deparse(substitute(filter)), parent.frame())) {
+    filter <- substitute(filter)
+  }
+
   if(is.list(nhanes_data) && !is.data.frame(nhanes_data)) {
     stop("nhanes_vcov does not support multiple cycle years/files as input. Please supply a data frame.")
   }
@@ -47,6 +51,12 @@ nhanes_hist <- function(nhanes_data, column, comment_column, weights_column = ""
     weights = nhanes_data[, weights_column],
     data = nhanes_data
   )
+
+  if(!is.null(filter)) {
+    filter <- deparse(filter)
+    output = eval(parse(text=filter), envir = des$variables)
+    des <- des[output,]
+  }
 
   if(transform != "") {
     column <- paste0(transform, "(", column, ")")
