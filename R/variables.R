@@ -2,6 +2,7 @@
 #'
 #' @return vector of NHANES cycle years
 #'
+#'
 #' @export
 nhanes_cycle_years <- function() {
   return(c("1999-2000",
@@ -15,16 +16,24 @@ nhanes_cycle_years <- function() {
            "2015-2016"))
 }
 
-# Helper function for nhanes_data_files function
-parse_data_files_page <- function(type, destination = tempfile()) {
-  url <- paste0("http://wwwn.cdc.gov/Nchs/Nhanes/Search/DataPage.aspx?Component=", type)
+#' Helper function for nhanes_data_files function
+#'
+#' @param component one of demographics", "dietary", "examination", "laboratory", "questionnaire"
+#' @param destination download destination
+#'
+#' @import rvest
+#' @importFrom xml2 read_html
+#'
+#' @return dat
+parse_data_files_page <- function(component, destination = tempfile()) {
+  url <- paste0("http://wwwn.cdc.gov/Nchs/Nhanes/Search/DataPage.aspx?Component=", component)
   message(paste0("Downloading NHANES data file list to ", destination));
 
   download.file(url, destination, method='auto', mode='wb')
 
   dat <- read_html(destination) %>% html_table()
   dat <- dat[[2]]
-  dat$Component = type
+  dat$Component = component
 
   names(dat) <- gsub(" ", "", names(dat))
 
@@ -114,13 +123,63 @@ nhanes_data_files <- function(components = "all", destination = tempfile(), cach
   return(dat)
 }
 
-#' Load the NHANES comprehensive variable list
+#' Helper function for nhanes_variable function
 #'
-#' @param destination where to save the variable list
-#' @param cache whether to cache the downloaded variable list so it doesn't have to be re-downloaded every time
+#' @param component one of "Demographics", "Dietary", "Examination", "Laboratory", "Questionnaire"
+#' @param destination download destination
 #'
 #' @import rvest
 #' @importFrom xml2 read_html
+#'
+#' @return dat
+parse_variable_list <- function(component, destination = tempfile()) {
+  url <- paste0("http://wwwn.cdc.gov/nchs/nhanes/search/variablelist.aspx?Component=", component)
+
+  download.file(url, destination, method='auto', mode='wb')
+
+  # Parse the table and unpack the data frame
+  dat <- read_html(destination, encoding = "UTF-8")
+  dat <- html_table(dat)
+  dat <- dat[[2]]
+
+  # Rename the columns
+  names(dat) <- gsub(" ", "_", names(dat))
+  names(dat) <- tolower(names(dat))
+
+  dat$end_year <- dat$endyear
+  dat <- dat[, names(dat) != "endyear"]
+
+  # Add a cycle column
+  dat$cycle <- paste(dat$begin_year, dat$end_year, sep = "-")
+
+  # Extract units (when available) into a separate column
+  # TODO: think about how to fix this, right now it works but it picks up a lot of non-unit things
+  units <- regmatches(dat$variable_description, gregexpr("\\((.*?)\\)", dat$variable_description))
+  units[sapply(units, length) == 0] <- NA # Replace blanks with NAs
+  units[dat$component != 'Laboratory' & dat$component != 'Examination'] <- NA # Replace anything picked up in the non-lab variables as NAs
+  units <- Map(function(x) tail(x, 1), units)
+  units <- unlist(units)
+  units <- Map(function(x) substr(x, 2, nchar(x) - 1), units)
+
+  dat$unit <- unlist(units)
+
+  dat$component = tolower(dat$component)
+
+  return(dat)
+}
+
+#' Load the NHANES comprehensive variable list
+#'
+#' @param components one of "all", "demographics", "dietary", "examination", "laboratory", "questionnaire"
+#' @param destination where to save the variable list
+#' @param cache whether to cache the downloaded variable list so it doesn't have to be re-downloaded every time
+#'
+#' Helper function for nhanes_variables function
+#'
+#' @import rvest
+#' @importFrom xml2 read_html
+#'
+#' @return dat
 #'
 #' @examples
 #' \dontrun{
@@ -133,9 +192,22 @@ nhanes_data_files <- function(components = "all", destination = tempfile(), cach
 #'
 #' }
 #'
+#' @import rvest
+#' @importFrom xml2 read_html
 #' @importFrom utils download.file
 #' @export
-nhanes_variables <- function(destination = tempfile(), cache = TRUE) {
+nhanes_variables <- function(components = "all", destination = tempfile(), cache = TRUE) {
+  all_components <- c("Demographics", "Dietary", "Examination", "Laboratory", "Questionnaire")
+  components = tolower(components)
+
+  if(components == "all") {
+    components = all_components
+  } else {
+    if(sum(!components %in% all_components) > 0) {
+      stop("Invalid component given to nhanes_data_files. Acceptable values are 'demographics', 'dietary', 'examination', 'laboratory', and 'questionnaire'")
+    }
+  }
+
   if(!dir.exists(dirname(destination))) {
     stop(paste0("Directory doesn't exist: ", dirname(destination)))
   }
@@ -149,48 +221,16 @@ nhanes_variables <- function(destination = tempfile(), cache = TRUE) {
   }
 
   destination_csv <- destination
-  destination_variablelist <- tempfile()
 
   if(dir.exists(destination)) {
     destination_csv <- file.path(destination, "nhanes_variables.csv")
-    destination_variablelist <- file.path(destination, "variablelist.aspx")
   }
 
   if(cache == TRUE && file.exists(destination_csv)) {
     dat <- read.csv(destination_csv, stringsAsFactors = FALSE)
   } else {
-    url <- "http://wwwn.cdc.gov/nchs/nhanes/search/variablelist.aspx"
-
-    message(paste0("Downloading NHANES variable list to ", destination_variablelist));
-
-    download.file(url, destination_variablelist, method='auto', mode='wb')
-
-    # Parse the table and unpack the data frame
-    dat <- read_html(destination_variablelist, encoding = "UTF-8") %>% html_table()
-    dat <- dat[[2]]
-
-    # Rename the columns
-    names(dat) <- gsub(" ", "_", names(dat))
-    names(dat) <- tolower(names(dat))
-
-    dat$end_year <- dat$endyear
-    dat <- dat[, names(dat) != "endyear"]
-
-    # Add a cycle column
-    dat$cycle <- paste(dat$begin_year, dat$end_year, sep = "-")
-
-    # Extract units (when available) into a separate column
-    # TODO: think about how to fix this, right now it works but it picks up a lot of non-unit things
-    units <- regmatches(dat$variable_description, gregexpr("\\((.*?)\\)", dat$variable_description))
-    units[sapply(units, length) == 0] <- NA # Replace blanks with NAs
-    units[dat$component != 'Laboratory' & dat$component != 'Examination'] <- NA # Replace anything picked up in the non-lab variables as NAs
-    units <- Map(function(x) tail(x, 1), units)
-    units <- unlist(units)
-    units <- Map(function(x) substr(x, 2, nchar(x) - 1), units)
-
-    dat$unit <- unlist(units)
-
-    dat$component = tolower(dat$component)
+    dat <- lapply(components, parse_variable_list)
+    dat <- Reduce(rbind, dat)
 
     if(cache == TRUE) {
       write.csv(dat, file = destination_csv, row.names = FALSE)

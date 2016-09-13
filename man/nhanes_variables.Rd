@@ -4,12 +4,20 @@
 \alias{nhanes_variables}
 \title{Load the NHANES comprehensive variable list}
 \usage{
-nhanes_variables(destination = tempfile(), cache = TRUE)
+nhanes_variables(components = "all", destination = tempfile(),
+  cache = TRUE)
 }
 \arguments{
+\item{components}{one of "all", "demographics", "dietary", "examination", "laboratory", "questionnaire"}
+
 \item{destination}{where to save the variable list}
 
-\item{cache}{whether to cache the downloaded variable list so it doesn't have to be re-downloaded every time}
+\item{cache}{whether to cache the downloaded variable list so it doesn't have to be re-downloaded every time
+
+Helper function for nhanes_variables function}
+}
+\value{
+dat
 }
 \description{
 Load the NHANES comprehensive variable list
