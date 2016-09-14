@@ -92,7 +92,7 @@ test_that("Downloading files from NHANES works", {
       dat <- nhanes_variables(destination = destination)
 
       expect_true(file.exists(file.path(destination, "nhanes_variables.csv")))
-      expect_more_than(nrow(dat), 100)
+      expect_gt(nrow(dat), 100)
     })
   })
 
@@ -250,7 +250,7 @@ test_that("Downloading files from NHANES works", {
       dat <- nhanes_load_data("EPH", "2007-2008", cache = TRUE)
 
       expect_true(file.exists(file.path(tempdir(), "EPH_E.csv")))
-      expect_more_than(nrow(dat), 0)
+      expect_gt(nrow(dat), 0)
 
       # Clean up
       unlink(file.path(tempdir(), "EPH_E.csv"))

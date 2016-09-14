@@ -19,7 +19,7 @@ test_that("Downloading variable list and data file list works", {
       files <- nhanes_data_files(destination = destination)
 
       expect_true(file.exists(file.path(destination, "nhanes_data_files.csv")))
-      expect_more_than(nrow(files), 0)
+      expect_gt(nrow(files), 0)
       expect_equivalent(unique(files$component), c("demographics", "dietary", "examination", "laboratory", "questionnaire"))
 
       # Clean up
@@ -30,7 +30,7 @@ test_that("Downloading variable list and data file list works", {
       files <- nhanes_data_files(component = "laboratory", destination = destination)
 
       expect_true(file.exists(file.path(destination, "nhanes_data_files.csv")))
-      expect_more_than(nrow(files), 0)
+      expect_gt(nrow(files), 0)
       expect_equivalent(unique(files$component), c("laboratory"))
 
       # Clean up
@@ -59,7 +59,7 @@ test_that("Downloading variable list and data file list works", {
       variables <- nhanes_variables(destination = destination)
 
       expect_true(file.exists(file.path(destination, "nhanes_variables.csv")))
-      expect_more_than(nrow(variables), 0)
+      expect_gt(nrow(variables), 0)
 
       # Clean up
       unlink(file.path(destination, "nhanes_variables.csv"))
