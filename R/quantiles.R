@@ -29,7 +29,7 @@ nhanes_quantile <- function(nhanes_data, column, comment_column = "", weights_co
 
   # Check to see if any of the computed quantiles are <LOD
   callback <- function(dat, df) {
-    if(comment_column != FALSE) {
+    if(df$comment_column[1] != FALSE) {
       dl <- unique(lookup_dl(first(df$column), first(df$cycle)))
 
       if(length(dl) == 1) {
