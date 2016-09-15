@@ -52,7 +52,7 @@ nhanes_hist <- function(nhanes_data, column, comment_column, weights_column = ""
     data = nhanes_data
   )
 
-  if(!is.null(filter)) {
+  if(!is.null(filter) && filter != "") {
     filter <- deparse(filter)
     output = eval(parse(text=filter), envir = des$variables)
     des <- des[output,]
