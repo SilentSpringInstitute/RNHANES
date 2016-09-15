@@ -197,8 +197,9 @@ parse_variable_list <- function(component, destination = tempfile()) {
 #' @importFrom utils download.file
 #' @export
 nhanes_variables <- function(components = "all", destination = tempfile(), cache = TRUE) {
+  components <- paste0(toupper(substr(components, 1, 1)), tolower(substr(components, 2, nchar(components))))
+
   all_components <- c("Demographics", "Dietary", "Examination", "Laboratory", "Questionnaire")
-  components = tolower(components)
 
   if(components == "all") {
     components = all_components
