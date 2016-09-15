@@ -4,7 +4,7 @@
 [![Build Status](https://travis-ci.org/SilentSpringInstitute/RNHANES.svg?branch=master)](https://travis-ci.org/SilentSpringInstitute/RNHANES)
 [![codecov.io](https://codecov.io/github/SilentSpringInstitute/RNHANES/coverage.svg?branch=master)](https://codecov.io/github/SilentSpringInstitute/RNHANES?branch=master)
 
-![Demo of RNHANES](http://i.imgur.com/TCYW4qR.gifv)
+![Demo of RNHANES](http://i.imgur.com/TCYW4qR.gif)
 
 ## Examples
 
