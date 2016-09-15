@@ -40,7 +40,7 @@ nhanes_vcov <- function(nhanes_data, columns, weights_column = "", filter = "") 
   if(sum(!(columns %in% colnames(nhanes_data))) > 0) {
     nonexistent_columns = columns[!(columns %in% colnames(nhanes_data))]
 
-    stop(paste0("Could not find columns ", paste0(nonexistent_columns, sep = ", ", collapse = TRUE)))
+    stop(paste0("Could not find columns ", paste0(nonexistent_columns, collapse = ", ")))
   }
 
   nhanes_data <- remove_na_weights(nhanes_data, weights_column)

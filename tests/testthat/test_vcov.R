@@ -12,8 +12,7 @@ test_that("nhanes_vcov works correctly", {
   })
 
   test_that("nhanes_vcov errors on incorrect column inputs", {
-    covariance <- nhanes_vcov(nhanes_data, columns = c("test", "test2"))
-
+    expect_error(covariance <- nhanes_vcov(nhanes_data, columns = c("test", "test2")))
   })
 
   test_that("nhanes_vcov does not accept a list as input", {
