@@ -1,7 +1,7 @@
 #' Compute the covariance between NHANES variables
 #'
 #' @param nhanes_data data frame containing NHANES data
-#' @param column column name of the variable to compute quantiles for
+#' @param columns columns to compute correlations for
 #' @param weights_column name of the weights column
 #' @param filter logical expression used to subset the data
 #'
@@ -20,7 +20,7 @@
 #' }
 #'
 #' @export
-nhanes_vcov <- function(nhanes_data, column, weights_column = "", filter = "") {
+nhanes_vcov <- function(nhanes_data, columns, weights_column = "", filter = "") {
   if(is.list(nhanes_data) && !is.data.frame(nhanes_data)) {
     stop("nhanes_vcov does not support multiple cycle years/files as input. Please supply a data frame.")
   }
@@ -37,6 +37,12 @@ nhanes_vcov <- function(nhanes_data, column, weights_column = "", filter = "") {
     message(paste0("Weights column wasn't specified -- using ", weights_column, " for weights"))
   }
 
+  if(sum(!(columns %in% colnames(nhanes_data))) > 0) {
+    nonexistent_columns = columns[!(columns %in% colnames(nhanes_data))]
+
+    stop(paste0("Could not find columns ", paste0(nonexistent_columns, sep = ", ", collapse = TRUE)))
+  }
+
   nhanes_data <- remove_na_weights(nhanes_data, weights_column)
 
   des <- svydesign(
@@ -47,7 +53,7 @@ nhanes_vcov <- function(nhanes_data, column, weights_column = "", filter = "") {
     data = nhanes_data
   )
 
-  f <- as.formula(paste("~", paste(column, collapse = " + ")))
+  f <- as.formula(paste("~", paste(columns, collapse = " + ")))
 
   vcov(svymean(f, des, na.rm = TRUE))
 }
