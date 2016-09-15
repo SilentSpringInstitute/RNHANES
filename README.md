@@ -1,10 +1,26 @@
 # RNHANES
-`RNHANES` is an R package for accessing and analyzing CDC [NHANES](http://www.cdc.gov/nchs/nhanes.htm) data developed by [Silent Spring Institute](http://silentspring.org).
+`RNHANES` is an R package for accessing and analyzing CDC [NHANES](http://www.cdc.gov/nchs/nhanes.htm) data that was developed by [Silent Spring Institute](http://silentspring.org).
 
 [![Build Status](https://travis-ci.org/SilentSpringInstitute/RNHANES.svg?branch=master)](https://travis-ci.org/SilentSpringInstitute/RNHANES)
 [![codecov.io](https://codecov.io/github/SilentSpringInstitute/RNHANES/coverage.svg?branch=master)](https://codecov.io/github/SilentSpringInstitute/RNHANES?branch=master)
 
 ![Demo of RNHANES](http://i.imgur.com/TCYW4qR.gif)
+
+## Features
+
+- Download and search NHANES variable and data file lists
+- Download and cache NHANES data files
+- Compute sample sizes, detection frequencies, sample sizes, and covariance matrices
+
+## Install
+
+The simplest way to install `RHNAHES` is to use the `devtools` package
+
+```R
+library(devtools)
+
+install_github("silentspringinstitute/RNHANES")
+```
 
 ## Examples
 
@@ -24,6 +40,12 @@ nhanes_sample_size(dat,
   comment_column = "URDTRSLC",
   weights_column = "WTSA2YR")
 
+# Compute the detection frequency of urinary triclosan
+nhanes_detection_frequency(dat,
+  column = "URXTRS",
+  comment_column = "URDTRSLC",
+  weights_column = "WTSA2YR")
+
 # Compute 95th and 99th quantiles for urinary triclosan
 nhanes_quantile(dat,
   column = "URXTRS",
@@ -31,20 +53,15 @@ nhanes_quantile(dat,
   weights_column = "WTSA2YR",
   quantiles = c(0.95, 0.99))
 
-# Compute the detection frequency of urinary triclosan
-nhanes_detection_frequency(dat,
+# Plot a histogram of the urinary triclosan distribution
+nhanes_hist(dat,
   column = "URXTRS",
   comment_column = "URDTRSLC",
   weights_column = "WTSA2YR")
 
+# Compute covariance matrix for urinary triclosan and butyl paraben
+nhanes_vcov(dat,
+  columns = "URXTRS", "URXBUP")
+  
 ```
 
-## Install
-
-The simplest way to install `RHNAHES` is to use the `devtools` package
-
-```R
-library(devtools)
-
-install_github("silentspringinstitute/RNHANES")
-```
