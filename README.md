@@ -11,6 +11,7 @@
 - Download and search NHANES variable and data file lists
 - Download and cache NHANES data files
 - Compute sample sizes, detection frequencies, sample sizes, and covariance matrices
+- Plot weighted histograms
 
 ## Install
 
