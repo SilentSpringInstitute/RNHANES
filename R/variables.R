@@ -201,7 +201,7 @@ nhanes_variables <- function(components = "all", destination = tempfile(), cache
 
   all_components <- c("Demographics", "Dietary", "Examination", "Laboratory", "Questionnaire")
 
-  if(components == "all") {
+  if(tolower(components) == "all") {
     components = all_components
   } else {
     if(sum(!components %in% all_components) > 0) {
