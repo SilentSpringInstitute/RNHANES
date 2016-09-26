@@ -229,6 +229,15 @@ names(inputs) <- c("cycle", "column", "comment_column", "weights_column")
 nhanes_detection_frequency(triclosan, inputs)
 ```
 
+### Sample Size
+
+The `nhanes_sample_size` function computes sample sizes of one or more analytes:
+
+```{r, eval=NOT_CRAN}
+nhanes_sample_size(phenols, "URXBPH", "URDBPHLC", "WTSB2YR")
+```
+
+
 ### Other survey statistics
 You can use any function from the `survey` package to analyze your data through the `nhanes_survey` function. This provides a generic way to apply a survey function to NHANES data.
 
@@ -239,4 +248,16 @@ library(survey)
 
 nhanes_survey(svymean, phenols, "URXBPH", "URDBPHLC", "WTSB2YR", na.rm = TRUE)
 
+```
+
+### Weighted histograms
+Use `nhanes_hist` to plot the weighted histogram of an NHANEs variable.
+```{r, eval=NOT_CRAN}
+nhanes_hist(phenols, "URXBPH", "URDBPHLC", "WTSB2YR")
+```
+
+you can transform the data before plotting the histogram by supplying a `transform` function:
+
+```{r, eval=NOT_CRAN}
+nhanes_hist(phenols, "URXBPH", "URDBPHLC", "WTSB2YR", transform="log")
 ```
