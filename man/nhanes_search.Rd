@@ -12,7 +12,7 @@ nhanes_search(nhanes_data, query, ..., fuzzy = FALSE, ignore_case = TRUE,
 
 \item{query}{regular expression search query}
 
-\item{...}{additional arguments to pass to subset}
+\item{...}{additional arguments to pass to dplyr::filter}
 
 \item{fuzzy}{whether to use fuzzy string matching for search (based on edit distances)}
 

@@ -20,7 +20,8 @@ Imports:
     survey,
     rvest,
     xml2,
-    methods
+    methods,
+    dplyr
 Suggests:
     testthat,
     knitr,

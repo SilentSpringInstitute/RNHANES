@@ -245,12 +245,14 @@ nhanes_variables <- function(components = "all", destination = tempfile(), cache
 #'
 #' @param nhanes_data nhanes variable list, from nhanes_variables function, or data file list, from nhanes_data_files
 #' @param query regular expression search query
-#' @param ... additional arguments to pass to subset
+#' @param ... additional arguments to pass to dplyr::filter
 #' @param fuzzy whether to use fuzzy string matching for search (based on edit distances)
 #' @param ignore_case whether search query is case-sensitive
 #' @param max_distance parameter for tuning fuzzy string matching, 0-1
 #'
 #' @return data frame filtered by search query
+#'
+#' @importFrom dplyr filter
 #'
 #' @examples
 #'
@@ -277,19 +279,19 @@ nhanes_search <- function(nhanes_data, query, ..., fuzzy = FALSE, ignore_case = 
     result <- nhanes_data %>% subset(...)
   } else if(nhanes_attribute == 'nhanes_files') {
     if(fuzzy) {
-      result <- nhanes_data %>%
-        subset(agrepl(query, nhanes_data$data_file_description, ignore.case = ignore_case, max.distance = list(all = max_distance)) | agrepl(query, nhanes_data$data_file, ignore.case = ignore_case, max.distance = list(all = max_distance)), ...)
+      result <- filter(nhanes_data,
+                       agrepl(query, data_file_description, ignore.case = ignore_case, max.distance = list(all = max_distance)) | agrepl(query, nhanes_data$data_file, ignore.case = ignore_case, max.distance = list(all = max_distance)), ...)
     } else {
-      result <- nhanes_data %>%
-        subset(grepl(query, nhanes_data$data_file_description, ignore.case = ignore_case) | grepl(query, nhanes_data$data_file, ignore.case = ignore_case), ...)
+      result <- filter(nhanes_data,
+                       grepl(query, data_file_description, ignore.case = ignore_case) | grepl(query, nhanes_data$data_file, ignore.case = ignore_case), ...)
     }
   } else if(nhanes_attribute == 'nhanes_variables') {
     if(fuzzy) {
-      result <- nhanes_data %>%
-        subset(agrepl(query, nhanes_data$variable_description, ignore.case = ignore_case, max.distance = list(all = max_distance)) | agrepl(query, nhanes_data$variable_name, ignore.case = ignore_case, max.distance = list(all = max_distance)), ...)
+      result <- filter(nhanes_data,
+                       agrepl(query, variable_description, ignore.case = ignore_case, max.distance = list(all = max_distance)) | agrepl(query, nhanes_data$variable_name, ignore.case = ignore_case, max.distance = list(all = max_distance)), ...)
     } else {
-      result <- nhanes_data %>%
-        subset(grepl(query, nhanes_data$variable_description, ignore.case = ignore_case) | grepl(query, nhanes_data$variable_name, ignore.case = ignore_case), ...)
+      result <- filter(nhanes_data,
+                       grepl(query, variable_description, ignore.case = ignore_case) | grepl(query, nhanes_data$variable_name, ignore.case = ignore_case), ...)
     }
   }
 
