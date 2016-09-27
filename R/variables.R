@@ -278,18 +278,18 @@ nhanes_search <- function(nhanes_data, query, ..., fuzzy = FALSE, ignore_case = 
   } else if(nhanes_attribute == 'nhanes_files') {
     if(fuzzy) {
       result <- nhanes_data %>%
-        subset(agrepl(query, data_file_description, ignore.case = ignore_case, max.distance = list(all = max_distance)) | agrepl(query, data_file, ignore.case = ignore_case, max.distance = list(all = max_distance)), ...)
+        subset(agrepl(query, nhanes_data$data_file_description, ignore.case = ignore_case, max.distance = list(all = max_distance)) | agrepl(query, nhanes_data$data_file, ignore.case = ignore_case, max.distance = list(all = max_distance)), ...)
     } else {
       result <- nhanes_data %>%
-        subset(grepl(query, data_file_description, ignore.case = ignore_case) | grepl(query, data_file, ignore.case = ignore_case), ...)
+        subset(grepl(query, nhanes_data$data_file_description, ignore.case = ignore_case) | grepl(query, nhanes_data$data_file, ignore.case = ignore_case), ...)
     }
   } else if(nhanes_attribute == 'nhanes_variables') {
     if(fuzzy) {
       result <- nhanes_data %>%
-        subset(agrepl(query, variable_description, ignore.case = ignore_case, max.distance = list(all = max_distance)) | agrepl(query, variable_name, ignore.case = ignore_case, max.distance = list(all = max_distance)), ...)
+        subset(agrepl(query, nhanes_data$variable_description, ignore.case = ignore_case, max.distance = list(all = max_distance)) | agrepl(query, nhanes_data$variable_name, ignore.case = ignore_case, max.distance = list(all = max_distance)), ...)
     } else {
       result <- nhanes_data %>%
-        subset(grepl(query, variable_description, ignore.case = ignore_case) | grepl(query, variable_name, ignore.case = ignore_case), ...)
+        subset(grepl(query, nhanes_data$variable_description, ignore.case = ignore_case) | grepl(query, nhanes_data$variable_name, ignore.case = ignore_case), ...)
     }
   }
 
