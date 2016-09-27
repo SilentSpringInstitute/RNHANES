@@ -10,7 +10,6 @@
 #' @return a data frame
 #'
 #' @import survey
-#' @importFrom dplyr first
 #'
 #' @examples
 #'
@@ -30,7 +29,7 @@ nhanes_quantile <- function(nhanes_data, column, comment_column = "", weights_co
   # Check to see if any of the computed quantiles are <LOD
   callback <- function(dat, df) {
     if(df$comment_column[1] != FALSE) {
-      dl <- unique(lookup_dl(first(df$column), first(df$cycle)))
+      dl <- unique(lookup_dl(df$column[1], df$cycle[1]))
 
       if(length(dl) == 1) {
         df$below_lod <- df$value < dl
@@ -39,10 +38,10 @@ nhanes_quantile <- function(nhanes_data, column, comment_column = "", weights_co
       } else if(length(dl) == 0) {
         warning("No detection limit found from the summary tables. Falling back to inferring detection limit from the fill value.")
 
-        inferred_dl <- dat[, first(df$column)][is.na(dat[, first(df$comment_column)]) == FALSE & dat[, first(df$comment_column)] == 1]
+        inferred_dl <- dat[, df$column[1]][is.na(dat[, df$comment_column[1]]) == FALSE & dat[, df$comment_column[1]] == 1]
 
         if(length(unique(inferred_dl)) == 1) {
-          inferred_dl <- first(inferred_dl)
+          inferred_dl <- inferred_dl[1]
           df$below_lod <- ifelse(df$value == inferred_dl, TRUE, FALSE)
           df$below_lod <- if(is.na(inferred_dl)) FALSE else df$below_lod
         }
@@ -51,9 +50,9 @@ nhanes_quantile <- function(nhanes_data, column, comment_column = "", weights_co
 
           nd_quantiles <- nhanes_survey(svyquantile,
                                         dat,
-                                        column = first(df$column),
-                                        comment_column = first(df$comment_column),
-                                        weights_column = first(df$weights_column),
+                                        column = df$column[1],
+                                        comment_column = df$comment_column[1],
+                                        weights_column = df$weights_column[1],
                                         analyze = "comments",
                                         filter = filter,
                                         quantiles = 1 - quantiles,

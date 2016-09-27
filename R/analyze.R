@@ -10,7 +10,6 @@
 #' @return a data frame
 #'
 #' @import survey
-#' @importFrom dplyr first
 #'
 nhanes_analyze <- function(analysis_fun, nhanes_data, column, comment_column = "", weights_column = "", filter = NULL) {
   # Workaround
@@ -23,10 +22,10 @@ nhanes_analyze <- function(analysis_fun, nhanes_data, column, comment_column = "
   # `column` should be a data frame specifying the columns to use in each cycle.
   if(is.list(nhanes_data) && is.data.frame(nhanes_data) == FALSE && is.data.frame(column)) {
     dat <- lapply(nhanes_data, function(df) {
-      rows <- column[column$cycle == first(df$cycle),]
+      rows <- column[column$cycle == df$cycle[1],]
 
       if("file_name" %in% names(column)) {
-        rows <- rows[rows$file_name == first(df$file_name),]
+        rows <- rows[rows$file_name == df$file_name[1],]
       }
 
       if(nrow(rows) > 0) {

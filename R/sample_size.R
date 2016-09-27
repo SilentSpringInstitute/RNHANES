@@ -9,7 +9,6 @@
 #' @return a data frame
 #'
 #' @import survey
-#' @importFrom dplyr first
 #'
 #' @examples
 #'
@@ -36,10 +35,10 @@ nhanes_sample_size <- function(nhanes_data, column, comment_column = "", weights
 
     ret <- data.frame(
       value            = sample_size,
-      cycle            = first(nhanes_data$cycle),
-      begin_year       = first(nhanes_data$begin_year),
-      end_year         = first(nhanes_data$end_year),
-      file_name        = first(nhanes_data$file_name),
+      cycle            = nhanes_data$cycle[1],
+      begin_year       = nhanes_data$begin_year[1],
+      end_year         = nhanes_data$end_year[1],
+      file_name        = nhanes_data$file_name[1],
       column           = unname(column),
       weights_column   = unname(weights_column),
       comment_column   = unname(comment_column),

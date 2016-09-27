@@ -12,7 +12,6 @@
 #'
 #' @return a data frame
 #'
-#' @importFrom dplyr first
 #'
 #' @details
 #' This function provides a generic way to apply any function from the survey package to NHANES data.
@@ -60,10 +59,10 @@ nhanes_survey <- function(survey_fun, nhanes_data, column, comment_column = "", 
 
     ret <- data.frame(
       value            = unname(res),
-      cycle            = first(nhanes_data$cycle),
-      begin_year       = first(nhanes_data$begin_year),
-      end_year         = first(nhanes_data$end_year),
-      file_name        = first(nhanes_data$file_name),
+      cycle            = nhanes_data$cycle[1],
+      begin_year       = nhanes_data$begin_year[1],
+      end_year         = nhanes_data$end_year[1],
+      file_name        = nhanes_data$file_name[1],
       column           = unname(column),
       weights_column   = unname(weights_column),
       comment_column   = unname(comment_column),
