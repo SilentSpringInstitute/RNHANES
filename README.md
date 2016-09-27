@@ -63,6 +63,9 @@ nhanes_hist(dat,
 # Compute covariance matrix for urinary triclosan and butyl paraben
 nhanes_vcov(dat,
   columns = "URXTRS", "URXBUP")
-  
+
+# Build a survey design object for use with survey package
+design <- nhanes_survey_design(dat, weights_column = "WTSA2YR")
+
 ```
 
