@@ -15,7 +15,12 @@
 
 ## Install
 
-The simplest way to install `RHNAHES` is to use the `devtools` package
+You can install the latest stable version through CRAN:
+```R
+install.packages("RNHANES")
+```
+
+Or you can install the latest development version from github:
 
 ```R
 library(devtools)
