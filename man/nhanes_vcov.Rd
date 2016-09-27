@@ -2,14 +2,14 @@
 % Please edit documentation in R/vcov.R
 \name{nhanes_vcov}
 \alias{nhanes_vcov}
-\title{Compute the covariance between NHANES variables}
+\title{Extract variance/covariance matrix from parameters of svymean}
 \usage{
 nhanes_vcov(nhanes_data, columns, weights_column = "", filter = "")
 }
 \arguments{
 \item{nhanes_data}{data frame containing NHANES data}
 
-\item{columns}{columns to compute correlations for}
+\item{columns}{columns to include in svymean for}
 
 \item{weights_column}{name of the weights column}
 
@@ -19,7 +19,7 @@ nhanes_vcov(nhanes_data, columns, weights_column = "", filter = "")
 a data frame
 }
 \description{
-Compute the covariance between NHANES variables
+Extract variance/covariance matrix from parameters of svymean
 }
 \examples{
 

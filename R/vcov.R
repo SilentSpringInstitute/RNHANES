@@ -1,7 +1,7 @@
-#' Compute the covariance between NHANES variables
+#' Extract variance/covariance matrix from parameters of svymean
 #'
 #' @param nhanes_data data frame containing NHANES data
-#' @param columns columns to compute correlations for
+#' @param columns columns to include in svymean for
 #' @param weights_column name of the weights column
 #' @param filter logical expression used to subset the data
 #'
