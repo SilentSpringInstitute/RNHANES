@@ -16,5 +16,10 @@ lookup <- function(column, cycle) {
 
 lookup_dl <- function(column, cycle) {
   dl_column <- paste0("X", gsub('-', '.', cycle))
+
+  if(!dl_column %in% names(lookup_table)) {
+    return()
+  }
+
   return(lookup(column, cycle)[,dl_column])
 }
