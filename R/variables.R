@@ -133,7 +133,7 @@ nhanes_data_files <- function(components = "all", destination = tempfile(), cach
 #
 # @return dat
 parse_variable_list <- function(component, destination = tempfile()) {
-  url <- paste0("http://wwwn.cdc.gov/nchs/nhanes/search/variablelist.aspx?Component=", component)
+  url <- paste0("https://wwwn.cdc.gov/nchs/nhanes/search/variablelist.aspx?Component=", component)
 
   download.file(url, destination, method='auto', mode='wb')
 
