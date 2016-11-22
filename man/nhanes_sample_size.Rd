@@ -29,7 +29,7 @@ Compute the sample size of NHANES data
 \dontrun{
 dat <- nhanes_load_data("UHG_G", "2011-2012", demographics = TRUE)
 
-nhanes_sample_size(dat, "URXUHG")
+nhanes_sample_size(dat, "URXUHG", "URDUHGLC")
 }
 
 }
