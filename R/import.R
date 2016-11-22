@@ -198,7 +198,7 @@ download_nhanes_file <- function(file_name, year, destination = tempdir(), cache
     return(destination)
   }
 
-  url <- paste0("http://wwwn.cdc.gov/Nchs/Nhanes/", year, '/', file_name)
+  url <- paste0("https://wwwn.cdc.gov/Nchs/Nhanes/", year, '/', file_name)
 
   message(paste0("Downloading ", file_name, " to ", destination));
 
