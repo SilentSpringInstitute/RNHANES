@@ -1,6 +1,7 @@
 # RNHANES
 `RNHANES` is an R package for accessing and analyzing CDC [NHANES](http://www.cdc.gov/nchs/nhanes.htm) data that was developed by [Silent Spring Institute](http://silentspring.org).
 
+[![CRAN Version](http://www.r-pkg.org/badges/version/RNHANES)](https://cran.r-project.org/web/packages/RNHANES/)
 [![Build Status](https://travis-ci.org/SilentSpringInstitute/RNHANES.svg?branch=master)](https://travis-ci.org/SilentSpringInstitute/RNHANES)
 [![codecov.io](https://codecov.io/github/SilentSpringInstitute/RNHANES/coverage.svg?branch=master)](https://codecov.io/github/SilentSpringInstitute/RNHANES?branch=master)
 
