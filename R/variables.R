@@ -26,7 +26,7 @@ nhanes_cycle_years <- function() {
 #
 # @return dat
 parse_data_files_page <- function(component, destination = tempfile()) {
-  url <- paste0("http://wwwn.cdc.gov/Nchs/Nhanes/Search/DataPage.aspx?Component=", component)
+  url <- paste0("https://wwwn.cdc.gov/Nchs/Nhanes/Search/DataPage.aspx?Component=", component)
   message(paste0("Downloading NHANES data file list to ", destination));
 
   download.file(url, destination, method='auto', mode='wb')
@@ -107,7 +107,7 @@ nhanes_data_files <- function(components = "all", destination = tempfile(), cach
 
     dat$confidential <- dat$data_file == "RDC Only"
 
-    m <- regexec("(.+) Data \\[(.+), ([0-9\\.]+ [A-Z]+)\\]", dat$data_file)
+    m <- regexec("(.+) Data \\[(.+) ([0-9\\.]+ [A-Z]+)\\]", dat$data_file)
     matches <- regmatches(dat$data_file, m) %>%
       lapply(function(item) if(length(item) == 0) c(NA, NA, NA) else item[2:4])
     matches <- Reduce(rbind, matches) %>% as.data.frame(stringsAsFactors = FALSE)

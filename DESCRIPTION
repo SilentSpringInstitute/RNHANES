@@ -1,7 +1,7 @@
 Package: RNHANES
 Type: Package
 Title: Facilitates Analysis of CDC NHANES Data
-Version: 1.0
+Version: 1.1
 Date: 2016-09-27
 Authors@R: c(
   person("Herb", "Susmann", email="susmann@silentspring.org", role=c("cre", "aut")),
