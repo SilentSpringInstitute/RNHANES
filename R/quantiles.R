@@ -17,7 +17,7 @@
 #' dat <- nhanes_load_data("UHG_G", "2011-2012", demographics = TRUE)
 #'
 #' # Compute 50th, 95th, and 99th quantiles
-#' nhanes_quantile(dat, "URXUHG", "WTSA2YR", c(0.5, 0.95, 0.99))
+#' nhanes_quantile(dat, "URXUHG", "URDUHGLC", "WTSA2YR", c(0.5, 0.95, 0.99))
 #' }
 #'
 #' @export
