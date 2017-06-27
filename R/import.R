@@ -473,7 +473,7 @@ nhanes_load_data <- function(file_name, year, destination = tempdir(), demograph
       }
 
       # Caching is built in to the demography_data function, so we don't have to worry about it
-      demography_data <- nhanes_load_demography_data(year, destination = destination, cache = cache)
+      demography_data <- nhanes_load_demography_data(year, destination = destination, cache = cache, method = method)
 
       # Handle recoding data
       if(recode == TRUE || recode_demographics == TRUE) {
@@ -487,7 +487,7 @@ nhanes_load_data <- function(file_name, year, destination = tempdir(), demograph
         } else {
           # If not, we have to download the description html and parse it
           demographics_description_file_name <- gsub(".XPT", ".htm", demography_filename(year))
-          demographics_description <- load_nhanes_description(demographics_description_file_name, year, destination, cache)
+          demographics_description <- load_nhanes_description(demographics_description_file_name, year, destination, cache, method = method)
           demography_data <- recode_nhanes_data(demography_data, demographics_description)
 
           if(cache == TRUE) {
