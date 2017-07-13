@@ -12,6 +12,10 @@
 #' @import survey
 #'
 nhanes_analyze <- function(analysis_fun, nhanes_data, column, comment_column = "", weights_column = "", filter = NULL) {
+  if(hasArg(filter) && substitute(filter) != "filter" && !exists(deparse(substitute(filter)), parent.frame())) {
+    filter <- substitute(filter)
+  }
+
   # Workaround
   # without this, R CMD CHECK will complain about file_name being used in the subset call because it
   # looks like a global variable
