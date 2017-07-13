@@ -158,7 +158,8 @@ process_file_name <- function(file_name, year, extension = ".XPT") {
 #' @param cache whether to cache the file
 #'
 #' @return path to the downloaded file
-download_nhanes_file <- function(file_name, year, destination = tempdir(), cache = TRUE) {
+
+download_nhanes_file <- function(file_name, year, destination = tempdir(), cache = TRUE, method='auto') {
   validate_year(year)
 
   if(missing(destination)) {
@@ -184,7 +185,7 @@ download_nhanes_file <- function(file_name, year, destination = tempdir(), cache
   # in that year.
   #
   if(length(file_name) > 1 || length(year) > 1) {
-    Map(download_nhanes_file, file_name, year,  destination = destination, cache = cache) %>%
+    Map(download_nhanes_file, file_name, year,  destination = destination, cache = cache, method = method) %>%
       unlist() %>%
       unname() %>%
       return()
@@ -202,7 +203,7 @@ download_nhanes_file <- function(file_name, year, destination = tempdir(), cache
 
   message(paste0("Downloading ", file_name, " to ", destination));
 
-  download.file(url, destination, method='auto', mode='wb')
+  download.file(url, destination, method=method, mode='wb')
 
   return(destination)
 }
@@ -223,7 +224,7 @@ merge.data.with.demographics <- function(nhanes.demo, nhanes.lab) {
 #'
 #'
 #' @return data frame containing the file description
-load_nhanes_description <- function(file_name, year, destination = tempdir(), cache = FALSE) {
+load_nhanes_description <- function(file_name, year, destination = tempdir(), cache = FALSE, method = 'auto') {
   validate_year(year)
 
   if(missing(destination)) {
@@ -236,7 +237,7 @@ load_nhanes_description <- function(file_name, year, destination = tempdir(), ca
 
   file_name <- process_file_name(file_name, year, ".htm")
 
-  full_path <- download_nhanes_file(file_name, year, destination, cache = cache)
+  full_path <- download_nhanes_file(file_name, year, destination, cache = cache, method = method)
 
   html <- read_html(full_path)
 
@@ -380,7 +381,7 @@ get_cache_file_path <- function(file_name, year, destination, demographics = FAL
 #'
 #' @importFrom foreign read.xport
 #' @export
-nhanes_load_data <- function(file_name, year, destination = tempdir(), demographics = FALSE, cache = TRUE, recode = FALSE, recode_data = FALSE, recode_demographics = FALSE, allow_duplicate_files = FALSE) {
+nhanes_load_data <- function(file_name, year, destination = tempdir(), demographics = FALSE, cache = TRUE, recode = FALSE, recode_data = FALSE, recode_demographics = FALSE, allow_duplicate_files = FALSE, method = 'auto') {
   validate_year(year)
 
   if(missing(destination)) {
@@ -443,7 +444,7 @@ nhanes_load_data <- function(file_name, year, destination = tempdir(), demograph
     } else {
 
       # Download the base data file from NHANES
-      full_path <- download_nhanes_file(file_name, year, destination, cache = cache)
+      full_path <- download_nhanes_file(file_name, year, destination, cache = cache, method = method)
       dat <- read.xport(full_path)
 
       dat$file_name = file_name
@@ -472,7 +473,7 @@ nhanes_load_data <- function(file_name, year, destination = tempdir(), demograph
       }
 
       # Caching is built in to the demography_data function, so we don't have to worry about it
-      demography_data <- nhanes_load_demography_data(year, destination = destination, cache = cache)
+      demography_data <- nhanes_load_demography_data(year, destination = destination, cache = cache, method = method)
 
       # Handle recoding data
       if(recode == TRUE || recode_demographics == TRUE) {
@@ -486,7 +487,7 @@ nhanes_load_data <- function(file_name, year, destination = tempdir(), demograph
         } else {
           # If not, we have to download the description html and parse it
           demographics_description_file_name <- gsub(".XPT", ".htm", demography_filename(year))
-          demographics_description <- load_nhanes_description(demographics_description_file_name, year, destination, cache)
+          demographics_description <- load_nhanes_description(demographics_description_file_name, year, destination, cache, method = method)
           demography_data <- recode_nhanes_data(demography_data, demographics_description)
 
           if(cache == TRUE) {
@@ -520,7 +521,7 @@ nhanes_load_data <- function(file_name, year, destination = tempdir(), demograph
 #'
 #' @export
 #' @importFrom foreign read.xport
-nhanes_load_demography_data <- function(year, destination = tempdir(), cache = FALSE) {
+nhanes_load_demography_data <- function(year, destination = tempdir(), cache = FALSE, method = 'auto') {
   validate_year(year)
 
   if(missing(destination)) {
@@ -539,7 +540,7 @@ nhanes_load_demography_data <- function(year, destination = tempdir(), cache = F
     dat <- read.csv(csv_path, stringsAsFactors = FALSE)
   }
   else {
-    full_path <- download_nhanes_file(demography_filename(year), year, destination, cache = cache)
+    full_path <- download_nhanes_file(demography_filename(year), year, destination, cache = cache, method = method)
     dat <- read.xport(full_path)
 
     if(cache == TRUE) {
