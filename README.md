@@ -71,3 +71,28 @@ design <- nhanes_survey_design(dat, weights_column = "WTSA2YR")
 
 ```
 
+### Geometric mean
+
+An easy way to calculate geometric means hasn't been built into RNHANES yet; however, you can compute them by taking the arithmetic mean of a log-transformed variable and exponentiating, as seen in this example.
+
+```R
+library(survey)
+library(RNHANES)
+library(tidyverse)
+
+dat <- nhanes_load_data("EPHPP_H", "2013-2014", demographics = TRUE) %>%
+  filter(!is.na(URXBPH))
+
+des <- nhanes_survey_design(dat, "WTSB2YR")
+
+logmean <- svymean(~log(URXBPH), des, na.rm = TRUE)
+
+# Geometric mean lower 95% confidence interval
+exp(logmean[1] - 1.96 * sqrt(attr(logmean, "var")))
+
+# Geometric mean
+exp(logmean)[1]
+
+# Geometric mean upper 95% confidence interval
+exp(logmean[1] + 1.96 * sqrt(attr(logmean, "var")))
+```
