@@ -36,7 +36,7 @@ nhanes_analyze <- function(analysis_fun, nhanes_data, column, comment_column = "
         args <- list(analysis_fun, df, column = rows$column)
 
         args$weights_column = if("weights_column" %in% names(column)) rows$weights_column else ""
-        args$comment_column = if("comment_column" %in% names(column)) rows$comment_column else ""
+        args$comment_column = if("comment_column" %in% names(column)) rows$comment_column else FALSE
         args$filter = filter
 
         return(do.call(nhanes_analyze, args))
