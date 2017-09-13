@@ -7,7 +7,7 @@
 nhanes_load_data(file_name, year, destination = tempdir(),
   demographics = FALSE, cache = TRUE, recode = FALSE,
   recode_data = FALSE, recode_demographics = FALSE,
-  allow_duplicate_files = FALSE)
+  allow_duplicate_files = FALSE, method = "auto")
 }
 \arguments{
 \item{file_name}{NHANES file name (e.g. "EPH") or a vector of filenames (e.g c("EPH", "GHB"))}
@@ -27,6 +27,8 @@ nhanes_load_data(file_name, year, destination = tempdir(),
 \item{recode_demographics}{whether to recode just the demographics}
 
 \item{allow_duplicate_files}{how to handle a request that has duplicate file names/cycle years. By default duplicates will be removed.}
+
+\item{method}{download method passed to download.file}
 }
 \value{
 if file_name or year is a vector, returns a list containing a data frame for each file_name. If file_name and year are both singletons, then a data frame is returned.

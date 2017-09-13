@@ -156,6 +156,7 @@ process_file_name <- function(file_name, year, extension = ".XPT") {
 #' @param year NHANES cycle
 #' @param destination directory to download the file into
 #' @param cache whether to cache the file
+#' @param method download method passed to download.file
 #'
 #' @return path to the downloaded file
 
@@ -221,7 +222,7 @@ merge.data.with.demographics <- function(nhanes.demo, nhanes.lab) {
 #' @param year NHANES cycle
 #' @param destination directory to download the file into
 #' @param cache whether to cache the file
-#'
+#' @param method download method passed to download.file
 #'
 #' @return data frame containing the file description
 load_nhanes_description <- function(file_name, year, destination = tempdir(), cache = FALSE, method = 'auto') {
@@ -347,6 +348,7 @@ get_cache_file_path <- function(file_name, year, destination, demographics = FAL
 #' @param recode_data whether to recode just the data
 #' @param recode_demographics whether to recode just the demographics
 #' @param allow_duplicate_files how to handle a request that has duplicate file names/cycle years. By default duplicates will be removed.
+#' @param method download method passed to download.file
 #'
 #' @return if file_name or year is a vector, returns a list containing a data frame for each file_name. If file_name and year are both singletons, then a data frame is returned.
 #'
@@ -513,6 +515,8 @@ nhanes_load_data <- function(file_name, year, destination = tempdir(), demograph
 #' @param year NHANES cycle year (e.g. "2011-2012")
 #' @param destination directory to download the file to
 #' @param cache whether load the file if it already exists on disk
+#' @param method download method passed to download.file
+#'
 #' @examples
 #'
 #' \dontrun{

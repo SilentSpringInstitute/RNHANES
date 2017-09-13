@@ -5,7 +5,7 @@
 \title{Download an NHANES description file}
 \usage{
 load_nhanes_description(file_name, year, destination = tempdir(),
-  cache = FALSE)
+  cache = FALSE, method = "auto")
 }
 \arguments{
 \item{file_name}{file name}
@@ -15,6 +15,8 @@ load_nhanes_description(file_name, year, destination = tempdir(),
 \item{destination}{directory to download the file into}
 
 \item{cache}{whether to cache the file}
+
+\item{method}{download method passed to download.file}
 }
 \value{
 data frame containing the file description

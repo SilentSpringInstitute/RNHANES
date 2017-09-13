@@ -4,7 +4,8 @@
 \alias{nhanes_load_demography_data}
 \title{Download NHANES demography files for a specific cycle.}
 \usage{
-nhanes_load_demography_data(year, destination = tempdir(), cache = FALSE)
+nhanes_load_demography_data(year, destination = tempdir(), cache = FALSE,
+  method = "auto")
 }
 \arguments{
 \item{year}{NHANES cycle year (e.g. "2011-2012")}
@@ -12,6 +13,8 @@ nhanes_load_demography_data(year, destination = tempdir(), cache = FALSE)
 \item{destination}{directory to download the file to}
 
 \item{cache}{whether load the file if it already exists on disk}
+
+\item{method}{download method passed to download.file}
 }
 \description{
 Download NHANES demography files for a specific cycle.

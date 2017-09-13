@@ -4,7 +4,8 @@
 \alias{download_nhanes_file}
 \title{Download an NHANES data file from a given cycle}
 \usage{
-download_nhanes_file(file_name, year, destination = tempdir(), cache = TRUE)
+download_nhanes_file(file_name, year, destination = tempdir(), cache = TRUE,
+  method = "auto")
 }
 \arguments{
 \item{file_name}{file name}
@@ -14,6 +15,8 @@ download_nhanes_file(file_name, year, destination = tempdir(), cache = TRUE)
 \item{destination}{directory to download the file into}
 
 \item{cache}{whether to cache the file}
+
+\item{method}{download method passed to download.file}
 }
 \value{
 path to the downloaded file
