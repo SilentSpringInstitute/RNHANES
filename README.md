@@ -59,6 +59,11 @@ nhanes_quantile(dat,
   comment_column = "URDTRSLC",
   weights_column = "WTSA2YR",
   quantiles = c(0.95, 0.99))
+  
+# Compute geometric mean of urinary triclosan
+nhanes_geometric_mean(dat,
+  column = "URXTRS",
+  weights_column = "WTSA2YR")
 
 # Plot a histogram of the urinary triclosan distribution
 nhanes_hist(dat,
@@ -73,7 +78,7 @@ design <- nhanes_survey_design(dat, weights_column = "WTSA2YR")
 
 ### Geometric mean
 
-An easy way to calculate geometric means hasn't been built into RNHANES yet; however, you can compute them by taking the arithmetic mean of a log-transformed variable and exponentiating, as seen in this example.
+An easy way to calculate geometric means is now built into RNHANES, but the version in CRAN hasn't been updated yet. If you are using the CRAN version, however, you can compute them by taking the arithmetic mean of a log-transformed variable and exponentiating, as seen in this example.
 
 ```R
 library(survey)
