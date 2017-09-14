@@ -2,7 +2,7 @@ test_that("Computing geometric means works", {
   skip_on_cran()
   destination <- getOption("RNHANES_destination", tempdir())
 
-  nhanes_data <- nhanes_load_data("PFC", "2011-2012", demographics = TRUE, cache = TRUE, destination = destination)
+  nhanes_data <- nhanes_load_data("PFC_G", "2011-2012", demographics = TRUE, cache = TRUE, destination = destination)
 
   test_that("Passes spot check", {
     geometric_mean <- nhanes_geometric_mean(nhanes_data, column = "LBXPFNA", weights_column = "WTSA2YR")
