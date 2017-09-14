@@ -51,7 +51,7 @@ test_that("Computing quantiles works", {
     nhanes_data <- nhanes_load_data("TST_G", "2011-2012", demographics = TRUE)
     quantiles <- nhanes_quantile(nhanes_data, "LBXTST", FALSE, quantiles = c(0, 0.25, 0.5, 0.75, 0.95, 1))
 
-    expect_equal(quantiles$value, c(0.25, 17.35, 40.52, 359.51, 625.48, 2543.99))
+    expect_equal(quantiles$value, c(0.25, 17.33, 40.32, 359.27, 625.48, 2543.99))
   })
 
 })
