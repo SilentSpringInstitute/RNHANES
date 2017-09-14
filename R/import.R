@@ -449,7 +449,7 @@ nhanes_load_data <- function(file_name, year, destination = tempdir(), demograph
       full_path <- download_nhanes_file(file_name, year, destination, cache = cache, method = method)
       dat <- read.xport(full_path)
 
-      dat$file_name = file_name
+      dat$file_name = gsub("\\.XPT|\\.htm", "", process_file_name(file_name, year))
       dat$cycle = year
       dat$begin_year = as.numeric(substr(year, 1, 4))
       dat$end_year = as.numeric(substr(year, 6, 9))

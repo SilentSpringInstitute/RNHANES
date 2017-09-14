@@ -195,6 +195,11 @@ test_that("Downloading files from NHANES works", {
       unlink(file.path(destination, "DEMO_E_description.csv"))
     })
 
+    test_that("it uses full file name in output if shortened name provided as argument", {
+      dat <- nhanes_load_data("EPH", "2007-2008", destination = destination, cache = TRUE)
+      expect_equal(dat$file_name[1], "EPH_E")
+    })
+
     test_that("it can download multiple files from the same year", {
       dat <- nhanes_load_data(c("EPH", "PFC"), "2007-2008", destination = destination, cache = TRUE)
 
