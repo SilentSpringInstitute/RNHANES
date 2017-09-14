@@ -11,12 +11,11 @@ guess_weights_column <- function(cols) {
     weights_column = guess[1]
   }
   else {
-    if("WTINT2YR" %in% cols) {
-      weights_column <- "WTINT2YR"
-    }
-    else if("WTMEC2YR" %in% cols) {
-      # Otherwise, use the full sample weights.
+    if("WTMEC2YR" %in% cols) {
       weights_column <- "WTMEC2YR"
+    }
+    else if("WTINT2YR" %in% cols) {
+      weights_column <- "WTINT2YR"
     }
     else {
       stop("Could not find a weights column. You can specify a weights column manually using the `weights` argument.")
