@@ -101,3 +101,21 @@ exp(logmean)[1]
 # Geometric mean upper 95% confidence interval
 exp(logmean[1] + 1.96 * sqrt(attr(logmean, "var")))
 ```
+
+### Correlations
+I recommend using the [svycor](https://cran.r-project.org/web/packages/jtools/vignettes/svycor.html) function from the [jtools](https://cran.r-project.org/web/packages/jtools/) package to compute survey-weighted Pearson correlations between NHANES variables. 
+
+```R
+library(RNHANES)
+library(tidyverse)
+library(jtools)
+
+# Download PAH dataset
+nhanes_dat <- nhanes_load_data("PAH_H", "2013-2014", demographics = TRUE)
+
+# Build the survey design object
+des <- nhanes_survey_design(nhanes_dat)
+
+svycor(~log(URXP01) + log(URXP04) + log(URXP06) + log(URXP10), design = des, na.rm = TRUE)
+
+```
