@@ -30,7 +30,7 @@ test_that("nhanes_search works", {
   test_that("fuzzy search works on files", {
     results <- nhanes_search(files, "fluoro", fuzzy = TRUE)
 
-    expect_equal(nrow(results), 15)
-    expect_equal(results$data_file_name, c("SSANA_A", "SSANA_B", "SSANA_C", "FLDEP_H", "FLDEW_H", "SSPFAS_H", "PFAS_H", "SSPFAC_H", "SSPFC_A", "L24PFC_C", "PFC_D", "PFC_E", "PFC_F", "PFC_G", "PFC_POOL"))
+    expect_equal(nrow(results), 17)
+    expect_equal(results$data_file_name, c("SSANA_A", "SSANA_B", "SSANA_C", "FLDEP_H", "FLDEP_I", "FLDEW_H", "FLDEW_I", "SSPFAS_H", "PFAS_H", "SSPFAC_H", "SSPFC_A", "L24PFC_C", "PFC_D", "PFC_E", "PFC_F", "PFC_G", "PFC_POOL"))
   })
 })
