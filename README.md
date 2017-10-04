@@ -1,5 +1,5 @@
 # RNHANES
-`RNHANES` is an R package for accessing and analyzing CDC [NHANES](http://www.cdc.gov/nchs/nhanes.htm) data that was developed by [Silent Spring Institute](http://silentspring.org).
+`RNHANES` is an R package for accessing and analyzing CDC [NHANES](http://www.cdc.gov/nchs/nhanes.htm) (National Health and Nutrition Examination Survey) data that was developed by [Silent Spring Institute](http://silentspring.org).
 
 [![CRAN Version](http://www.r-pkg.org/badges/version/RNHANES)](https://cran.r-project.org/web/packages/RNHANES/)
 [![Build Status](https://travis-ci.org/SilentSpringInstitute/RNHANES.svg?branch=master)](https://travis-ci.org/SilentSpringInstitute/RNHANES)
@@ -11,7 +11,7 @@
 
 - Download and search NHANES variable and data file lists
 - Download and cache NHANES data files
-- Compute sample sizes, detection frequencies, quantiles, and covariance matrices
+- Compute survey-weighted detection frequencies, quantiles, and geometric means
 - Plot weighted histograms
 
 ## Install
