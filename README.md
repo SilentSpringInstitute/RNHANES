@@ -78,8 +78,7 @@ design <- nhanes_survey_design(dat, weights_column = "WTSA2YR")
 
 ### Geometric mean
 
-An easy way to calculate geometric means is now built into RNHANES, but the version in CRAN hasn't been updated yet. If you are using the CRAN version, however, you can compute them by taking the arithmetic mean of a log-transformed variable and exponentiating, as seen in this example.
-
+An easy way to calculate geometric means is now built into RNHANES via the `nhanes_geometric_mean` function, but the version in CRAN hasn't been updated yet. If you are using the CRAN version, however, you can compute them by taking the arithmetic mean of a log-transformed variable and exponentiating. Here's an example:
 ```R
 library(survey)
 library(RNHANES)
@@ -103,7 +102,7 @@ exp(logmean[1] + 1.96 * sqrt(attr(logmean, "var")))
 ```
 
 ### Correlations
-I recommend using the [svycor](https://cran.r-project.org/web/packages/jtools/vignettes/svycor.html) function from the [jtools](https://cran.r-project.org/web/packages/jtools/) package to compute survey-weighted Pearson correlations between NHANES variables. 
+I recommend using the [svycor](https://cran.r-project.org/web/packages/jtools/vignettes/svycor.html) function from the [jtools](https://cran.r-project.org/web/packages/jtools/) package to compute survey-weighted Pearson correlations between NHANES variables:
 
 ```R
 library(RNHANES)
