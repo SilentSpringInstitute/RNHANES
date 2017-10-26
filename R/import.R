@@ -76,6 +76,7 @@ validate_year <- function(year, throw_error = TRUE) {
                     '2009-2010' = TRUE,
                     '2011-2012' = TRUE,
                     '2013-2014' = TRUE,
+                    '2015-2016' = TRUE,
                     FALSE)
 
     if(throw_error == TRUE && valid == FALSE) {
