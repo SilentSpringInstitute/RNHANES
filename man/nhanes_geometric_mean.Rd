@@ -31,4 +31,3 @@ nhanes_geometric_mean(dat, "URXUHG", "URDUHGLC", "WTSA2YR")
 }
 
 }
-

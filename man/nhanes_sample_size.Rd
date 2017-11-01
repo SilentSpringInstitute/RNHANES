@@ -33,4 +33,3 @@ nhanes_sample_size(dat, "URXUHG", "URDUHGLC")
 }
 
 }
-

@@ -36,4 +36,3 @@ nhanes_quantile(dat, "URXUHG", "URDUHGLC", "WTSA2YR", c(0.5, 0.95, 0.99))
 }
 
 }
-

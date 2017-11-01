@@ -24,4 +24,3 @@ path to the downloaded file
 \description{
 Download an NHANES data file from a given cycle
 }
-

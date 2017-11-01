@@ -30,4 +30,3 @@ svyglm(URXUHG ~ RIDAGEYR + RIAGENDR, design)
 }
 
 }
-

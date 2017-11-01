@@ -53,4 +53,3 @@ nhanes_survey(svyvar, nhanes_data, "URXTRS", "URDTRSLC", na.rm = TRUE)
 }
 
 }
-

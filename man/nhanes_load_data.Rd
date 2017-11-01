@@ -67,4 +67,3 @@ nhanes_load_data("HDL_E", "2007-2008", destination = "/tmp", cache = FALSE)
 }
 
 }
-

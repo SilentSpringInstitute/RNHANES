@@ -18,4 +18,3 @@ Check that the year is in the correct format
 e.g. '2001-2002' is correct and returns TRUE,
 '2001' is not correct and returns FALSE
 }
-

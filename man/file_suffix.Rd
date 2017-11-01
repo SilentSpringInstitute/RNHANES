@@ -15,4 +15,3 @@ suffix character (e.g. "B" or "C")
 \description{
 Returns the NHANES file suffix for the given year
 }
-

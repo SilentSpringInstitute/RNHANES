@@ -5,7 +5,7 @@
 \title{List the NHANES data files}
 \usage{
 nhanes_data_files(components = "all", destination = tempfile(),
-  cache = TRUE)
+  cache = TRUE, method = "auto")
 }
 \arguments{
 \item{components}{one of "all", "demographics", "dietary", "examination", "laboratory", "questionnaire"}
@@ -13,6 +13,8 @@ nhanes_data_files(components = "all", destination = tempfile(),
 \item{destination}{destinatino to save the file lists}
 
 \item{cache}{whether to cache the downloaded file lists so they don't have to be re-downloaded every time}
+
+\item{method}{download.file method}
 }
 \value{
 data frame of NHANES data files available to download
@@ -32,4 +34,3 @@ lab_files <- nhanes_data_files(component = "laboratory")
 }
 
 }
-

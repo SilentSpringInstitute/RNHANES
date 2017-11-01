@@ -26,4 +26,3 @@ nhanes_load_demography_data("2011-2012")
 }
 
 }
-

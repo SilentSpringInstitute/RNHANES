@@ -26,4 +26,3 @@ a data frame
 \description{
 Compute quantiles from NHANES weighted survey data
 }
-

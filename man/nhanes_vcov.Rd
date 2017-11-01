@@ -30,4 +30,3 @@ nhanes_vcov(dat, c("LBXPFOA", "LBXPFOS"))
 }
 
 }
-

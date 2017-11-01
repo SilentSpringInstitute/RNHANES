@@ -17,4 +17,3 @@ suffix character e.g. "B"
 Translates cycle years into the correct demography filename suffix,
 e.g. '2001-2002' returns 'B'
 }
-

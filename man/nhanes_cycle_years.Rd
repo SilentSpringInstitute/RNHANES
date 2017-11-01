@@ -12,4 +12,3 @@ vector of NHANES cycle years
 \description{
 List the valid NHANES cycle years
 }
-

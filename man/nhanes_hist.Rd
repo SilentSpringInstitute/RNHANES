@@ -37,4 +37,3 @@ nhanes_hist(dat, "LBXPFOA")
 }
 
 }
-

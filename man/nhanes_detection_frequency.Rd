@@ -34,4 +34,3 @@ nhanes_detection_frequency(dat, c("URXUHG"), c("URDUHGLC"))
 }
 
 }
-

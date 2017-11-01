@@ -2,12 +2,11 @@
 % Please edit documentation in R/RNHANES.R
 \docType{package}
 \name{RNHANES-package}
-\alias{RNHANES}
 \alias{RNHANES-package}
+\alias{RNHANES}
 \alias{rnhanes}
 \alias{rnhanes-package}
 \title{RNHANES simplifies downloading and analyzing NHANES data.}
 \description{
 RNHANES simplifies downloading and analyzing NHANES data.
 }
-

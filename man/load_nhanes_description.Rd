@@ -24,4 +24,3 @@ data frame containing the file description
 \description{
 Download an NHANES description file
 }
-

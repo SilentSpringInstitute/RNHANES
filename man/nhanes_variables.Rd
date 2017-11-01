@@ -5,14 +5,16 @@
 \title{Load the NHANES comprehensive variable list}
 \usage{
 nhanes_variables(components = "all", destination = tempfile(),
-  cache = TRUE)
+  cache = TRUE, method = "auto")
 }
 \arguments{
 \item{components}{one of "all", "demographics", "dietary", "examination", "laboratory", "questionnaire"}
 
 \item{destination}{where to save the variable list}
 
-\item{cache}{whether to cache the downloaded variable list so it doesn't have to be re-downloaded every time
+\item{cache}{whether to cache the downloaded variable list so it doesn't have to be re-downloaded every time}
+
+\item{method}{download.file method
 
 Helper function for nhanes_variables function}
 }
@@ -34,4 +36,3 @@ variables <- nhanes_variables(destination = "./nhanes_data")
 }
 
 }
-
