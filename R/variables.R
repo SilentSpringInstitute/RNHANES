@@ -30,7 +30,7 @@ parse_data_files_page <- function(component, destination = tempfile(), method = 
   url <- paste0("https://wwwn.cdc.gov/Nchs/Nhanes/Search/DataPage.aspx?Component=", component)
   message(paste0("Downloading NHANES data file list to ", destination));
 
-  download.file(url, destination, method='auto', mode='wb')
+  download.file(url, destination, method=method, mode='wb')
 
   dat <- read_html(destination) %>% html_table()
   dat <- dat[[2]]
@@ -49,7 +49,7 @@ parse_data_files_page <- function(component, destination = tempfile(), method = 
 #' @param destination destinatino to save the file lists
 #' @param cache whether to cache the downloaded file lists so they don't have to be re-downloaded every time
 #' @param method download.file method
-#' 
+#'
 #' @return data frame of NHANES data files available to download
 #'
 #' @import rvest
@@ -177,7 +177,7 @@ parse_variable_list <- function(component, destination = tempfile(), method = 'a
 #' @param destination where to save the variable list
 #' @param cache whether to cache the downloaded variable list so it doesn't have to be re-downloaded every time
 #' @param method download.file method
-#' 
+#'
 #' Helper function for nhanes_variables function
 #'
 #' @import rvest
