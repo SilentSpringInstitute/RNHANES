@@ -20,12 +20,13 @@ nhanes_cycle_years <- function() {
 #
 # @param component one of demographics", "dietary", "examination", "laboratory", "questionnaire"
 # @param destination download destination
+# @param method download.file download method
 #
 # @import rvest
 # @importFrom xml2 read_html
 #
 # @return dat
-parse_data_files_page <- function(component, destination = tempfile()) {
+parse_data_files_page <- function(component, destination = tempfile(), method = 'auto') {
   url <- paste0("https://wwwn.cdc.gov/Nchs/Nhanes/Search/DataPage.aspx?Component=", component)
   message(paste0("Downloading NHANES data file list to ", destination));
 
@@ -47,7 +48,8 @@ parse_data_files_page <- function(component, destination = tempfile()) {
 #' @param components one of "all", "demographics", "dietary", "examination", "laboratory", "questionnaire"
 #' @param destination destinatino to save the file lists
 #' @param cache whether to cache the downloaded file lists so they don't have to be re-downloaded every time
-#'
+#' @param method download.file method
+#' 
 #' @return data frame of NHANES data files available to download
 #'
 #' @import rvest
@@ -65,7 +67,7 @@ parse_data_files_page <- function(component, destination = tempfile()) {
 #' }
 #'
 #' @export
-nhanes_data_files <- function(components = "all", destination = tempfile(), cache = TRUE) {
+nhanes_data_files <- function(components = "all", destination = tempfile(), cache = TRUE, method = 'auto') {
 
   all_components <- c("demographics", "dietary", "examination", "laboratory", "questionnaire")
   components = tolower(components)
@@ -100,7 +102,7 @@ nhanes_data_files <- function(components = "all", destination = tempfile(), cach
     }
   } else {
 
-    dat <- lapply(components, parse_data_files_page)
+    dat <- lapply(components, parse_data_files_page, method = method)
     dat <- Reduce(rbind, dat)
 
     names(dat) <- c("cycle", "data_file_description", "doc_file", "data_file", "date_published", "component")
@@ -127,15 +129,16 @@ nhanes_data_files <- function(components = "all", destination = tempfile(), cach
 #
 # @param component one of "Demographics", "Dietary", "Examination", "Laboratory", "Questionnaire"
 # @param destination download destination
+# @param method download.file method
 #
 # @import rvest
 # @importFrom xml2 read_html
 #
 # @return dat
-parse_variable_list <- function(component, destination = tempfile()) {
+parse_variable_list <- function(component, destination = tempfile(), method = 'auto') {
   url <- paste0("https://wwwn.cdc.gov/nchs/nhanes/search/variablelist.aspx?Component=", component)
 
-  download.file(url, destination, method='auto', mode='wb')
+  download.file(url, destination, method = method, mode='wb')
 
   # Parse the table and unpack the data frame
   dat <- read_html(destination, encoding = "UTF-8")
@@ -173,7 +176,8 @@ parse_variable_list <- function(component, destination = tempfile()) {
 #' @param components one of "all", "demographics", "dietary", "examination", "laboratory", "questionnaire"
 #' @param destination where to save the variable list
 #' @param cache whether to cache the downloaded variable list so it doesn't have to be re-downloaded every time
-#'
+#' @param method download.file method
+#' 
 #' Helper function for nhanes_variables function
 #'
 #' @import rvest
@@ -196,7 +200,7 @@ parse_variable_list <- function(component, destination = tempfile()) {
 #' @importFrom xml2 read_html
 #' @importFrom utils download.file
 #' @export
-nhanes_variables <- function(components = "all", destination = tempfile(), cache = TRUE) {
+nhanes_variables <- function(components = "all", destination = tempfile(), cache = TRUE, method = 'auto') {
   components <- paste0(toupper(substr(components, 1, 1)), tolower(substr(components, 2, nchar(components))))
 
   all_components <- c("Demographics", "Dietary", "Examination", "Laboratory", "Questionnaire")
@@ -230,7 +234,7 @@ nhanes_variables <- function(components = "all", destination = tempfile(), cache
   if(cache == TRUE && file.exists(destination_csv)) {
     dat <- read.csv(destination_csv, stringsAsFactors = FALSE)
   } else {
-    dat <- lapply(components, parse_variable_list)
+    dat <- lapply(components, parse_variable_list, method = method)
     dat <- Reduce(rbind, dat)
 
     if(cache == TRUE) {
