@@ -161,7 +161,7 @@ process_file_name <- function(file_name, year, extension = ".XPT") {
 #'
 #' @return path to the downloaded file
 
-download_nhanes_file <- function(file_name, year, destination = tempdir(), cache = TRUE, method=method) {
+download_nhanes_file <- function(file_name, year, destination = tempdir(), cache = TRUE, method = "auto") {
   validate_year(year)
 
   if(missing(destination)) {
