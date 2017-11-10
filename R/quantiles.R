@@ -28,7 +28,10 @@ nhanes_quantile <- function(nhanes_data, column, comment_column = "", weights_co
 
   # Check to see if any of the computed quantiles are <LOD
   callback <- function(dat, df) {
-    if(df$comment_column[1] != FALSE) {
+    if(df$comment_column[1] == FALSE) {
+      df$below_lod <- NA
+    }
+    else {
       dl <- unique(lookup_dl(df$column[1], df$cycle[1]))
 
       if(length(dl) == 1) {
@@ -78,11 +81,11 @@ nhanes_quantile <- function(nhanes_data, column, comment_column = "", weights_co
                      filter = filter,
                      callback = callback,
                      quantiles = quantiles,
-                     ci = F,
+                     ci = FALSE,
                      na.rm = T,
                      method = "constant",
                      f = 1,
-                     interval.type="betaWald")
+                     interval.type = "betaWald")
 
   q$quantile <- paste0(quantiles * 100, "%")
   q$name <- "quantile"
