@@ -120,7 +120,7 @@ process_file_name <- function(file_name, year, extension = ".XPT") {
     }
 
     # Check for a suffix
-    valid_suffixes <- c("B", "C", "D", "E", "F", "G", "H")
+    valid_suffixes <- c("B", "C", "D", "E", "F", "G", "H","I")
     valid_suffix <- file_suffix(year)
 
     # If it already has the right suffix, just tack on the extension
@@ -161,7 +161,7 @@ process_file_name <- function(file_name, year, extension = ".XPT") {
 #'
 #' @return path to the downloaded file
 
-download_nhanes_file <- function(file_name, year, destination = tempdir(), cache = TRUE, method='auto') {
+download_nhanes_file <- function(file_name, year, destination = tempdir(), cache = TRUE, method=method) {
   validate_year(year)
 
   if(missing(destination)) {
@@ -426,7 +426,8 @@ nhanes_load_data <- function(file_name, year, destination = tempdir(), demograph
         cache = cache,
         recode = recode,
         recode_data = recode_data,
-        recode_demographics = recode_demographics)
+        recode_demographics = recode_demographics,
+        method = method)
 
     return(res_list)
   }
