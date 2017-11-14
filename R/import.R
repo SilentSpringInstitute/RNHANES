@@ -19,7 +19,11 @@ file_suffix <- function(year) {
                     '2009-2010' = 'F',
                     '2011-2012' = 'G',
                     '2013-2014' = 'H',
-                    '2015-2016' = 'I'
+                    '2015-2016' = 'I',
+                    '2017-2018' = 'J',
+                    '2019-2020' = 'K',
+                    '2021-2022' = 'L',
+                    '2023-2024' = 'M'
     )
 
     return(suffix)
@@ -67,17 +71,7 @@ validate_year <- function(year, throw_error = TRUE) {
       return()
   }
   else {
-    valid <- switch(as.character(year),
-                    '1999-2000' = TRUE,
-                    '2001-2002' = TRUE,
-                    '2003-2004' = TRUE,
-                    '2005-2006' = TRUE,
-                    '2007-2008' = TRUE,
-                    '2009-2010' = TRUE,
-                    '2011-2012' = TRUE,
-                    '2013-2014' = TRUE,
-                    '2015-2016' = TRUE,
-                    FALSE)
+    valid <- grep("^[0-9]{4}-[0-9]{4}$", as.character(year)) == 1
 
     if(throw_error == TRUE && valid == FALSE) {
       stop(paste0("Invalid year: ", year))
