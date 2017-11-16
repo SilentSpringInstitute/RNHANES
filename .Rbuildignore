@@ -4,3 +4,4 @@
 README.md
 data-raw
 cran-comments.md
+^docs$
