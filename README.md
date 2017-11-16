@@ -4,6 +4,8 @@
 [![CRAN Version](http://www.r-pkg.org/badges/version/RNHANES)](https://cran.r-project.org/web/packages/RNHANES/)
 [![Build Status](https://travis-ci.org/SilentSpringInstitute/RNHANES.svg?branch=master)](https://travis-ci.org/SilentSpringInstitute/RNHANES)
 [![codecov.io](https://codecov.io/github/SilentSpringInstitute/RNHANES/coverage.svg?branch=master)](https://codecov.io/github/SilentSpringInstitute/RNHANES?branch=master)
+![downloads per month](https://cranlogs.r-pkg.org/badges/RNHANES)
+![grand total downloads](https://cranlogs.r-pkg.org/badges/grand-total/RNHANES)
 
 ![Demo of RNHANES](http://i.imgur.com/TCYW4qR.gif)
 
