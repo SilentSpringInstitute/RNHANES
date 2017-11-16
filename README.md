@@ -31,6 +31,10 @@ library(devtools)
 install_github("silentspringinstitute/RNHANES")
 ```
 
+## Documentation
+
+You can browse the package's documentation on the RNHANES website: [http://silentspringinstitute.github.io/RNHANES/](http://silentspringinstitute.github.io/RNHANES/).
+
 ## Examples
 
 ```R
