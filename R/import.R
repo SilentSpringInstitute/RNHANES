@@ -258,13 +258,14 @@ load_nhanes_description <- function(file_name, year, destination = tempdir(), ca
     }
 
     if(var_name != "SEQN") {
-      values <- section %>%
-        html_node("table") %>%
-        html_table()
-
-
-      values$var_name = var_name
-      return(values)
+      table <- section %>%
+        html_node("table")
+      
+      if(!is.na(table)){
+          values <- html_table(table)
+          values$var_name = var_name
+          return(values)
+        }
     }
   })
 
