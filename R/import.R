@@ -263,7 +263,7 @@ load_nhanes_description <- function(file_name, year, destination = tempdir(), ca
       
       if(!is.na(table)){
           values <- html_table(table)
-          values$var_name = var_name
+          values$var_name = toupper(var_name) # Ensure variable name is always uppercase
           return(values)
         }
     }
@@ -279,33 +279,21 @@ load_nhanes_description <- function(file_name, year, destination = tempdir(), ca
   return(description)
 }
 
-recode_nhanes_data <- function(nhanes_data, nhanes_description) {
-  vars <- colnames(nhanes_data)
-
-  # Figure out which columns in the nhanes data have a match in the description
-  cols <- which(names(nhanes_data) %in% nhanes_description$var_name)
-
-  # Skip the "SEQN" variable
-  cols <- cols[names(nhanes_data)[cols] != "SEQN"]
-
-  for(col in cols) {
-    var <- vars[col]
-
-    for(row in seq_along(nhanes_data[, col])) {
-      val <- nhanes_data[row, col]
-
-      if(is.na(val)) {
-        next
-      }
-
-      replacement_value <- nhanes_description[nhanes_description$var_name == var & nhanes_description[,"Code or Value"] == val, "Value Description"]
-
-      if(length(replacement_value) == 1) {
-        nhanes_data[row, col] <- replacement_value
-      }
+recode_nhanes_data <- function(nhanes_data, nhanes_description) {  
+  # Return without changes if there is no encoding information in the codebook
+  if(is.null(nhanes_description)){
+    return(nhanes_data)
+  }
+  
+  for (row in 1:nrow(nhanes_description)){
+    val <- nhanes_description[row, "Code or Value"]
+    var_name <- nhanes_description[row, "var_name"]
+    descr <- nhanes_description[row, "Value Description"]
+    if(var_name %in% names(nhanes_data)){
+      # Sometimes a variable has a description but no matching data, or the variable name differs in data and the codebook
+      nhanes_data[nhanes_data[var_name]==val & !is.na(nhanes_data[var_name]), var_name] <- descr
     }
   }
-
   return(nhanes_data)
 }
 
