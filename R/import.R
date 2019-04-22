@@ -291,7 +291,7 @@ recode_nhanes_data <- function(nhanes_data, nhanes_description) {
     descr <- nhanes_description[row, "Value Description"]
     if(var_name %in% names(nhanes_data)){
       # Sometimes a variable has a description but no matching data, or the variable name differs in data and the codebook
-      nhanes_data[nhanes_data[var_name]==val & !is.na(nhanes_data[var_name]), var_name] <- descr
+      nhanes_data[!is.na(nhanes_data[var_name]) & nhanes_data[var_name] %in% val, var_name] <- descr  # use %in% instead of == to avoid missingness error
     }
   }
   return(nhanes_data)
