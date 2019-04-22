@@ -280,7 +280,7 @@ load_nhanes_description <- function(file_name, year, destination = tempdir(), ca
 }
 
 recode_nhanes_data <- function(nhanes_data, nhanes_description) {  
-  # Return without changes if there is no encoding information in the codebook
+  # Return without changes if there is no information in the codebook
   if(is.null(nhanes_description)){
     return(nhanes_data)
   }
@@ -289,9 +289,9 @@ recode_nhanes_data <- function(nhanes_data, nhanes_description) {
     val <- nhanes_description[row, "Code or Value"]
     var_name <- nhanes_description[row, "var_name"]
     descr <- nhanes_description[row, "Value Description"]
-    if(var_name %in% names(nhanes_data)){
-      # Sometimes a variable has a description but no matching data, or the variable name differs in data and the codebook
-      nhanes_data[!is.na(nhanes_data[var_name]) & nhanes_data[var_name] %in% val, var_name] <- descr  # use %in% instead of == to avoid missingness error
+    if(var_name %in% names(nhanes_data) & !is.na(val)){
+      # Don't attempt re-coding unless the variable is listed in the data and the value is not NA
+      nhanes_data[!is.na(nhanes_data[var_name]) & (nhanes_data[var_name] == val), var_name] <- descr
     }
   }
   return(nhanes_data)
