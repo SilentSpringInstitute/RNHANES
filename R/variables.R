@@ -143,7 +143,7 @@ parse_variable_list <- function(component, destination = tempfile(), method = 'a
   # Parse the table and unpack the data frame
   dat <- read_html(destination, encoding = "UTF-8")
   dat <- html_table(dat)
-  dat <- dat[[2]]
+  dat <- dat[[1]]
 
   # Rename the columns
   names(dat) <- gsub(" ", "_", names(dat))
