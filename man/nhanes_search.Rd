@@ -4,8 +4,14 @@
 \alias{nhanes_search}
 \title{Search the results from nhanes_variables or nhanes_data_files}
 \usage{
-nhanes_search(nhanes_data, query, ..., fuzzy = FALSE, ignore_case = TRUE,
-  max_distance = 0.2)
+nhanes_search(
+  nhanes_data,
+  query,
+  ...,
+  fuzzy = FALSE,
+  ignore_case = TRUE,
+  max_distance = 0.2
+)
 }
 \arguments{
 \item{nhanes_data}{nhanes variable list, from nhanes_variables function, or data file list, from nhanes_data_files}

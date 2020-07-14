@@ -4,8 +4,14 @@
 \alias{nhanes_analyze}
 \title{Compute quantiles from NHANES weighted survey data}
 \usage{
-nhanes_analyze(analysis_fun, nhanes_data, column, comment_column = "",
-  weights_column = "", filter = NULL)
+nhanes_analyze(
+  analysis_fun,
+  nhanes_data,
+  column,
+  comment_column = "",
+  weights_column = "",
+  filter = NULL
+)
 }
 \arguments{
 \item{analysis_fun}{function to use to analyze each variable}

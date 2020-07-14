@@ -4,10 +4,18 @@
 \alias{nhanes_load_data}
 \title{Download NHANES data files.}
 \usage{
-nhanes_load_data(file_name, year, destination = tempdir(),
-  demographics = FALSE, cache = TRUE, recode = FALSE,
-  recode_data = FALSE, recode_demographics = FALSE,
-  allow_duplicate_files = FALSE, method = "auto")
+nhanes_load_data(
+  file_name,
+  year,
+  destination = tempdir(),
+  demographics = FALSE,
+  cache = TRUE,
+  recode = FALSE,
+  recode_data = FALSE,
+  recode_demographics = FALSE,
+  allow_duplicate_files = FALSE,
+  method = "auto"
+)
 }
 \arguments{
 \item{file_name}{NHANES file name (e.g. "EPH") or a vector of filenames (e.g c("EPH", "GHB"))}

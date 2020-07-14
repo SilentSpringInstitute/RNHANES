@@ -8,5 +8,5 @@
 \alias{rnhanes-package}
 \title{RNHANES simplifies downloading and analyzing NHANES data.}
 \description{
-RNHANES simplifies downloading and analyzing NHANES data.
+simplifies downloading and analyzing NHANES data.
 }

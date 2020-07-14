@@ -4,8 +4,12 @@
 \alias{nhanes_variables}
 \title{Load the NHANES comprehensive variable list}
 \usage{
-nhanes_variables(components = "all", destination = tempfile(),
-  cache = TRUE, method = "auto")
+nhanes_variables(
+  components = "all",
+  destination = tempfile(),
+  cache = TRUE,
+  method = "auto"
+)
 }
 \arguments{
 \item{components}{one of "all", "demographics", "dietary", "examination", "laboratory", "questionnaire"}

@@ -4,8 +4,13 @@
 \alias{nhanes_detection_frequency}
 \title{Compute detection frequencies of NHANES data}
 \usage{
-nhanes_detection_frequency(nhanes_data, column, comment_column,
-  weights_column = "", filter = NULL)
+nhanes_detection_frequency(
+  nhanes_data,
+  column,
+  comment_column,
+  weights_column = "",
+  filter = NULL
+)
 }
 \arguments{
 \item{nhanes_data}{data frame containing NHANES data}

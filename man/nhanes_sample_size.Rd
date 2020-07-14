@@ -4,8 +4,13 @@
 \alias{nhanes_sample_size}
 \title{Compute the sample size of NHANES data}
 \usage{
-nhanes_sample_size(nhanes_data, column, comment_column = "",
-  weights_column = "", filter = NULL)
+nhanes_sample_size(
+  nhanes_data,
+  column,
+  comment_column = "",
+  weights_column = "",
+  filter = NULL
+)
 }
 \arguments{
 \item{nhanes_data}{data frame containing NHANES data}

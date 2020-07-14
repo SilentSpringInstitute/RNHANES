@@ -4,8 +4,12 @@
 \alias{nhanes_data_files}
 \title{List the NHANES data files}
 \usage{
-nhanes_data_files(components = "all", destination = tempfile(),
-  cache = TRUE, method = "auto")
+nhanes_data_files(
+  components = "all",
+  destination = tempfile(),
+  cache = TRUE,
+  method = "auto"
+)
 }
 \arguments{
 \item{components}{one of "all", "demographics", "dietary", "examination", "laboratory", "questionnaire"}

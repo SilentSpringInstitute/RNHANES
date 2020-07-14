@@ -10,15 +10,15 @@ test_that("nhanes_search works", {
   test_that("nhanes_search on variables passes spot check", {
     results <- nhanes_search(vars, "mono-ethyl")
 
-    expect_equal(results$variable_name, c("URXMEP", "URDMEPLC", "URXMEP", "URDMEPLC", "URXMEP", "URDMEPLC", "URXMEP", "URDMEPLC", "URXMEP", "URDMEPLC", "URXMEP", "URDMEPLC", "URXMEP", "URXMEP"))
-    expect_equal(results$begin_year, c(2003, 2003, 2005, 2005, 2007, 2007, 2009, 2009, 2011, 2011, 2013, 2013, 2001, 1999))
+    expect_equal(results$variable_name, c("URDMEPLC", "URXMEP", "URXMEP", "URDMEPLC", "URXMEP", "URDMEPLC", "URXMEP", "URXMEP", "URDMEPLC", "URXMEP", "URDMEPLC", "URXMEP", "URDMEPLC", "URXMEP", "URDMEPLC", "URXMEP"))
+    expect_equal(results$begin_year, c(2005, 2005, 1999, 2007, 2007, 2003, 2003, 2001, 2009, 2009, 2011, 2011, 2013, 2013, 2015, 2015))
   })
 
   test_that("nhanes_search on files passes spot check", {
     results <- nhanes_search(files, "Polyfluoroalkyl")
 
-    expect_equal(results$data_file_name, c("SSPFAS_H", "PFAS_H", "SSPFAC_H", "L24PFC_C", "PFC_D", "PFC_E", "PFC_F", "PFC_G", "PFC_POOL"))
-    expect_equal(results$cycle, c("2013-2014", "2013-2014", "2013-2014", "2003-2004", "2005-2006", "2007-2008", "2009-2010", "2011-2012", "2001-2002"))
+    expect_equal(results$data_file_name, c("PFAS_I", "SSPFSU_H", "SSPFAS_H", "PFAS_H", "SSPFAC_H", "PFC_E", "PFC_D", "L24PFC_C", "PFC_F", "PFC_G", "PFC_POOL"))
+    expect_equal(results$cycle, c("2015-2016", "2013-2014", "2013-2014", "2013-2014", "2013-2014", "2007-2008", "2005-2006", "2003-2004", "2009-2010", "2011-2012", "2001-2002"))
   })
 
   test_that("fuzzy search works on variables", {
@@ -30,7 +30,8 @@ test_that("nhanes_search works", {
   test_that("fuzzy search works on files", {
     results <- nhanes_search(files, "fluoro", fuzzy = TRUE)
 
-    expect_equal(nrow(results), 17)
-    expect_equal(results$data_file_name, c("SSANA_A", "SSANA_B", "SSANA_C", "FLDEP_H", "FLDEP_I", "FLDEW_H", "FLDEW_I", "SSPFAS_H", "PFAS_H", "SSPFAC_H", "SSPFC_A", "L24PFC_C", "PFC_D", "PFC_E", "PFC_F", "PFC_G", "PFC_POOL"))
+    expect_equal(nrow(results), 24)
+    expect_equal(results$data_file_name, c("FLXCLN_G", "FLXCLN_H", "FLXCLN_I", "FLXCLN_F", NA, "SSANA_A", "SSANA2_G", "SSANA2_A", "FLDEP_H", "FLDEP_I", "FLDEW_H", "FLDEW_I",  "PFAS_I", "SSPFSU_H", "SSPFAS_H",
+                                           "PFAS_H", "SSPFAC_H", "SSPFC_A", "PFC_E", "PFC_D", "L24PFC_C", "PFC_F", "PFC_G", "PFC_POOL"))
   })
 })

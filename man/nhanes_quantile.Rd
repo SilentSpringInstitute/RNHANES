@@ -4,8 +4,14 @@
 \alias{nhanes_quantile}
 \title{Compute quantiles from NHANES weighted survey data}
 \usage{
-nhanes_quantile(nhanes_data, column, comment_column = "",
-  weights_column = "", quantiles = seq(0, 1, 0.25), filter = NULL)
+nhanes_quantile(
+  nhanes_data,
+  column,
+  comment_column = "",
+  weights_column = "",
+  quantiles = seq(0, 1, 0.25),
+  filter = NULL
+)
 }
 \arguments{
 \item{nhanes_data}{data frame containing NHANES data}

@@ -4,8 +4,7 @@
 \alias{nhanes_geometric_mean}
 \title{Compute geometric means from NHANES weighted survey data}
 \usage{
-nhanes_geometric_mean(nhanes_data, column, weights_column = "",
-  filter = NULL)
+nhanes_geometric_mean(nhanes_data, column, weights_column = "", filter = NULL)
 }
 \arguments{
 \item{nhanes_data}{data frame containing NHANES data}

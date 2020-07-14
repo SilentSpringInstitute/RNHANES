@@ -4,8 +4,15 @@
 \alias{nhanes_hist}
 \title{Plot a weighted histogram of an NHANES variable}
 \usage{
-nhanes_hist(nhanes_data, column, comment_column, weights_column = "",
-  filter = "", transform = "", ...)
+nhanes_hist(
+  nhanes_data,
+  column,
+  comment_column,
+  weights_column = "",
+  filter = "",
+  transform = "",
+  ...
+)
 }
 \arguments{
 \item{nhanes_data}{data frame containing NHANES data}

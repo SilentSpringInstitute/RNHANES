@@ -4,8 +4,12 @@
 \alias{nhanes_load_demography_data}
 \title{Download NHANES demography files for a specific cycle.}
 \usage{
-nhanes_load_demography_data(year, destination = tempdir(), cache = FALSE,
-  method = "auto")
+nhanes_load_demography_data(
+  year,
+  destination = tempdir(),
+  cache = FALSE,
+  method = "auto"
+)
 }
 \arguments{
 \item{year}{NHANES cycle year (e.g. "2011-2012")}

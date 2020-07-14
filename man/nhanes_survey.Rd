@@ -4,9 +4,17 @@
 \alias{nhanes_survey}
 \title{Apply a function from the survey package to NHANES data}
 \usage{
-nhanes_survey(survey_fun, nhanes_data, column, comment_column = "",
-  weights_column = "", filter = NULL, analyze = "values",
-  callback = NULL, ...)
+nhanes_survey(
+  survey_fun,
+  nhanes_data,
+  column,
+  comment_column = "",
+  weights_column = "",
+  filter = NULL,
+  analyze = "values",
+  callback = NULL,
+  ...
+)
 }
 \arguments{
 \item{survey_fun}{the survey package function (e.g. svyquantile or svymean)}

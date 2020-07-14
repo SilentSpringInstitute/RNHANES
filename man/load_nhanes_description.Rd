@@ -4,8 +4,13 @@
 \alias{load_nhanes_description}
 \title{Download an NHANES description file}
 \usage{
-load_nhanes_description(file_name, year, destination = tempdir(),
-  cache = FALSE, method = "auto")
+load_nhanes_description(
+  file_name,
+  year,
+  destination = tempdir(),
+  cache = FALSE,
+  method = "auto"
+)
 }
 \arguments{
 \item{file_name}{file name}
