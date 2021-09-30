@@ -56,9 +56,13 @@ nhanes_survey <- function(survey_fun, nhanes_data, column, comment_column = "", 
       design = des
     ))
     }
+    
+    if(class(res) == "newsvyquantile") {
+      res <- res[[1]]
+    }
 
     ret <- data.frame(
-      value            = unname(res),
+      value            = as.vector(unname(res)),
       cycle            = nhanes_data$cycle[1],
       begin_year       = nhanes_data$begin_year[1],
       end_year         = nhanes_data$end_year[1],

@@ -286,9 +286,9 @@ recode_nhanes_data <- function(nhanes_data, nhanes_description) {
   }
   
   for (row in 1:nrow(nhanes_description)){
-    val <- nhanes_description[row, "Code or Value"]
-    var_name <- nhanes_description[row, "var_name"]
-    descr <- nhanes_description[row, "Value Description"]
+    val <- nhanes_description[row, ][["Code or Value"]]
+    var_name <- nhanes_description[row, ][["var_name"]]
+    descr <- nhanes_description[row, ][["Value Description"]]
     if(var_name %in% names(nhanes_data) & !is.na(val)){
       # Don't attempt re-coding unless the variable is listed in the data and the value is not NA
       nhanes_data[!is.na(nhanes_data[var_name]) & (nhanes_data[var_name] == val), var_name] <- descr

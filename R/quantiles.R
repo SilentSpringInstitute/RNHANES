@@ -6,7 +6,8 @@
 #' @param weights_column name of the weights column
 #' @param quantiles numeric or vector numeric of quantiles to compute
 #' @param filter logical expression used to subset the data
-#'
+#' @param ... additional arguments passed to svyquantile
+#' 
 #' @return a data frame
 #'
 #' @import survey
@@ -21,7 +22,7 @@
 #' }
 #'
 #' @export
-nhanes_quantile <- function(nhanes_data, column, comment_column = "", weights_column = "", quantiles = seq(0, 1, 0.25), filter = NULL) {
+nhanes_quantile <- function(nhanes_data, column, comment_column = "", weights_column = "", quantiles = seq(0, 1, 0.25), filter = NULL, ...) {
   if(hasArg(filter) && substitute(filter) != "filter" && !exists(deparse(substitute(filter)), parent.frame())) {
     filter <- substitute(filter)
   }
@@ -61,9 +62,7 @@ nhanes_quantile <- function(nhanes_data, column, comment_column = "", weights_co
                                         quantiles = 1 - quantiles,
                                         ci = F,
                                         na.rm = TRUE,
-                                        method = "constant",
-                                        f = 1,
-                                        interval.type = "betaWald")
+                                        ...)
 
           df$below_lod <- nd_quantiles$value == 1
         }
@@ -81,11 +80,9 @@ nhanes_quantile <- function(nhanes_data, column, comment_column = "", weights_co
                      filter = filter,
                      callback = callback,
                      quantiles = quantiles,
-                     ci = FALSE,
+                     ci = F,
                      na.rm = T,
-                     method = "constant",
-                     f = 1,
-                     interval.type = "betaWald")
+                     ...)
 
   q$quantile <- paste0(quantiles * 100, "%")
   q$name <- "quantile"

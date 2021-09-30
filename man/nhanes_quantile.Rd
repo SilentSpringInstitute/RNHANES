@@ -10,7 +10,8 @@ nhanes_quantile(
   comment_column = "",
   weights_column = "",
   quantiles = seq(0, 1, 0.25),
-  filter = NULL
+  filter = NULL,
+  ...
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ nhanes_quantile(
 \item{quantiles}{numeric or vector numeric of quantiles to compute}
 
 \item{filter}{logical expression used to subset the data}
+
+\item{...}{additional arguments passed to svyquantile}
 }
 \value{
 a data frame
