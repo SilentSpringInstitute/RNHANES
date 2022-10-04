@@ -31,6 +31,8 @@ library(devtools)
 install_github("silentspringinstitute/RNHANES")
 ```
 
+
+
 ## Documentation
 
 You can browse the package's documentation on the RNHANES website: [http://silentspringinstitute.github.io/RNHANES/](http://silentspringinstitute.github.io/RNHANES/).
@@ -124,3 +126,9 @@ des <- nhanes_survey_design(nhanes_dat)
 svycor(~log(URXP01) + log(URXP04) + log(URXP06) + log(URXP10), design = des, na.rm = TRUE)
 
 ```
+
+### Acknowledgements
+Thanks to the following people for contributing pull requests:
+- Xiaosong Zhang [xiaosongz](https://github.com/xiaosongz)
+- John McGuigan [jrm5100](https://github.com/jrm5100)
+
