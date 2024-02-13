@@ -18,17 +18,17 @@
 
 ## Install
 
-You can install the latest stable version through CRAN:
-```R
-install.packages("RNHANES")
-```
-
-Or you can install the latest development version from github:
+You can install the latest stable version from github:
 
 ```R
 library(devtools)
 
 install_github("silentspringinstitute/RNHANES")
+```
+
+The version through CRAN is older and will pull errors when working with more recent NHANES cycles:
+```R
+install.packages("RNHANES")
 ```
 
 
