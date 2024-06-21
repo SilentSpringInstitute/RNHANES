@@ -21,9 +21,7 @@ file_suffix <- function(year) {
                     '2013-2014' = 'H',
                     '2015-2016' = 'I',
                     '2017-2018' = 'J',
-                    '2019-2020' = 'K',
-                    '2021-2022' = 'L',
-                    '2023-2024' = 'M'
+                    '2019-2020' = 'K_R'
     )
 
     return(suffix)
@@ -48,6 +46,10 @@ demography_filename <- function(year) {
   else {
     if(year == '1999-2000') {
       return("DEMO.XPT")
+    }
+
+    if(year == '2017-2020') {
+      return("P_DEMO.XPT")
     }
 
     suffix = file_suffix(year)
@@ -99,6 +101,7 @@ process_file_name <- function(file_name, year, extension = ".XPT") {
   }
   else {
     ext <- substr(file_name, nchar(file_name) - 3, nchar(file_name))
+    pre <- substr(file_name, 1, 2)
     if(ext == ".XPT" || ext == ".htm") {
       return(file_name)
     }
@@ -107,14 +110,21 @@ process_file_name <- function(file_name, year, extension = ".XPT") {
       message("Cycle 1999-2000 doesn't always follow the normal naming conventions, so skipping the file suffix check.")
 
       if(ext != extension) {
-        file_name <- paste0(file_name, extension)
+        return(paste0(file_name, extension))
       }
-
-      return(file_name)
     }
 
+    if(year == "2017-2020") {
+      message("Cycle 2017-2020 appends prefix instead of suffix, so skipping the file suffix check.")
+      
+      if(ext != extension) {
+        if(pre != "P_") {
+          file_name = paste0("P_", file_name)
+        }
+        return(paste0(file_name, extension))
+      }
+
     # Check for a suffix
-    valid_suffixes <- c("B", "C", "D", "E", "F", "G", "H","I")
     valid_suffix <- file_suffix(year)
 
     # If it already has the right suffix, just tack on the extension
@@ -191,11 +201,17 @@ download_nhanes_file <- function(file_name, year, destination = tempdir(), cache
   dest_file_name <- paste0(year_suffix, "_", file_name)
   destination <- file.path(destination, file_name)
 
+  year_path = year
+
+  if(year_path == "2017-2020") {
+    year_path = "2017-2018"
+  }
+
   if(cache == TRUE && file.exists(destination) == TRUE) {
     return(destination)
   }
 
-  url <- paste0("https://wwwn.cdc.gov/Nchs/Nhanes/", year, '/', file_name)
+  url <- paste0("https://wwwn.cdc.gov/Nchs/Nhanes/", year_path, '/', file_name)
 
   message(paste0("Downloading ", file_name, " to ", destination));
 
