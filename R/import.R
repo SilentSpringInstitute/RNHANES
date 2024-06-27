@@ -123,7 +123,7 @@ process_file_name <- function(file_name, year, extension = ".XPT") {
         }
         return(paste0(file_name, extension))
       }
-
+    }
     # Check for a suffix
     valid_suffix <- file_suffix(year)
 
@@ -205,6 +205,10 @@ download_nhanes_file <- function(file_name, year, destination = tempdir(), cache
 
   if(year_path == "2017-2020") {
     year_path = "2017-2018"
+  }
+  
+  if(year_path == "2019-2020") {
+    year_path = "limited_access"
   }
 
   if(cache == TRUE && file.exists(destination) == TRUE) {
