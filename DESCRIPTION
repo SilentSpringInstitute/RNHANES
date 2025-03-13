@@ -21,7 +21,8 @@ Imports:
     rvest,
     xml2,
     methods,
-    dplyr
+    dplyr, 
+    stringr
 Suggests:
     testthat,
     knitr,
