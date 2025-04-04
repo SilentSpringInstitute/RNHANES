@@ -115,7 +115,7 @@ process_file_name <- function(file_name, year, extension = ".XPT") {
       }
     }
 
-    if(strdetect(file_name, "_A")) {
+    if(grep("_A", file_name)) {
         message("Files with the suffix A outside of the 1999-2000 cycle typically don't follow the normal naming conventions, so skipping the file suffix check.")
 
       if(ext != extension) {
@@ -206,7 +206,7 @@ download_nhanes_file <- function(file_name, year, destination = tempdir(), cache
       return()
   }
 
-  if(str_detect(file_name, "_A")) {
+  if(grep("_A", file_name)) {
     year_path = "1999"
   }
 
