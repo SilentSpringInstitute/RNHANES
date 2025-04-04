@@ -12,7 +12,7 @@ file_suffix <- function(year) {
   }
   else {
     suffix = switch(as.character(year),
-                    '2001-2002' = 'B'
+                    '2001-2002' = 'B',
                     '2003-2004' = 'C',
                     '2005-2006' = 'D',
                     '2007-2008' = 'E',
