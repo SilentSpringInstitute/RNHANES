@@ -49,10 +49,6 @@ demography_filename <- function(year) {
       return("DEMO.XPT")
     }
 
-    if(year == '2001-2002') {
-      return("DEMO_B.XPT")
-    }
-
     if(year == '2017-2020') {
       return("P_DEMO.XPT")
     }
