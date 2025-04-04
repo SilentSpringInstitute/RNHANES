@@ -12,7 +12,7 @@ file_suffix <- function(year) {
   }
   else {
     suffix = switch(as.character(year),
-                    '2001-2002' = 'B',
+                    '2001-2002' = 'B'
                     '2003-2004' = 'C',
                     '2005-2006' = 'D',
                     '2007-2008' = 'E',
@@ -22,7 +22,7 @@ file_suffix <- function(year) {
                     '2015-2016' = 'I',
                     '2017-2018' = 'J',
                     '2019-2020' = 'K_R',
-                    '2021-2022' = 'L'
+                    '2021-2023' = 'L'
     )
 
     return(suffix)
@@ -47,6 +47,10 @@ demography_filename <- function(year) {
   else {
     if(year == '1999-2000') {
       return("DEMO.XPT")
+    }
+
+    if(year == '2001-2002') {
+      return("DEMO_B.XPT")
     }
 
     if(year == '2017-2020') {
@@ -109,6 +113,14 @@ process_file_name <- function(file_name, year, extension = ".XPT") {
 
     if(year == "1999-2000") {
       message("Cycle 1999-2000 doesn't always follow the normal naming conventions, so skipping the file suffix check.")
+
+      if(ext != extension) {
+        return(paste0(file_name, extension))
+      }
+    }
+
+    if(strdetect(file_name, "_A")) {
+        message("Files with the suffix A outside of the 1999-2000 cycle typically don't follow the normal naming conventions, so skipping the file suffix check.")
 
       if(ext != extension) {
         return(paste0(file_name, extension))
@@ -196,6 +208,10 @@ download_nhanes_file <- function(file_name, year, destination = tempdir(), cache
       unlist() %>%
       unname() %>%
       return()
+  }
+
+  if(strdetect(file_name, "_A")) {
+    year_path = "1999"
   }
 
   year_path <- str_split_i(year, "-", 1)
