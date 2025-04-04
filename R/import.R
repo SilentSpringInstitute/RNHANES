@@ -206,11 +206,11 @@ download_nhanes_file <- function(file_name, year, destination = tempdir(), cache
       return()
   }
 
+  year_path <- str_split_i(year, "-", 1)
   if(grepl("_A", file_name)) {
     year_path = "1999"
   }
 
-  year_path <- str_split_i(year, "-", 1)
   #dest_file_name <- paste0(year_suffix, "_", file_name)
   destination <- file.path(destination, file_name)
 
