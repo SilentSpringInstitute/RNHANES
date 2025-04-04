@@ -210,7 +210,7 @@ download_nhanes_file <- function(file_name, year, destination = tempdir(), cache
       return()
   }
 
-  if(strdetect(file_name, "_A")) {
+  if(str_detect(file_name, "_A")) {
     year_path = "1999"
   }
 
